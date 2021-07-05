@@ -1,0 +1,1198 @@
+openapi: 3.0.1
+info:
+  title: Песочница открытых банковских API
+  description: Песочница открытых банковских API
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: apiteam@st.by
+  version: '1'
+servers:
+  - url: 'https://paymentapi.st.by:8243/open-banking/v1.0'
+  - url: 'http://paymentapi.st.by:8280/open-banking/v1.0'
+tags:
+  - name: AccountConsents
+    description: Согласие на доступ к счету
+  - name: Accounts
+    description: Счета
+paths:
+  /accounts:
+    get:
+      tags:
+        - Accounts
+      summary: Accounts info
+      description: Получение списка счетов и информации по ним
+      operationId: getAccounts
+      parameters:
+        - $ref: '#/components/parameters/x-fapi-auth-date'
+        - $ref: '#/components/parameters/x-fapi-customer-ip-address'
+        - $ref: '#/components/parameters/x-fapi-interaction-id'
+        - $ref: '#/components/parameters/Authorization'
+      responses:
+        '200':
+          $ref: '#/components/responses/200GetAccounts'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '401':
+          $ref: '#/components/responses/401Error'
+        '403':
+          $ref: '#/components/responses/403Error'
+        '405':
+          $ref: '#/components/responses/405Error'
+        '406':
+          $ref: '#/components/responses/406Error'
+        '415':
+          $ref: '#/components/responses/415Error'
+        '429':
+          $ref: '#/components/responses/429Error'
+        '500':
+          $ref: '#/components/responses/500Error'
+      security:
+        - default: []
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+      x-wso2-application-security:
+        security-types:
+          - oauth2
+          - api_key
+        optional: false
+  '/accounts/{accountId}':
+    get:
+      tags:
+        - Accounts
+      summary: Account info by ID
+      description: Получение информации по счету
+      parameters:
+        - $ref: '#/components/parameters/accountId'
+        - $ref: '#/components/parameters/x-fapi-auth-date'
+        - $ref: '#/components/parameters/x-fapi-customer-ip-address'
+        - $ref: '#/components/parameters/x-fapi-interaction-id'
+        - $ref: '#/components/parameters/Authorization'
+      responses:
+        '200':
+          $ref: '#/components/responses/200AccountById'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '401':
+          $ref: '#/components/responses/401Error'
+        '403':
+          $ref: '#/components/responses/403Error'
+        '405':
+          $ref: '#/components/responses/405Error'
+        '406':
+          $ref: '#/components/responses/406Error'
+        '415':
+          $ref: '#/components/responses/415Error'
+        '429':
+          $ref: '#/components/responses/429Error'
+        '500':
+          $ref: '#/components/responses/500Error'
+      security:
+        - default: []
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+      x-wso2-application-security:
+        security-types:
+          - oauth2
+          - api_key
+        optional: false
+  /accountConsents:
+    post:
+      tags:
+        - AccountConsents
+      summary: Create Account Access Consents
+      description: Создание согласия на доступ к информации по счету
+      operationId: CreateAccountAccessConsents
+      parameters:
+        - $ref: '#/components/parameters/permissions'
+        - $ref: '#/components/parameters/expirationDate'
+        - $ref: '#/components/parameters/transactionFromDate'
+        - $ref: '#/components/parameters/transactionToDate'
+        - $ref: '#/components/parameters/x-fapi-auth-date'
+        - $ref: '#/components/parameters/x-fapi-customer-ip-address'
+        - $ref: '#/components/parameters/x-fapi-interaction-id'
+        - $ref: '#/components/parameters/Authorization'
+      requestBody:
+        description: Default
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OBReadConsent1'
+        required: true
+      responses:
+        '201':
+          $ref: '#/components/responses/201AccountAccessConsentsCreated'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '401':
+          $ref: '#/components/responses/401Error'
+        '403':
+          $ref: '#/components/responses/403Error'
+        '405':
+          $ref: '#/components/responses/405Error'
+        '406':
+          $ref: '#/components/responses/406Error'
+        '415':
+          $ref: '#/components/responses/415Error'
+        '429':
+          $ref: '#/components/responses/429Error'
+        '500':
+          $ref: '#/components/responses/500Error'
+      security:
+        - default: []
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+      x-wso2-application-security:
+        security-types:
+          - oauth2
+          - api_key
+        optional: false
+  '/accountConsents/{accountConsentId}':
+    get:
+      tags:
+        - AccountConsents
+      summary: Get Account Access Consents
+      description: Получение статуса и параметров согласия на доступ к информации по счету
+      operationId: GetAccountAccessConsentsConsentId
+      parameters:
+        - $ref: '#/components/parameters/accountConsentId'
+        - $ref: '#/components/parameters/x-fapi-auth-date'
+        - $ref: '#/components/parameters/x-fapi-customer-ip-address'
+        - $ref: '#/components/parameters/x-fapi-interaction-id'
+        - $ref: '#/components/parameters/Authorization'
+      responses:
+        '200':
+          $ref: '#/components/responses/200AccountAccessConsentsConsentIdRead'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '401':
+          $ref: '#/components/responses/401Error'
+        '403':
+          $ref: '#/components/responses/403Error'
+        '405':
+          $ref: '#/components/responses/405Error'
+        '406':
+          $ref: '#/components/responses/406Error'
+        '429':
+          $ref: '#/components/responses/429Error'
+        '500':
+          $ref: '#/components/responses/500Error'
+      security:
+        - default: []
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+      x-wso2-application-security:
+        security-types:
+          - oauth2
+          - api_key
+        optional: false
+    delete:
+      tags:
+        - AccountConsents
+      summary: Delete Account Access Consents
+      description: Удаление (отзыв) согласия на доступ к информации по счету
+      operationId: DeleteAccountAccessConsentsConsentId
+      parameters:
+        - $ref: '#/components/parameters/accountConsentId'
+        - $ref: '#/components/parameters/x-fapi-auth-date'
+        - $ref: '#/components/parameters/x-fapi-customer-ip-address'
+        - $ref: '#/components/parameters/x-fapi-interaction-id'
+        - $ref: '#/components/parameters/Authorization'
+      responses:
+        '204':
+          $ref: '#/components/responses/204AccountAccessConsentsConsentIdDeleted'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '401':
+          $ref: '#/components/responses/401Error'
+        '403':
+          $ref: '#/components/responses/403Error'
+        '405':
+          $ref: '#/components/responses/405Error'
+        '406':
+          $ref: '#/components/responses/406Error'
+        '429':
+          $ref: '#/components/responses/429Error'
+        '500':
+          $ref: '#/components/responses/500Error'
+      security:
+        - default: []
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+      x-wso2-application-security:
+        security-types:
+          - oauth2
+          - api_key
+        optional: false
+components:
+  schemas:
+    OBReadConsent1:
+      required:
+        - Data
+        - Risk
+      type: object
+      properties:
+        Data:
+          required:
+            - Permissions
+          type: object
+          properties:
+            Permissions:
+              minItems: 1
+              type: array
+              items:
+                type: string
+                description: >-
+                  Список разрешений к данным Клиента, к которым имеет доступ
+                  Пользователь API. Разрешения должны быть запрошены для
+                  авторизации на стороне Поставщика API и одобрены Клиентом.
+                enum:
+                  - ReadAccountsBasic
+                  - ReadAccountsDetail
+                  - ReadBalances
+                  - ReadStatementsBasic
+                  - ReadStatementsDetail
+                  - ReadTransactionsBasic
+                  - ReadTransactionsCredits
+                  - ReadTransactionsDebits
+                  - ReadTransactionsDetail
+            ExpirationDate:
+              type: string
+              description: |-
+                Дата окончания срока действия согласия
+                Пример:
+                2021-08-17
+              format: date
+              example: '2021-08-17'
+            TransactionFromDate:
+              type: string
+              description: >-
+                Дата начала периода, с которого можно получить транзакции
+                Клиента на стороне Поставщика API. Если он не указан, данные
+                будут возвращены с самой первой из доступных транзакций.
+
+                Пример:
+
+                2021-04-20
+              format: date
+              example: '2021-04-20'
+            TransactionToDate:
+              type: string
+              description: >-
+                Дата окончания периода, после которого нельзя получить
+                транзакции Клиента на стороне Поставщика API. Если он не указан,
+                данные будут возвращены до самой последней доступной транзакции.
+
+                Пример:
+
+                2021-04-22
+              format: date
+              example: '2021-04-22'
+        Risk:
+          $ref: '#/components/schemas/OBRisk2'
+      additionalProperties: false
+    OBRisk2:
+      type: object
+      properties: {}
+      additionalProperties: false
+      description: >-
+        Раздел «Риск» отправляется инициирующей стороной. Используется для
+        указания дополнительных сведений для оценки рисков для информации об
+        учетной записи.
+    Link:
+      required:
+        - self
+      type: object
+      properties:
+        self:
+          type: string
+          example: 'https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/'
+        last:
+          type: string
+          nullable: true
+        first:
+          type: string
+          nullable: true
+        next:
+          type: string
+          nullable: true
+    Meta:
+      type: object
+      properties:
+        total_pages:
+          type: integer
+          nullable: true
+          example: 1
+        firstAvailableDateTime:
+          type: string
+          format: date-time
+          nullable: true
+          example: '2021-02-06T00:00:00+03:00'
+        lastAvailableDateTime:
+          type: string
+          format: date-time
+          nullable: true
+          example: '2021-04-17T23:00:00+03:00'
+    Accounts:
+      properties:
+        Accounts:
+          type: array
+          description: Информация о счете.
+          items:
+            $ref: '#/components/schemas/Account'
+    Account:
+      required:
+        - accountSubType
+        - accountType
+        - accountid
+        - creationDateTime
+        - currency
+      properties:
+        accountid:
+          maxLength: 35
+          minLength: 1
+          type: string
+          example: 12345TEST
+        status:
+          maxLength: 35
+          minLength: 1
+          type: string
+          nullable: true
+          example: Pending
+          enum:
+            - Enabled
+            - Disabled
+            - Deleted
+            - Pending
+        statusUpdateTime:
+          pattern: '^\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$'
+          type: string
+          format: date-time
+          nullable: true
+          example: '2021-02-01T06:06:06+03:00'
+        currency:
+          pattern: '[A-Z]{3}'
+          type: string
+          example: BYN
+        accountType:
+          maxLength: 35
+          minLength: 1
+          type: string
+          example: Business
+        accountSubType:
+          maxLength: 35
+          minLength: 1
+          type: string
+          example: CurrentAccount
+          enum:
+            - CreditCard
+            - CurrentAccount
+            - Loan
+            - Mortgage
+            - Installment
+            - Savings
+        creationDataTime:
+          type: string
+          format: date-time
+          example: '2021-01-01T00:00:00+03:00'
+        accountDescription:
+          maxLength: 2048
+          minLength: 1
+          type: string
+          nullable: true
+          example: Текущий расчетный счет.
+        accountDetails:
+          $ref: '#/components/schemas/AccountDetails'
+        servicer:
+          $ref: '#/components/schemas/Servicer'
+    AccountDetails:
+      required:
+        - identification
+        - name
+        - schemeName
+      properties:
+        schemeName:
+          type: string
+          example: Схема для осуществления платежа по номеру счета.
+        identification:
+          pattern: '[A-Z]{2}[0-9]{2}[A-Z]{4}[0-9]{4}[A-Z0-9]{16}'
+          type: string
+          example: BY01UNBS30120000000000000933
+        name:
+          maxLength: 140
+          minLength: 1
+          type: string
+          example: Текущий расчетный счет
+        substatus:
+          maxLength: 35
+          minLength: 1
+          type: string
+          example: Arrested
+        reason:
+          maxLength: 520
+          minLength: 1
+          type: string
+          example: Арестован согласно Постановления СК
+    Servicer:
+      required:
+        - identification
+        - name
+      properties:
+        name:
+          maxLength: 35
+          minLength: 1
+          type: string
+          example: ЗАО "БСБ Банк"
+        identification:
+          pattern: '[A-Z0-9]{4}[A-Z]{2}[A-Z0-9]{2}([A-Z0-9]{3})'
+          type: string
+          example: UNBSBY2X
+    OBError1:
+      minProperties: 1
+      required:
+        - ErrorCode
+        - Message
+      type: object
+      properties:
+        ErrorCode:
+          type: string
+          description: Низкоуровневый код ошибки
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: Описание ошибки
+        Path:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: >-
+            Рекомендуемая, но не обязательная ссылка на на JSON-путь поля с
+            ошибкой.
+        Url:
+          type: string
+          description: >-
+            URL-адрес, предоставляющий дополнительную информацию для решения
+            проблемы.
+      additionalProperties: false
+    OBReadConsentResponse1Post:
+      required:
+        - Data
+        - Risk
+      type: object
+      properties:
+        Data:
+          required:
+            - accountConsentId
+            - creationDateTime
+            - permissions
+            - status
+            - statusUpdateDateTime
+          type: object
+          properties:
+            accountConsentId:
+              maxLength: 35
+              minLength: 1
+              type: string
+              description: Идентификатор согласия
+              example: 3cgfc598-r5gh-9758-b358-587a5479610s
+            status:
+              maxLength: 35
+              minLength: 1
+              type: string
+              description: Статусы  согласия на доступ к информации о счете
+              example: AwaitingAuthorisation
+              enum:
+                - AwaitingAuthorisation
+                - Authorised
+                - Rejected
+                - Revoked
+                - Expired
+            statusUpdateDateTime:
+              $ref: '#/components/schemas/StatusUpdateDateTimeConsent'
+            creationDateTime:
+              $ref: '#/components/schemas/CreationDateTimeConsent'
+            permissions:
+              minItems: 1
+              type: array
+              items:
+                type: string
+                description: >-
+                  Список разрешений к данным Клиента, к которым имеет доступ
+                  Пользователь API. Разрешения должны быть запрошены для
+                  авторизации на стороне Поставщика API и одобрены Клиентом.
+                enum:
+                  - ReadAccountsBasic
+                  - ReadAccountsDetail
+                  - ReadBalances
+                  - ReadStatementsBasic
+                  - ReadStatementsDetail
+                  - ReadTransactionsBasic
+                  - ReadTransactionsDetail
+                  - ReadTransactionsCredits
+                  - ReadTransactionsDebits
+            expirationDate:
+              type: string
+              description: Дата окончания срока действия согласия
+              format: date
+              example: '2021-08-17'
+            transactionFromDate:
+              type: string
+              description: >-
+                Дата начала периода запроса транзакции. Если он не указан,
+                данные будут возвращены с самой первой из доступных транзакций.
+              format: date
+              example: '2021-04-20'
+            transactionToDate:
+              type: string
+              description: >-
+                Дата окончания периода запроса транзакции. Если он не указан,
+                данные будут возвращены до самой последней доступной транзакции.
+              format: date
+              example: '2021-04-22'
+        Risk:
+          $ref: '#/components/schemas/OBRisk2'
+        Links:
+          $ref: '#/components/schemas/LinksConsentPost'
+        Meta:
+          $ref: '#/components/schemas/Meta'
+    LinksConsentPost:
+      required:
+        - Self
+      type: object
+      properties:
+        Self:
+          type: string
+          format: uri
+          example: >-
+            https://api.bank.by/oapi-channel/open-banking/v1.0/account-consents/3cgfc598-r5gh-9758-b358-587a5479610s
+        First:
+          type: string
+          format: uri
+        Prev:
+          type: string
+          format: uri
+        Next:
+          type: string
+          format: uri
+        Last:
+          type: string
+          format: uri
+      additionalProperties: false
+      description: 'Ссылки, относящиеся к полезной нагрузке.'
+    OBReadConsentResponse1:
+      required:
+        - Data
+        - Risk
+      type: object
+      properties:
+        Data:
+          required:
+            - accountConsentId
+            - creationDateTime
+            - permissions
+            - status
+            - statusUpdateDateTime
+          type: object
+          properties:
+            accountConsentId:
+              maxLength: 35
+              minLength: 1
+              type: string
+              description: Идентификатор согласия
+              example: 3cgfc598-r5gh-9758-b358-587a5479610s
+            status:
+              maxLength: 35
+              minLength: 1
+              type: string
+              description: Статусы  согласия на доступ к информации о счете
+              example: Authorised
+              enum:
+                - AwaitingAuthorisation
+                - Authorised
+                - Rejected
+                - Revoked
+                - Expired
+            statusUpdateDateTime:
+              $ref: '#/components/schemas/StatusUpdateDateTimeConsent'
+            creationDateTime:
+              $ref: '#/components/schemas/CreationDateTimeConsent'
+            permissions:
+              minItems: 1
+              type: array
+              items:
+                type: string
+                description: >-
+                  Список разрешений к данным Клиента, к которым имеет доступ
+                  Пользователь API. Разрешения должны быть запрошены для
+                  авторизации на стороне Поставщика API и одобрены Клиентом.
+                enum:
+                  - ReadAccountsBasic
+                  - ReadAccountsDetail
+                  - ReadBalances
+                  - ReadStatementsBasic
+                  - ReadStatementsDetail
+                  - ReadTransactionsBasic
+                  - ReadTransactionsDetail
+                  - ReadTransactionsCredits
+                  - ReadTransactionsDebits
+            expirationDate:
+              type: string
+              description: Дата окончания срока действия согласия.
+              format: date
+              example: '2021-08-17'
+            transactionFromDate:
+              type: string
+              description: >-
+                Дата начала периода, с которого можно получить транзакции
+                Клиента на стороне Поставщика API. Если он не указан, данные
+                будут возвращены с самой первой из доступных транзакций.
+              format: date
+              example: '2021-04-20'
+            transactionToDate:
+              type: string
+              description: >-
+                Дата окончания периода, после которого нельзя получить
+                транзакции Клиента на стороне Поставщика API. Если он не указан,
+                данные будут возвращены до самой последней доступной транзакции.
+              format: date
+              example: '2021-04-22'
+        Risk:
+          $ref: '#/components/schemas/OBRisk2'
+        Links:
+          $ref: '#/components/schemas/LinksConsentPost'
+        Meta:
+          $ref: '#/components/schemas/Meta'
+      additionalProperties: false
+    Links:
+      required:
+        - Self
+      type: object
+      properties:
+        Self:
+          type: string
+          format: uri
+          example: >-
+            https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/12345TEST/
+        First:
+          type: string
+          format: uri
+        Prev:
+          type: string
+          format: uri
+        Next:
+          type: string
+          format: uri
+        Last:
+          type: string
+          format: uri
+      additionalProperties: false
+      description: 'Ссылки, относящиеся к полезной нагрузке.'
+    StatusUpdateDateTimeConsent:
+      type: string
+      format: date-time
+      example: '2021-04-16T09:00:07+03:00'
+    CreationDateTimeConsent:
+      type: string
+      format: date-time
+      example: '2021-04-15T09:00:07+03:00'
+    OBErrorResponse1:
+      required:
+        - Code
+        - Errors
+        - Message
+      type: object
+      properties:
+        Code:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: >-
+            Высокоуровневый текстовый код ошибки, который помогает ее
+            классифицировать.
+        Id:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: >-
+            Уникальная ссылка на ошибку для целей аудита в случае
+            неизвестной/несекретной ошибки.
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: Краткое сообщение об ошибке
+        Errors:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OBError1'
+      additionalProperties: false
+      description: >-
+        Массив подробных кодов ошибок, сообщений и URL-адресов для
+        документирования.
+  responses:
+    200GetAccounts:
+      description: OK
+      headers:
+        x-fapi-interaction-id:
+          style: simple
+          explode: false
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Data:
+                $ref: '#/components/schemas/Accounts'
+              Links:
+                $ref: '#/components/schemas/Link'
+              Meta:
+                $ref: '#/components/schemas/Meta'
+      links:
+        getAccounts:
+          operationId: getAccounts
+          parameters:
+            accountId: |
+              $response.body#/AccountId
+          description: >
+            > Параметр **AccountId** полученный в *response body* может
+            использоваться в следующих API:
+
+            >
+
+            > 1. **GET /accounts/{AccountID}**
+
+            > 2. **GET /accounts/{accountId}/balances**
+
+            > 3. **GET /accounts/{accountId}/transactions/{transactionListId}**
+
+            > 4. **GET /accounts/{accountId}/statements/{statementId}**
+
+            > 5. **POST /statements/{accountId}**
+
+            > 6. **POST /accounts/{accountId}/transactions**
+
+
+            >
+
+            >     $response.body#/AccountId
+    400Error:
+      description: Bad request
+      headers:
+        x-fapi-interaction-id:
+          description: 'RFC4122 UID, используемый в качестве идентификатора корреляции'
+          style: simple
+          explode: false
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OBErrorResponse1'
+    201AccountAccessConsentsCreated:
+      description: Account Access Consents Created
+      headers:
+        x-fapi-interaction-id:
+          description: 'RFC4122 UID, используемый в качестве идентификатора корреляции'
+          style: simple
+          explode: false
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OBReadConsentResponse1Post'
+    401Error:
+      description: Unauthorized
+      headers:
+        x-fapi-interaction-id:
+          description: 'RFC4122 UID, используемый в качестве идентификатора корреляции'
+          style: simple
+          explode: false
+          schema:
+            type: string
+    403Error:
+      description: Forbidden
+      headers:
+        x-fapi-interaction-id:
+          description: 'RFC4122 UID, используемый в качестве идентификатора корреляции'
+          style: simple
+          explode: false
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OBErrorResponse1'
+    404Error:
+      description: Not found
+      headers:
+        x-fapi-interaction-id:
+          description: 'RFC4122 UID, используемый в качестве идентификатора корреляции'
+          style: simple
+          explode: false
+          schema:
+            type: string
+    200AccountAccessConsentsConsentIdRead:
+      description: Account Access Consents Read
+      headers:
+        x-fapi-interaction-id:
+          description: 'RFC4122 UID, используемый в качестве идентификатора корреляции'
+          style: simple
+          explode: false
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OBReadConsentResponse1'
+    405Error:
+      description: Method Not Allowed
+      headers:
+        x-fapi-interaction-id:
+          description: 'RFC4122 UID, используемый в качестве идентификатора корреляции'
+          style: simple
+          explode: false
+          schema:
+            type: string
+    406Error:
+      description: Not Acceptable
+      headers:
+        x-fapi-interaction-id:
+          description: 'RFC4122 UID, используемый в качестве идентификатора корреляции'
+          style: simple
+          explode: false
+          schema:
+            type: string
+    415Error:
+      description: Unsupported Media Type
+      headers:
+        x-fapi-interaction-id:
+          description: 'RFC4122 UID, используемый в качестве идентификатора корреляции'
+          style: simple
+          explode: false
+          schema:
+            type: string
+    204AccountAccessConsentsConsentIdDeleted:
+      description: Account Access Consents Deleted
+      headers:
+        x-fapi-interaction-id:
+          description: 'RFC4122 UID, используемый в качестве идентификатора корреляции'
+          style: simple
+          explode: false
+          schema:
+            type: string
+    429Error:
+      description: Too Many Requests
+      headers:
+        Retry-After:
+          description: Время ожидания в секундах
+          style: simple
+          explode: false
+          schema:
+            type: integer
+        x-fapi-interaction-id:
+          description: 'RFC4122 UID, используемый в качестве идентификатора корреляции'
+          style: simple
+          explode: false
+          schema:
+            type: string
+    500Error:
+      description: Internal Server Error
+      headers:
+        x-fapi-interaction-id:
+          description: 'RFC4122 UID, используемый в качестве идентификатора корреляции'
+          style: simple
+          explode: false
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OBErrorResponse1'
+    200AccountById:
+      description: OK
+      headers:
+        x-fapi-interaction-id:
+          description: 'RFC4122 UID, используемый в качестве идентификатора корреляции'
+          style: simple
+          explode: false
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Data:
+                $ref: '#/components/schemas/Accounts'
+              Links:
+                $ref: '#/components/schemas/Links'
+              Meta:
+                $ref: '#/components/schemas/Meta'
+  parameters:
+    permissions:
+      name: Permissions
+      in: query
+      description: >-
+        Список разрешений к данным Клиента, к которым имеет доступ Пользователь
+        API. Разрешения должны быть запрошены для авторизации на стороне
+        Поставщика API и одобрены Клиентом.
+      required: true
+      style: form
+      explode: false
+      schema:
+        type: array
+        items:
+          type: string
+          description: Указание списка данных для доступа к счетам Клиента.
+          enum:
+            - ReadAccountsBasic
+            - ReadAccountsDetail
+            - ReadBalances
+            - ReadStatementsBasic
+            - ReadStatementsDetail
+            - ReadTransactionsBasic
+            - ReadTransactionsDetail
+            - ReadTransactionsCredits
+            - ReadTransactionsDebits
+    expirationDate:
+      name: ExpirationDate
+      in: query
+      description: |-
+        Дата окончания срока действия согласия
+        Пример:
+        2021-08-17
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+        format: date
+    transactionFromDate:
+      name: TransactionFromDate
+      in: query
+      description: >-
+        Дата начала периода, с которого можно получить транзакции Клиента на
+        стороне Поставщика API. Если он не указан, данные будут возвращены с
+        самой первой из доступных транзакций.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+        format: date
+    transactionToDate:
+      name: TransactionToDate
+      in: query
+      description: >-
+        Дата окончания периода, после которого нельзя получить транзакции
+        Клиента на стороне Поставщика API. Если он не указан, данные будут
+        возвращены до самой последней доступной транзакции.
+
+        Пример:
+
+        2017-04-05
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+        format: date
+    fromBookingDateTime:
+      name: fromBookingDateTime
+      in: query
+      description: Дата и время начала фильтрации списка транзакций.
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+        format: date-time
+    toBookingDateTime:
+      name: toBookingDateTime
+      in: query
+      description: Дата и время окончания фильтрации списка транзакций.
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+        format: date-time
+    transactionListId:
+      name: transactionListId
+      in: path
+      description: Идентификатор списка транзакций
+      required: true
+      style: simple
+      explode: false
+      schema:
+        maxLength: 35
+        minLength: 1
+        type: string
+    accountConsentId:
+      name: accountConsentId
+      in: path
+      description: Идентификатор согласия на предоставление информации по счету
+      required: true
+      style: simple
+      explode: false
+      schema:
+        maxLength: 35
+        minLength: 1
+        type: string
+    accountId:
+      name: accountId
+      in: path
+      description: Идентификатор счета
+      required: true
+      style: simple
+      explode: false
+      schema:
+        maxLength: 35
+        minLength: 1
+        type: string
+    statementId:
+      name: statementId
+      in: path
+      description: Идентификатор выписки
+      required: true
+      style: simple
+      explode: false
+      schema:
+        maxLength: 35
+        minLength: 1
+        type: string
+    fromBookingDate:
+      name: fromBookingDate
+      in: query
+      description: Дата начала выписки
+      required: true
+      style: form
+      explode: false
+      schema:
+        type: string
+        format: date
+    toBookingDate:
+      name: toBookingDate
+      in: query
+      description: Дата окончания выписки
+      required: true
+      style: form
+      explode: false
+      schema:
+        type: string
+        format: date
+    x-fapi-customer-ip-address:
+      name: x-fapi-customer-ip-address
+      in: header
+      description: 'IP-адрес Клиента, если Клиент вошел в систему с помощью TPP'
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+    x-fapi-auth-date:
+      name: x-fapi-auth-date
+      in: header
+      description: >-
+        Время, когда Клиент последний раз входил в систему через TPP. Значение
+        времени предоставляется в формате RFC7231. пример: Sun, 10 Sep 2017
+        19:43:31 UTC
+      required: false
+      style: simple
+      explode: false
+      schema:
+        pattern: >-
+          ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2}
+          (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4}
+          \d{2}:\d{2}:\d{2} (GMT|UTC)$
+        type: string
+    x-fapi-interaction-id:
+      name: x-fapi-interaction-id
+      in: header
+      description: 'RFC4122 UID, используемый в качестве идентификатора корреляции'
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+    x-idempotency-key:
+      name: x-idempotency-key
+      in: header
+      description: >
+        Уникальный идентификатор запроса для поддержки
+        идемпотентности.Используется для решения проблем потери связи и отправки
+        повторного запроса.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        maxLength: 40
+        pattern: ^(?!\s)(.*)(\S)$
+        type: string
+    Authorization:
+      name: authorization
+      in: header
+      description: >-
+        Стандартный заголовок, который позволяет предоставлять учетные данные
+        серверу авторизации и (или) серверу ресурсов в зависимости от типа
+        запрашиваемого ресурса
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+    x-customer-user-agent:
+      name: x-customer-user-agent
+      in: header
+      description: 'Указывается тип устройства (user-agent), который использует Клиент'
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+  securitySchemes:
+    default:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: ''
+          scopes: {}
+x-wso2-auth-header: Authorization
+x-wso2-cors:
+  corsConfigurationEnabled: false
+  accessControlAllowOrigins:
+    - '*'
+  accessControlAllowCredentials: false
+  accessControlAllowHeaders:
+    - authorization
+    - Access-Control-Allow-Origin
+    - Content-Type
+    - SOAPAction
+    - apikey
+    - testKey
+  accessControlAllowMethods:
+    - GET
+    - PUT
+    - POST
+    - DELETE
+    - PATCH
+    - OPTIONS
+x-wso2-production-endpoints:
+  urls:
+    - 'http://localhost:8090'
+  type: http
+x-wso2-sandbox-endpoints:
+  urls:
+    - 'http://localhost:8090'
+  type: http
+x-wso2-basePath: /open-banking/v1.1
+x-wso2-transports:
+  - http
+  - https
+x-wso2-response-cache:
+  enabled: true
+  cacheTimeoutInSeconds: 300

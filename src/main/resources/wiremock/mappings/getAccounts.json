@@ -1,0 +1,13 @@
+{
+	"request": {
+		"method": "GET",
+		"url": "/accounts"
+	},
+	"response" : {
+	"status" : 200,
+	"bodyFileName" : "Accounts/accounts.json",
+	"headers": {
+            "Content-Type": "application/json"
+        }
+		}
+}

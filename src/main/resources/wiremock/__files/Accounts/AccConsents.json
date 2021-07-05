@@ -1,0 +1,28 @@
+{
+   "Data":{
+      "accountConsentId":"3cgfc598-r5gh-9758-b358-587a5479610s",
+      "status":"AwaitingAuthorisation",
+      "statusUpdateDateTime":"2021-04-19T19:43:31+03:00",
+      "creationDateTime":"2021-04-19T19:43:31+03:00",
+      "permissions":[
+         "ReadAccountsDetail",
+         "ReadBalances",
+         "ReadTransactionsCredits",
+         "ReadTransactionsDebits",
+         "ReadTransactionsDetail",
+         "ReadStatementsDetail"
+      ],
+      "expirationDate":"2021-08-17",
+      "transactionFromDate":"2021-04-20",
+      "transactionToDate":"2021-04-22"
+   },
+   "Risk":{
+      
+   },
+   "Links":{
+      "Self":"https://api.bank.by/oapi-channel/open-banking/v1.0/account-consents/3cgfc598-r5gh-9758-b358-587a5479610s"
+   },
+   "Meta":{
+      "TotalPages":1
+   }
+}

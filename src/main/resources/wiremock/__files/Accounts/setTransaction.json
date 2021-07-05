@@ -1,0 +1,18 @@
+{
+  "Data": {
+    "Transaction": [
+    {
+      "transactionListId": "987654321",
+      "accountId": "99365",
+      "fromBookingDateTime": "2021-04-16T09:00:07+03:00",
+      "toBookingDateTime": "2021-04-17T09:00:07+03:00"
+      }
+   ]
+  },
+    "Links": {
+      "Self": "https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/99365/transactions"
+    },
+    "Meta": {
+      "TotalPages": 1
+    }
+}

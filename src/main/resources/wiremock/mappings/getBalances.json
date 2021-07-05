@@ -1,0 +1,13 @@
+{
+	"request": {
+		"method": "GET",
+		"url": "/balances"
+	},
+	"response" : {
+	"status" : 200,
+	"bodyFileName" : "Accounts/getBalances.json",
+	"headers": {
+            "Content-Type": "application/json"
+        }
+		}
+}

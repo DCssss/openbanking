@@ -1,0 +1,13 @@
+{
+	"request": {
+		"method": "GET",
+		 "urlPathPattern": "/accountConsents/([a-z0-9-]*)"
+	},
+	"response" : {
+	"status" : 200,
+	"bodyFileName" : "Accounts/AccConsents.json",
+	"headers": {
+            "Content-Type": "application/json"
+        }
+		}
+}

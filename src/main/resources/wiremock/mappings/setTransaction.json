@@ -1,0 +1,13 @@
+{
+	"request": {
+		"method": "POST",
+		 "urlPathPattern": "/accounts/([a-z0-9-]*)/transactions"
+	},
+	"response" : {
+	"status" : 200,
+	"bodyFileName" : "Accounts/setTransaction.json",
+	"headers": {
+            "Content-Type": "application/json"
+        }
+		}
+}

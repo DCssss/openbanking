@@ -1,0 +1,69 @@
+{
+   "Data":{
+      "Accounts":[
+         {
+            "accountid":"22289",
+            "status":"Pending",
+            "statusUpdateTime":"2021-02-01T06:06:06+03:00",
+            "currency":"BYN",
+            "accountType":"Business",
+            "accountSubType":"CurrentAccount",
+            "creationDataTime":"2021-01-01T00:00:00+03:00",
+            "accountDescription":"Текущий расчетный счет",
+            "accountDetails":{
+               "schemeName":"Схема для осуществления платежа по номеру счета",
+               "identification":"BY01UNBS30120000000000000933",
+               "name":"Текущий расчетный счет",
+               "substatus":"Arrested",
+               "reason":"Арестован согласно Постановления СК"
+            },
+            "servicer":{
+               "name":"ЗАО \"БСБ-Банк\"",
+               "identification":"UNBSBY2X"
+            }
+         },
+         {
+            "accountId":"55559",
+            "status":"Enabled",
+            "statusUpdateDateTime":"2021-04-18T06:06:06+03:00",
+            "currency":"USD",
+            "accountType":"Personal",
+            "accountSubType":"Savings",
+            "creationDateTime":"2021-01-09T03:06:12+03:00",
+            "accountDetails":{
+               "schemeName":"BY.NBRB.IBAN",
+               "identification":"BY22BPSB3014F000000001234567",
+               "name":"Карт-счет в долларах США"
+            },
+            "servicer":{
+               "name":"ОАО \"БПС-Сбербанк\"",
+               "identification":"BPSBBY2X"
+            }
+         },
+         {
+            "accountId":"31820",
+            "status":"Enabled",
+            "statusUpdateDateTime":"2021-04-15T06:16:06+03:00",
+            "currency":"BYN",
+            "accountType":"Business",
+            "accountSubType":"CurrentAccount",
+            "creationDateTime":"2020-01-30T03:06:12+03:00",
+            "accountDetails":{
+               "schemeName":"BY.NBRB.IBAN",
+               "identification":"BY11AKBB30129874500001234568",
+               "name":"Текущий счет-онлайн в белорусских рублях"
+            },
+            "servicer":{
+               "name":"АСБ \"Беларусбанк\"",
+               "identification":"AKBBBY2X"
+            }
+         }
+      ]
+   },
+   "Links":{
+      "self":"https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/"
+   },
+   "Meta":{
+      "total_pages":1
+   }
+}

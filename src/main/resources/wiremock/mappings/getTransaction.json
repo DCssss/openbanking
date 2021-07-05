@@ -1,0 +1,13 @@
+{
+	"request": {
+		"method": "GET",
+		"urlPathPattern": "/accounts/([a-z0-9-]*)/transactions/([a-z0-9-]*)"
+	},
+	"response" : {
+	"status" : 200,
+	"bodyFileName" : "Accounts/getTransaction.json",
+	"headers": {
+            "Content-Type": "application/json"
+        }
+		}
+}

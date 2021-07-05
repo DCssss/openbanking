@@ -1,0 +1,69 @@
+{
+   "Data":{
+      "Statement":[
+         {
+            "accountId":"32165",
+            "statementId":"8sfhke-sifhkeuf-97813",
+            "fromBookingDate":"2021-04-16",
+            "toBookingDate":"2021-04-17",
+            "creationDateTime":"2021-04-19T09:03:00+03:00",
+            "transaction":[
+               {
+                  "transactionId":"123456789",
+                  "creditDebitIndicator":"Credit",
+                  "status":"BOOK",
+                  "number":"2256987",
+                  "bookingDateTime":"2021-04-16T09:03:00+03:00",
+                  "valueDate":"2021-08-16",
+                  "amount":"600.00",
+                  "currency":"BYN",
+                  "debtor":[
+                     {
+                        "taxIdentification":"INN200025739",
+                        "name":"ОАО Березовский мясокомбинат",
+                        "debtorAccount":[
+                           {
+                              "schemeName":"BY.NBRB.IBAN",
+                              "identification":"BY28BAPB30124232900110000000",
+                              "name":"Текущий расчетный счет"
+                           }
+                        ],
+                        "debtorAgent":[
+                           {
+                              "name":"ОАО Белагропромбанк",
+                              "identification":"BAPBBY2X"
+                           }
+                        ],
+                        "creditor":[
+                           {
+                              "taxIdentification":"INN123456789",
+                              "name":"ОАО Борисовхлебпром",
+                              "creditorAccount":[
+                                 {
+                                    "schemeName":"BY.NBRB.IBAN",
+                                    "identification":"BY10BAPB30123164200100000000",
+                                    "name":"Текущий расчетный  счет"
+                                 }
+                              ],
+                              "creditorAgent":[
+                                 {
+                                    "name":"ОАО Белагропромбанк",
+                                    "identification":"BAPBBY2X"
+                                 }
+                              ]
+                           }
+                        ]
+                     }
+                  ]
+               }
+            ],
+            "Links":{
+               "Self":"https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/32165/statements/8sfhke-sifhkeuf-97813"
+            },
+            "Meta":{
+               "TotalPages":1
+            }
+         }
+      ]
+   }
+}

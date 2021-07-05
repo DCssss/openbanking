@@ -1,0 +1,13 @@
+{
+	"request": {
+		"method": "DELETE",
+		 "urlPathPattern": "/accountConsents/([a-z0-9-]*)"
+	},
+	"response" : {
+	"status" : 200,
+	"body" : "Account Access Consents Deleted",
+	"headers": {
+            "Content-Type": "text/plain"
+        }
+		}
+}
