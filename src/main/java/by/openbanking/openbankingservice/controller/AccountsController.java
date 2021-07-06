@@ -3,6 +3,9 @@ package by.openbanking.openbankingservice.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import by.openbanking.openbankingservice.model.AccountsOutModel;
+import by.openbanking.openbankingservice.model.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,26 +24,37 @@ public class AccountsController {
     AccountsRepository accountsRepository;
 
     @GetMapping("/accounts")
-    public ResponseEntity<List<Accounts>> getAccounts() {
+    public ResponseEntity<AccountsOutModel> getAccounts() {
         try {
+            AccountsOutModel outModel = new AccountsOutModel();
             List<Accounts> acc = new ArrayList<Accounts>();
             accountsRepository.findAll().forEach(acc::add);
+            AccountsOutModel.Data data = new AccountsOutModel.Data();
+            data.setAccounts(acc);
+            outModel.setData(data);
 
             if (acc.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity<>(acc, HttpStatus.OK);
+            return new ResponseEntity<>(outModel, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/accounts/{accountId}")
-    public ResponseEntity<Accounts> getAccByAccountId(@PathVariable("accountId") long id) {
-       Optional<Accounts> accData = accountsRepository.findById(id);
+    public ResponseEntity<AccountsOutModel> getAccByAccountId(@PathVariable("accountId") long id) {
+
+        List<Accounts> acc = new ArrayList<Accounts>();
+        Optional<Accounts> accData = accountsRepository.findById(id);
+        acc.add(accData.get());
+        AccountsOutModel outModel = new AccountsOutModel();
+        AccountsOutModel.Data data = new AccountsOutModel.Data();
+        data.setAccounts(acc);
+        outModel.setData(data);
 
         if (accData.isPresent()) {
-            return new ResponseEntity<>(accData.get(), HttpStatus.OK);
+            return new ResponseEntity<>(outModel, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -1,6 +1,7 @@
 package by.openbanking.openbankingservice.repository;
 
 import by.openbanking.openbankingservice.model.Accounts;
+import by.openbanking.openbankingservice.model.AccountsOutModel;
 import io.swagger.annotations.Api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +18,12 @@ public interface AccountsApi {
             produces = {"application/json"},
             method = {RequestMethod.GET}
     )
-    ResponseEntity<Accounts> getAccByAccountId(@PathVariable("accountId") long accountId);
+    ResponseEntity<AccountsOutModel> getAccByAccountId(@PathVariable("accountId") long accountId);
 
     @RequestMapping(
             value = {"/accounts"},
             produces = {"application/json"},
             method = {RequestMethod.GET}
     )
-    ResponseEntity<List<Accounts>> getAccounts(@RequestParam(required = false) String title);
+    ResponseEntity<AccountsOutModel> getAccounts(@RequestParam(required = false) String title);
 }
