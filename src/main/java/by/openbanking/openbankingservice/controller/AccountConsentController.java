@@ -67,6 +67,7 @@ public class AccountConsentController implements AccountConsentsApi {
 
 
             HttpHeaders header = new HttpHeaders();
+
             header.add("header1",accountConsents.getAccountConsentId());
 
             return new ResponseEntity<>(accountConsents, header, HttpStatus.CREATED);
