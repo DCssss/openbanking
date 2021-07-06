@@ -24,14 +24,14 @@ public class AccountsOutModel {
 
     public static final class Data{
 
-        List<Accounts> accounts = new ArrayList<>();
+        List<OBAccounts> accounts = new ArrayList<>();
 
         @JsonProperty("Accounts")
-        public List<Accounts> getAccounts() {
+        public List<OBAccounts> getAccounts() {
             return accounts;
         }
 
-        public void setAccounts(List<Accounts> accounts) {
+        public void setAccounts(List<OBAccounts> accounts) {
             this.accounts = accounts;
         }
     }

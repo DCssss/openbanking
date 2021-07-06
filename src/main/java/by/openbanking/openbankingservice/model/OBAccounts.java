@@ -6,7 +6,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "OBAccounts")
-public class Accounts {
+public class OBAccounts {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -46,7 +46,7 @@ public class Accounts {
     @Column(name = "accountIdentification")
     private String accountIdentification;
 
-    public Accounts() {
+    public OBAccounts() {
     }
 
     public long getAccountId() {
@@ -148,9 +148,9 @@ public class Accounts {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Accounts)) return false;
-        Accounts accounts = (Accounts) o;
-        return getAccountId() == accounts.getAccountId() && getClientId() == accounts.getClientId() && Double.compare(accounts.getAccountBalanceAmount(), getAccountBalanceAmount()) == 0 && Objects.equals(getAccountStatus(), accounts.getAccountStatus()) && Objects.equals(getAccountStatusUpdateTime(), accounts.getAccountStatusUpdateTime()) && Objects.equals(getAccountCurrency(), accounts.getAccountCurrency()) && Objects.equals(getAccountCreationTime(), accounts.getAccountCreationTime()) && Objects.equals(getAccountDescription(), accounts.getAccountDescription()) && Objects.equals(getAccountName(), accounts.getAccountName()) && Objects.equals(getAccountType(), accounts.getAccountType()) && Objects.equals(getAccountSubType(), accounts.getAccountSubType()) && getAccountIdentification().equals(accounts.getAccountIdentification());
+        if (!(o instanceof OBAccounts)) return false;
+        OBAccounts OBAccounts = (OBAccounts) o;
+        return getAccountId() == OBAccounts.getAccountId() && getClientId() == OBAccounts.getClientId() && Double.compare(OBAccounts.getAccountBalanceAmount(), getAccountBalanceAmount()) == 0 && Objects.equals(getAccountStatus(), OBAccounts.getAccountStatus()) && Objects.equals(getAccountStatusUpdateTime(), OBAccounts.getAccountStatusUpdateTime()) && Objects.equals(getAccountCurrency(), OBAccounts.getAccountCurrency()) && Objects.equals(getAccountCreationTime(), OBAccounts.getAccountCreationTime()) && Objects.equals(getAccountDescription(), OBAccounts.getAccountDescription()) && Objects.equals(getAccountName(), OBAccounts.getAccountName()) && Objects.equals(getAccountType(), OBAccounts.getAccountType()) && Objects.equals(getAccountSubType(), OBAccounts.getAccountSubType()) && getAccountIdentification().equals(OBAccounts.getAccountIdentification());
     }
 
     @Override
