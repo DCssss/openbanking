@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import by.openbanking.openbankingservice.model.Permissions;
+import by.openbanking.openbankingservice.model.AccountConsentsInputModel;
 import by.openbanking.openbankingservice.models.OBReadConsent1;
 import by.openbanking.openbankingservice.models.OBReadConsent1Data;
 import by.openbanking.openbankingservice.models.OBReadConsentResponse1Post;
@@ -60,19 +60,16 @@ public class AccountConsentController implements AccountConsentsApi {
     }
     //вручную написанный контроллер
     @Override
-    public ResponseEntity<AccountConsents> createAccConsents(@RequestBody AccountConsents accConsents) {
+    public ResponseEntity<AccountConsents> createAccConsents(@RequestBody AccountConsentsInputModel accConsents) {
         try {
-            int clientId = accConsents.getClientId();
-            List<String> permissions = new ArrayList<>();
+            AccountConsents accountConsents = AccountConsents.valueOf(accConsents);
+            accountConsentsRepository.save(accountConsents);
 
-            String accConsentId = accConsents.getAccountConsentId();
 
             HttpHeaders header = new HttpHeaders();
-            header.add("header1",accConsents.getAccountConsentId());
+            header.add("header1",accountConsents.getAccountConsentId());
 
-            AccountConsents _accConsents = accountConsentsRepository
-                    .save(new AccountConsents(accConsentId,clientId));
-            return new ResponseEntity<>(_accConsents, header, HttpStatus.CREATED);
+            return new ResponseEntity<>(accountConsents, header, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

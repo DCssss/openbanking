@@ -2,6 +2,7 @@ package by.openbanking.openbankingservice.model;
 
 import by.openbanking.openbankingservice.models.OBReadConsent1Data;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.threeten.bp.ZoneId;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -32,7 +33,7 @@ public class AccountConsents {
     private Date transactionFromDate;
 
     @Column(name = "transactionToDate")
-    private Date  transactionToDate;
+    private Date transactionToDate;
 
     @Column(name = "statusUpdateDateTime")
     private SimpleDateFormat statusUpdateDateTime;
@@ -72,6 +73,45 @@ public class AccountConsents {
 
     @Column(name = "readTransactionsDebits")
     private int readTransactionsDebits;
+
+    public static AccountConsents valueOf(AccountConsentsInputModel model) {
+        AccountConsents accountConsents = new AccountConsents();
+        for (OBReadConsent1Data.PermissionsEnum permissionsEnum : model.Data.Permissions) {
+            switch (permissionsEnum) {
+                case READACCOUNTSBASIC:
+                    accountConsents.setReadAccountsBasic(1);
+                    break;
+                case READACCOUNTSDETAIL:
+                    accountConsents.setReadAccountsDetail(1);
+                    break;
+                case READBALANCES:
+                    accountConsents.setReadBalances(1);
+                    break;
+                case READSTATEMENTSDETAIL:
+                    accountConsents.setReadStatementsDetail(1);
+                    break;
+                case READSTATEMENTSBASIC:
+                    accountConsents.setReadStatementsBasic(1);
+                    break;
+                case READTRANSACTIONSBASIC:
+                    accountConsents.setReadTransactionsBasic(1);
+                    break;
+                case READTRANSACTIONSDETAIL:
+                    accountConsents.setReadTransactionsDetail(1);
+                    break;
+                case READTRANSACTIONSCREDITS:
+                    accountConsents.setReadTransactionsCredits(1);
+                    break;
+                case READTRANSACTIONSDEBITS:
+                    accountConsents.setReadTransactionsDebits(1);
+                    break;
+            }
+        }
+        accountConsents.setExpirationDate(new Date(model.Data.ExpirationDate.getTime()));
+        accountConsents.setTransactionFromDate(new Date(model.Data.TransactionFromDate.getTime()));
+        accountConsents.setTransactionToDate(new Date(model.Data.TransactionToDate.getTime()));
+        return accountConsents;
+    }
 
     public long getId() {
         return id;

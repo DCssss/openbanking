@@ -1,6 +1,8 @@
 package by.openbanking.openbankingservice.repository;
 
 import by.openbanking.openbankingservice.model.AccountConsents;
+import by.openbanking.openbankingservice.model.AccountConsentsInputModel;
+import by.openbanking.openbankingservice.models.OBReadConsent1Data;
 import io.swagger.annotations.Api;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -31,7 +33,7 @@ public interface AccountConsentsApi {
             produces = {"application/json"},
             method = {RequestMethod.POST}
     )
-    ResponseEntity<AccountConsents> createAccConsents(@RequestBody AccountConsents accConsents);
+    ResponseEntity<AccountConsents> createAccConsents(@RequestBody AccountConsentsInputModel accConsents);
 
     @RequestMapping(
             value = {"/accountConsents/{accountConsentId}"},
