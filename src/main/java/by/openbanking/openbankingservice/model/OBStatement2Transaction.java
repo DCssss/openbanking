@@ -8,7 +8,7 @@ import java.util.Objects;
 public class OBStatement2Transaction {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "Id")
     private long id;
 

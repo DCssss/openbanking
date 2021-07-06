@@ -9,7 +9,7 @@ import java.util.Objects;
 public class OBBanks {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "BankId")
     private long bankId;
 

@@ -8,7 +8,7 @@ import java.util.Objects;
 public class OBAccountConsent2Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "Id")
     private long id;
 

@@ -8,7 +8,7 @@ import java.util.Objects;
 public class OBFintech {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "FintechId")
     private long fintechId;
 

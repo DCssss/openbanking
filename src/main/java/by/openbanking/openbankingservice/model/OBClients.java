@@ -8,7 +8,7 @@ import java.util.Objects;
 public class OBClients {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "ClientId")
     private long clientId;
 
