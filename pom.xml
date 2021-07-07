@@ -186,6 +186,7 @@
                             <modelPackage>by.openbanking.openbankingservice.models</modelPackage>
                             <configOptions>
                                 <interfaceOnly>true</interfaceOnly>
+                                <dateLibrary>legacy</dateLibrary>
                             </configOptions>
                         </configuration>
                     </execution>

@@ -1,6 +1,9 @@
 package by.openbanking.openbankingservice.model;
 
+import by.openbanking.openbankingservice.models.OBReadConsent1;
 import by.openbanking.openbankingservice.models.OBReadConsent1Data;
+import by.openbanking.openbankingservice.models.OBReadConsentResponse1Data;
+import by.openbanking.openbankingservice.models.OBReadConsentResponse1PostData;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.threeten.bp.ZoneId;
 
@@ -10,313 +13,267 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Entity
-@Table(name = "accountConsents")
-public class AccountConsents {
+@Table(name = "OB_ACCOUNT_CONSENTS")
+public final class AccountConsents {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    @Column(name = "ID")
+    private long accountConsentId;
 
-    @Column(name = "accountConsentId")
-    private String accountConsentId;
+    @Column(name = "STATUS")
+    private String accountConsentStatus;
 
-    @Column(name = "status")
-    private String status;
+    @Column(name = "CREATION_TIME")
+    private Date creationTime;
 
-    @Column(name = "creationDateTime")
-    private SimpleDateFormat creationDateTime;
-
-    @Column(name = "expirationDate")
+    @Column(name = "EXPIRATION_DATE")
     private Date expirationDate;
 
-    @Column(name = "transactionFromDate")
+    @Column(name = "TRANSACTION_FROM_DATE")
     private Date transactionFromDate;
 
-    @Column(name = "transactionToDate")
+    @Column(name = "TRANSACTION_TO_DATE")
     private Date transactionToDate;
 
-    @Column(name = "statusUpdateDateTime")
-    private SimpleDateFormat statusUpdateDateTime;
+    @Column(name = "STATUS_UPDATE_TIME")
+    private Date statusUpdateTime;
 
-    @Column(name = "finTechId")
-    private int finTechId;
+    @Column(name = "FINTECH_ID")
+    private Long fintechId;
 
-    @Column(name = "clientId")
-    private int clientId;
+    @Column(name = "CLIENT_ID")
+    private Long clientId;
 
-    @Column(name = "apiKey")
-    private String apiKey;
-
-    @Column(name = "readAccountsBasic")
+    @Column(name = "READ_ACCOUNTS_BASIC")
     private int readAccountsBasic;
 
-    @Column(name = "readAccountsDetail")
+    @Column(name = "READ_ACCOUNTS_DETAIL")
     private int readAccountsDetail;
 
-    @Column(name = "readBalances")
+    @Column(name = "READ_BALANCES")
     private int readBalances;
 
-    @Column(name = "readStatementsDetail")
-    private int readStatementsDetail;
-
-    @Column(name = "readStatementsBasic")
+    @Column(name = "READ_STATEMENTS_BASIC")
     private int readStatementsBasic;
 
-    @Column(name = "readTransactionsDetail")
-    private int readTransactionsDetail;
+    @Column(name = "READ_STATEMENTS_DETAIL")
+    private int readStatementsDetail;
 
-    @Column(name = "readTransactionsBasic")
+    @Column(name = "READ_TRANSACTION_BASIC")
     private int readTransactionsBasic;
 
-    @Column(name = "readTransactionsCredits")
+    @Column(name = "READ_TRANSACTION_DETAIL")
+    private int readTransactionsDetail;
+
+    @Column(name = "READ_TRANSACTION_CREDITS")
     private int readTransactionsCredits;
 
-    @Column(name = "readTransactionsDebits")
+    @Column(name = "READ_TRANSACTION_DEBITS")
     private int readTransactionsDebits;
 
-    public static AccountConsents valueOf(AccountConsentsInputModel model) {
+    public static AccountConsents valueOf(OBReadConsent1Data model) {
         AccountConsents accountConsents = new AccountConsents();
-        for (OBReadConsent1Data.PermissionsEnum permissionsEnum : model.Data.Permissions) {
+        for (OBReadConsent1Data.PermissionsEnum permissionsEnum : model.getPermissions()) {
             switch (permissionsEnum) {
                 case READACCOUNTSBASIC:
-                    accountConsents.setReadAccountsBasic(1);
+                    accountConsents.readAccountsBasic = 1;
                     break;
                 case READACCOUNTSDETAIL:
-                    accountConsents.setReadAccountsDetail(1);
+                    accountConsents.readAccountsDetail = 1;
                     break;
                 case READBALANCES:
-                    accountConsents.setReadBalances(1);
+                    accountConsents.readBalances = 1;
                     break;
                 case READSTATEMENTSDETAIL:
-                    accountConsents.setReadStatementsDetail(1);
+                    accountConsents.readStatementsDetail = 1;
                     break;
                 case READSTATEMENTSBASIC:
-                    accountConsents.setReadStatementsBasic(1);
+                    accountConsents.readStatementsBasic = 1;
                     break;
                 case READTRANSACTIONSBASIC:
-                    accountConsents.setReadTransactionsBasic(1);
+                    accountConsents.readTransactionsBasic = 1;
                     break;
                 case READTRANSACTIONSDETAIL:
-                    accountConsents.setReadTransactionsDetail(1);
+                    accountConsents.readTransactionsDetail = 1;
                     break;
                 case READTRANSACTIONSCREDITS:
-                    accountConsents.setReadTransactionsCredits(1);
+                    accountConsents.readTransactionsCredits = 1;
                     break;
                 case READTRANSACTIONSDEBITS:
-                    accountConsents.setReadTransactionsDebits(1);
+                    accountConsents.readTransactionsDebits = 1;
                     break;
             }
         }
-        accountConsents.setExpirationDate(new Date(model.Data.ExpirationDate.getTime()));
-        accountConsents.setTransactionFromDate(new Date(model.Data.TransactionFromDate.getTime()));
-        accountConsents.setTransactionToDate(new Date(model.Data.TransactionToDate.getTime()));
+        accountConsents.expirationDate = new Date(model.getExpirationDate().getTime());
+        accountConsents.transactionFromDate = new Date(model.getTransactionFromDate().getTime());
+        accountConsents.transactionToDate = new Date(model.getTransactionToDate().getTime());
         return accountConsents;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getAccountConsentId() {
+    public Long getAccountConsentId() {
         return accountConsentId;
     }
 
-    public void setAccountConsentId(String accountConsentId) {
-        this.accountConsentId = accountConsentId;
+    public String getAccountConsentStatus() {
+        return accountConsentStatus;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public SimpleDateFormat getCreationDateTime() {
-        return creationDateTime;
-    }
-
-    public void setCreationDateTime(SimpleDateFormat creationDateTime) {
-        this.creationDateTime = creationDateTime;
+    public Date getCreationTime() {
+        return creationTime;
     }
 
     public Date getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(Date expirationDate) {
-        this.expirationDate = expirationDate;
-    }
-
     public Date getTransactionFromDate() {
         return transactionFromDate;
-    }
-
-    public void setTransactionFromDate(Date transactionFromDate) {
-        this.transactionFromDate = transactionFromDate;
     }
 
     public Date getTransactionToDate() {
         return transactionToDate;
     }
 
-    public void setTransactionToDate(Date transactionToDate) {
-        this.transactionToDate = transactionToDate;
+    public Date getStatusUpdateTime() {
+        return statusUpdateTime;
     }
 
-    public SimpleDateFormat getStatusUpdateDateTime() {
-        return statusUpdateDateTime;
+    public Long getFintechId() {
+        return fintechId;
     }
 
-    public void setStatusUpdateDateTime(SimpleDateFormat statusUpdateDateTime) {
-        this.statusUpdateDateTime = statusUpdateDateTime;
-    }
-
-    public int getFinTechId() {
-        return finTechId;
-    }
-
-    public void setFinTechId(int finTechId) {
-        this.finTechId = finTechId;
-    }
-
-    public int getClientId() {
+    public Long getClientId() {
         return clientId;
-    }
-
-    public void setClientId(int clientId) {
-        this.clientId = clientId;
-    }
-
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
     }
 
     public int getReadAccountsBasic() {
         return readAccountsBasic;
     }
 
-    public void setReadAccountsBasic(int readAccountsBasic) {
-        this.readAccountsBasic = readAccountsBasic;
-    }
-
     public int getReadAccountsDetail() {
         return readAccountsDetail;
-    }
-
-    public void setReadAccountsDetail(int readAccountsDetail) {
-        this.readAccountsDetail = readAccountsDetail;
     }
 
     public int getReadBalances() {
         return readBalances;
     }
 
-    public void setReadBalances(int readBalances) {
-        this.readBalances = readBalances;
+    public int getReadStatementsBasic() {
+        return readStatementsBasic;
     }
 
     public int getReadStatementsDetail() {
         return readStatementsDetail;
     }
 
-    public void setReadStatementsDetail(int readStatementsDetail) {
-        this.readStatementsDetail = readStatementsDetail;
-    }
-
-    public int getReadStatementsBasic() {
-        return readStatementsBasic;
-    }
-
-    public void setReadStatementsBasic(int readStatementsBasic) {
-        this.readStatementsBasic = readStatementsBasic;
+    public int getReadTransactionsBasic() {
+        return readTransactionsBasic;
     }
 
     public int getReadTransactionsDetail() {
         return readTransactionsDetail;
     }
 
-    public void setReadTransactionsDetail(int readTransactionsDetail) {
-        this.readTransactionsDetail = readTransactionsDetail;
-    }
-
-    public int getReadTransactionsBasic() {
-        return readTransactionsBasic;
-    }
-
-    public void setReadTransactionsBasic(int readTransactionsBasic) {
-        this.readTransactionsBasic = readTransactionsBasic;
-    }
-
     public int getReadTransactionsCredits() {
         return readTransactionsCredits;
-    }
-
-    public void setReadTransactionsCredits(int readTransactionsCredits) {
-        this.readTransactionsCredits = readTransactionsCredits;
     }
 
     public int getReadTransactionsDebits() {
         return readTransactionsDebits;
     }
 
-    public void setReadTransactionsDebits(int readTransactionsDebits) {
-        this.readTransactionsDebits = readTransactionsDebits;
+    public void setAccountConsentStatus(final String accountConsentStatus) {
+        this.accountConsentStatus = accountConsentStatus;
     }
 
-    public AccountConsents() {
+    public void setCreationTime(final Date creationTime) {
+        this.creationTime = creationTime;
     }
 
-    public AccountConsents(String accountConsentId, int clientId) {
-        this.accountConsentId = accountConsentId;
-        this.clientId = clientId;
+    public void setStatusUpdateTime(final Date statusUpdateTime) {
+        this.statusUpdateTime = statusUpdateTime;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AccountConsents)) return false;
-        AccountConsents that = (AccountConsents) o;
-        return getId() == that.getId() && getFinTechId() == that.getFinTechId() && getClientId() == that.getClientId() && getReadAccountsBasic() == that.getReadAccountsBasic() && getReadAccountsDetail() == that.getReadAccountsDetail() && getReadBalances() == that.getReadBalances() && getReadStatementsDetail() == that.getReadStatementsDetail() && getReadStatementsBasic() == that.getReadStatementsBasic() && getReadTransactionsDetail() == that.getReadTransactionsDetail() && getReadTransactionsBasic() == that.getReadTransactionsBasic() && getReadTransactionsCredits() == that.getReadTransactionsCredits() && getReadTransactionsDebits() == that.getReadTransactionsDebits() && getAccountConsentId().equals(that.getAccountConsentId()) && Objects.equals(getStatus(), that.getStatus()) && Objects.equals(getCreationDateTime(), that.getCreationDateTime()) && Objects.equals(getExpirationDate(), that.getExpirationDate()) && Objects.equals(getTransactionFromDate(), that.getTransactionFromDate()) && Objects.equals(getTransactionToDate(), that.getTransactionToDate()) && Objects.equals(getStatusUpdateDateTime(), that.getStatusUpdateDateTime()) && Objects.equals(getApiKey(), that.getApiKey());
+    public OBReadConsentResponse1Data toOBReadConsentResponse1Data() {
+        final OBReadConsentResponse1Data responseData = new OBReadConsentResponse1Data();
+        responseData.setAccountConsentId(String.valueOf(accountConsentId));
+        responseData.setStatus(OBReadConsentResponse1Data.StatusEnum.fromValue(accountConsentStatus));
+        responseData.setCreationDateTime(creationTime);
+        responseData.setStatusUpdateDateTime(statusUpdateTime);
+        responseData.setExpirationDate(expirationDate);
+        responseData.setTransactionFromDate(transactionFromDate);
+        responseData.setTransactionToDate(transactionToDate);
+        final List<OBReadConsentResponse1Data.PermissionsEnum> permissions = new ArrayList<>();
+        if (readAccountsBasic == 1) {
+            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READACCOUNTSBASIC);
+        }
+        if (readAccountsDetail == 1) {
+            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READACCOUNTSDETAIL);
+        }
+        if (readBalances == 1) {
+            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READBALANCES);
+        }
+        if (readStatementsBasic == 1) {
+            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READSTATEMENTSBASIC);
+        }
+        if (readStatementsDetail == 1) {
+            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READSTATEMENTSDETAIL);
+        }
+        if (readTransactionsBasic == 1) {
+            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READTRANSACTIONSBASIC);
+        }
+        if (readTransactionsDetail == 1) {
+            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READTRANSACTIONSDETAIL);
+        }
+        if (readTransactionsCredits == 1) {
+            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READTRANSACTIONSCREDITS);
+        }
+        if (readTransactionsDebits == 1) {
+            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READTRANSACTIONSDEBITS);
+        }
+        responseData.setPermissions(permissions);
+        return responseData;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getAccountConsentId(), getStatus(), getCreationDateTime(), getExpirationDate(), getTransactionFromDate(), getTransactionToDate(), getStatusUpdateDateTime(), getFinTechId(), getClientId(), getApiKey(), getReadAccountsBasic(), getReadAccountsDetail(), getReadBalances(), getReadStatementsDetail(), getReadStatementsBasic(), getReadTransactionsDetail(), getReadTransactionsBasic(), getReadTransactionsCredits(), getReadTransactionsDebits());
-    }
-
-    @Override
-    public String toString() {
-        return "AccountConsents{" +
-                "id=" + id +
-                ", accountConsentId='" + accountConsentId + '\'' +
-                ", status='" + status + '\'' +
-                ", creationDateTime=" + creationDateTime +
-                ", expirationDate=" + expirationDate +
-                ", transactionFromDate=" + transactionFromDate +
-                ", transactionToDate=" + transactionToDate +
-                ", statusUpdateDateTime=" + statusUpdateDateTime +
-                ", finTechId=" + finTechId +
-                ", clientId=" + clientId +
-                ", apiKey='" + apiKey + '\'' +
-                ", readAccountsBasic=" + readAccountsBasic +
-                ", readAccountsDetail=" + readAccountsDetail +
-                ", readBalances=" + readBalances +
-                ", readStatementsDetail=" + readStatementsDetail +
-                ", readStatementsBasic=" + readStatementsBasic +
-                ", readTransactionsDetail=" + readTransactionsDetail +
-                ", readTransactionsBasic=" + readTransactionsBasic +
-                ", readTransactionsCredits=" + readTransactionsCredits +
-                ", readTransactionsDebits=" + readTransactionsDebits +
-                '}';
+    public OBReadConsentResponse1PostData toOBReadConsentResponsePost1Data() {
+        final OBReadConsentResponse1PostData responseData = new OBReadConsentResponse1PostData();
+        responseData.setAccountConsentId(String.valueOf(accountConsentId));
+        responseData.setStatus(OBReadConsentResponse1PostData.StatusEnum.fromValue(accountConsentStatus));
+        responseData.setCreationDateTime(creationTime);
+        responseData.setStatusUpdateDateTime(statusUpdateTime);
+        responseData.setExpirationDate(expirationDate);
+        responseData.setTransactionFromDate(transactionFromDate);
+        responseData.setTransactionToDate(transactionToDate);
+        final List<OBReadConsentResponse1PostData.PermissionsEnum> permissions = new ArrayList<>();
+        if (readAccountsBasic == 1) {
+            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READACCOUNTSBASIC);
+        }
+        if (readAccountsDetail == 1) {
+            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READACCOUNTSDETAIL);
+        }
+        if (readBalances == 1) {
+            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READBALANCES);
+        }
+        if (readStatementsBasic == 1) {
+            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READSTATEMENTSBASIC);
+        }
+        if (readStatementsDetail == 1) {
+            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READSTATEMENTSDETAIL);
+        }
+        if (readTransactionsBasic == 1) {
+            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READTRANSACTIONSBASIC);
+        }
+        if (readTransactionsDetail == 1) {
+            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READTRANSACTIONSDETAIL);
+        }
+        if (readTransactionsCredits == 1) {
+            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READTRANSACTIONSCREDITS);
+        }
+        if (readTransactionsDebits == 1) {
+            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READTRANSACTIONSDEBITS);
+        }
+        responseData.setPermissions(permissions);
+        return responseData;
     }
 }
