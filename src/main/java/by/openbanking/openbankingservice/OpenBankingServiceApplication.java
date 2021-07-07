@@ -1,10 +1,8 @@
 package by.openbanking.openbankingservice;
 
 import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.annotation.Bean;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -16,10 +14,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableSwagger2
 @SpringBootApplication
-public class OpenbankingServiceApplication {
+public class OpenBankingServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(OpenbankingServiceApplication.class, args);
+        SpringApplication.run(OpenBankingServiceApplication.class, args);
     }
 
         @Bean

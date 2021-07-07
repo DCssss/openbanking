@@ -1,102 +1,113 @@
 package by.openbanking.openbankingservice.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import by.openbanking.openbankingservice.model.AccountConsentsInputModel;
+import by.openbanking.openbankingservice.api.AccountConsentsApi;
+import by.openbanking.openbankingservice.model.AccountConsents;
 import by.openbanking.openbankingservice.models.OBReadConsent1;
-import by.openbanking.openbankingservice.models.OBReadConsent1Data;
+import by.openbanking.openbankingservice.models.OBReadConsentResponse1;
+import by.openbanking.openbankingservice.models.OBReadConsentResponse1Data;
 import by.openbanking.openbankingservice.models.OBReadConsentResponse1Post;
-import by.openbanking.openbankingservice.repository.AccountConsentsApi;
 import by.openbanking.openbankingservice.repository.AccountConsentsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import by.openbanking.openbankingservice.model.AccountConsents;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
+import java.util.Date;
+import java.util.Optional;
 
 
 @RestController
-@RequestMapping("")
-public class AccountConsentController implements AccountConsentsApi {
+public final class AccountConsentController implements AccountConsentsApi {
+
+    private static final String X_FAPI_INTERACTION_ID = "x-fapi-interaction-id";
+
+    private final AccountConsentsRepository accountConsentsRepository;
 
     @Autowired
-    AccountConsentsRepository  accountConsentsRepository;
-
-    @Override
-    public ResponseEntity<AccountConsents> getAccConsentById(@PathVariable("accountConsentId") long accountConsentId) {
-        Optional<AccountConsents> accountConsentsData = accountConsentsRepository.findById(accountConsentId);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("header1","Test232222qw234dsfgd");
-        if (accountConsentsData.isPresent()) {
-            return new ResponseEntity<>(accountConsentsData.get(), headers, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public AccountConsentController(AccountConsentsRepository repository) {
+        this.accountConsentsRepository = repository;
     }
-    //вручную написанный контроллер
+
     @Override
-    public ResponseEntity<List<AccountConsents>> getAllAccConsents(@RequestParam(required = false) String accountConsentId) {
+    public ResponseEntity<OBReadConsentResponse1Post> createAccountAccessConsents(
+            @Valid final OBReadConsent1 body,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization
+    ) {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        ResponseEntity<OBReadConsentResponse1Post> response;
         try {
-            List<AccountConsents> accConsents = new ArrayList<AccountConsents>();
+            final AccountConsents accountConsents = AccountConsents.valueOf(body.getData());
+            accountConsents.setAccountConsentStatus(OBReadConsentResponse1Data.StatusEnum.AUTHORISED.toString());
 
-            if (accountConsentId == null)
-                accountConsentsRepository.findAll().forEach(accConsents::add);
-            else
-                accountConsentsRepository.findByAccountConsentIdContaining(accountConsentId).forEach(accConsents::add);
-
-            if (accConsents.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-
-            return new ResponseEntity<>(accConsents, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    //вручную написанный контроллер
-    @Override
-    public ResponseEntity<AccountConsents> createAccConsents(@RequestBody AccountConsentsInputModel accConsents) {
-        try {
-            AccountConsents accountConsents = AccountConsents.valueOf(accConsents);
+            final Date now = new Date();
+            accountConsents.setStatusUpdateTime(now);
+            accountConsents.setCreationTime(now);
             accountConsentsRepository.save(accountConsents);
 
+            final OBReadConsentResponse1Post responseContent = new OBReadConsentResponse1Post();
+            responseContent.setData(accountConsents.toOBReadConsentResponsePost1Data());
 
-            HttpHeaders header = new HttpHeaders();
-            header.add("header1",accountConsents.getAccountConsentId());
-
-            return new ResponseEntity<>(accountConsents, header, HttpStatus.CREATED);
+            response = new ResponseEntity<>(responseContent, headers, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            response = new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        return response;
     }
-    //вручную написанный контроллер
+
     @Override
-    public ResponseEntity<HttpStatus> deleteAccConsent(@PathVariable("accountConsentId") long id) {
+    public ResponseEntity<Void> deleteAccountAccessConsentsConsentId(
+            @Size(min = 1, max = 35) final String accountConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization
+    ) {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        ResponseEntity<Void> response;
         try {
-            accountConsentsRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            accountConsentsRepository.deleteById(Long.valueOf(accountConsentId));
+            response = new ResponseEntity<>(headers, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            response = new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return response;
     }
 
-    //обработка автосгенерированной модели codegen из swagger
-    public ResponseEntity<OBReadConsentResponse1Post> createAccountAccessConsents(@RequestBody OBReadConsent1 body) {
-        try {
-            OBReadConsent1Data accConsData = new OBReadConsent1Data();
-           /* OBReadConsent1 _accConsents = accountConsentsRepository
-                    .save(new OBReadConsent1(accConsData.permissions()));
-            return new ResponseEntity<>(_accConsents, HttpStatus.CREATED); */
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    @Override
+    public ResponseEntity<OBReadConsentResponse1> getAccountAccessConsentsConsentId(
+            @Size(min = 1, max = 35) final String accountConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization
+    ) {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        ResponseEntity<OBReadConsentResponse1> response;
+
+        final Optional<AccountConsents> accountConsentsData = accountConsentsRepository.findById(Long.valueOf(accountConsentId));
+
+        if (accountConsentsData.isPresent()) {
+            final OBReadConsentResponse1 obReadConsentResponse1 = new OBReadConsentResponse1();
+            obReadConsentResponse1.setData(accountConsentsData.get().toOBReadConsentResponse1Data());
+
+            response = new ResponseEntity<>(obReadConsentResponse1, headers, HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
         }
+
+        return response;
     }
-
-
 }

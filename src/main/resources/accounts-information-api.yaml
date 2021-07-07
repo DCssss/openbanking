@@ -103,10 +103,6 @@ paths:
       description: Создание согласия на доступ к информации по счету
       operationId: CreateAccountAccessConsents
       parameters:
-        - $ref: '#/components/parameters/permissions'
-        - $ref: '#/components/parameters/expirationDate'
-        - $ref: '#/components/parameters/transactionFromDate'
-        - $ref: '#/components/parameters/transactionToDate'
         - $ref: '#/components/parameters/x-fapi-auth-date'
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
