@@ -1,16 +1,13 @@
 package by.openbanking.openbankingservice.model;
 
-import by.openbanking.openbankingservice.models.OBReadConsent1;
 import by.openbanking.openbankingservice.models.OBReadConsent1Data;
 import by.openbanking.openbankingservice.models.OBReadConsentResponse1Data;
 import by.openbanking.openbankingservice.models.OBReadConsentResponse1PostData;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.threeten.bp.ZoneId;
 
 import javax.persistence.*;
-import javax.validation.Valid;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "OB_ACCOUNT_CONSENTS")
@@ -18,7 +15,7 @@ public final class AccountConsents {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "ID")
+    @Column(name = "ACCOUNT_CONSENT_ID")
     private long accountConsentId;
 
     @Column(name = "STATUS")
@@ -72,7 +69,7 @@ public final class AccountConsents {
     @Column(name = "READ_TRANSACTION_DEBITS")
     private int readTransactionsDebits;
 
-    public static AccountConsents valueOf(OBReadConsent1Data model) {
+    public static AccountConsents valueOf(final OBReadConsent1Data model) {
         AccountConsents accountConsents = new AccountConsents();
         for (OBReadConsent1Data.PermissionsEnum permissionsEnum : model.getPermissions()) {
             switch (permissionsEnum) {
@@ -204,6 +201,7 @@ public final class AccountConsents {
         responseData.setExpirationDate(expirationDate);
         responseData.setTransactionFromDate(transactionFromDate);
         responseData.setTransactionToDate(transactionToDate);
+
         final List<OBReadConsentResponse1Data.PermissionsEnum> permissions = new ArrayList<>();
         if (readAccountsBasic == 1) {
             permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READACCOUNTSBASIC);
@@ -233,6 +231,7 @@ public final class AccountConsents {
             permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READTRANSACTIONSDEBITS);
         }
         responseData.setPermissions(permissions);
+
         return responseData;
     }
 
