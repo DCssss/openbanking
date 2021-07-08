@@ -1,12 +1,19 @@
 package by.openbanking.openbankingservice.model;
 
+import by.openbanking.openbankingservice.models.Account;
+import by.openbanking.openbankingservice.models.AccountDetails;
+import by.openbanking.openbankingservice.models.InlineResponse200;
+import by.openbanking.openbankingservice.models.Servicer;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "OB_ACCOUNTS")
-public class Accounts {
+public class Accounts extends by.openbanking.openbankingservice.models.InlineResponse200 {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -175,6 +182,53 @@ public class Accounts {
                 ", accountIdentification='" + accountIdentification + '\'' +
                 '}';
     }
+
+    public static final class Data extends InlineResponse200 {
+
+    }
+
+    public static final class Links extends by.openbanking.openbankingservice.models.Links {
+
+    }
+
+    public static final class Link extends by.openbanking.openbankingservice.models.Link {
+
+    }
+
+    public static final class Meta extends by.openbanking.openbankingservice.models.Meta {
+
+    }
+
+
+    public List<Account> toAccount()  {
+
+        Account acc = new Account();
+        Servicer servicer = new Servicer();
+        AccountDetails accountDetails = new AccountDetails();
+        acc.setAccountid(String.valueOf(accountId));
+        acc.setStatus(Account.StatusEnum.PENDING);
+        acc.setStatusUpdateTime(accountStatusUpdateTime);
+        acc.setCurrency(accountCurrency);
+        acc.setAccountType(accountType);
+        acc.setAccountSubType(Account.AccountSubTypeEnum.LOAN);
+        acc.setCreationDataTime(accountCreationTime);
+        acc.setAccountDescription(accountDescription);
+        servicer.setIdentification("ЗАО БСБ Банк");
+        servicer.setName("UNBSBY2X");
+        accountDetails.setIdentification(accountIdentification);
+        accountDetails.setSubstatus("Arrested");
+        accountDetails.setName(accountName);
+        accountDetails.setReason("Арестован согласно Постановления СК");
+        accountDetails.setSchemeName("Схема для осуществления платежа по номеру счета");
+        acc.setAccountDetails(accountDetails);
+        acc.setServicer(servicer);
+
+        final List<Account> accT = new ArrayList<>();
+        accT.add(acc);
+
+        return accT;
+    }
+
 }
 
 

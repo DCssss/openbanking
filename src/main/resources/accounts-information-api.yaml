@@ -1179,11 +1179,11 @@ x-wso2-cors:
     - OPTIONS
 x-wso2-production-endpoints:
   urls:
-    - 'http://localhost:8090'
+    - 'http://localhost:8077'
   type: http
 x-wso2-sandbox-endpoints:
   urls:
-    - 'http://localhost:8090'
+    - 'http://localhost:8088'
   type: http
 x-wso2-basePath: /open-banking/v1.1
 x-wso2-transports:
