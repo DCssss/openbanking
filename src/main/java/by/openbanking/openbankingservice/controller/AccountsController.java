@@ -2,9 +2,11 @@ package by.openbanking.openbankingservice.controller;
 
 import by.openbanking.openbankingservice.api.AccountsApi;
 import by.openbanking.openbankingservice.model.*;
+import by.openbanking.openbankingservice.models.Account;
 import by.openbanking.openbankingservice.models.InlineResponse200;
 import by.openbanking.openbankingservice.models.InlineResponse2001;
 import by.openbanking.openbankingservice.repository.AccountsRepository;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -47,8 +49,10 @@ public class AccountsController implements AccountsApi {
 
             final InlineResponse2001 respData = new InlineResponse2001();
             by.openbanking.openbankingservice.models.Accounts accData = new by.openbanking.openbankingservice.models.Accounts();
-
-            accData.setAccounts(accountData.get().toAccount());
+            List<Account> acc = new ArrayList<>();
+            acc.add(accountData.get().toAccount());
+            //acc.
+            accData.setAccounts(acc);
             //Надо не забыть доделать блоки Link и Meta , пока заглушки
             Date now = new Date();
             Accounts.Links links = new Accounts.Links();
@@ -83,29 +87,21 @@ public class AccountsController implements AccountsApi {
             final HttpHeaders headers = new HttpHeaders();
             headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
-            List<Accounts> acc = new ArrayList<Accounts>();
-            accountsRepository.findAll().forEach(acc::add);
+            List<Accounts> accountFromRepository = new ArrayList<>(accountsRepository.findAll());
+            List<Account> accountForResponse = new ArrayList<>();
+            for (Accounts ac : accountFromRepository){
+                accountForResponse.add( ac.toAccount());
+            }
 
-            if (acc.isEmpty()) {
+            if (accountForResponse.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
             by.openbanking.openbankingservice.models.Accounts accData = new by.openbanking.openbankingservice.models.Accounts();
-            accData.setAccounts(acc.stream().findAny().get().toAccount());
+            accData.setAccounts(accountForResponse);
 
             InlineResponse200 respData = new InlineResponse200();
-            //Надо не забыть доделать блоки Link и Meta , пока заглушки
-            Date now = new Date();
-            Accounts.Link links = new Accounts.Link();
-            Accounts.Meta meta = new Accounts.Meta();
-            links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
-            meta.setTotalPages(1);
-            meta.setFirstAvailableDateTime(now);
-            meta.setLastAvailableDateTime(now);
-
             respData.setData(accData);
-            respData.setLinks(links);
-            respData.setMeta(meta);
 
             return  new ResponseEntity<>(respData, headers, HttpStatus.OK);
         } catch (Exception e) {

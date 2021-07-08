@@ -200,7 +200,7 @@ public class Accounts extends by.openbanking.openbankingservice.models.InlineRes
     }
 
 
-    public List<Account> toAccount()  {
+    public Account toAccount()  {
 
         Account acc = new Account();
         Servicer servicer = new Servicer();
@@ -223,10 +223,8 @@ public class Accounts extends by.openbanking.openbankingservice.models.InlineRes
         acc.setAccountDetails(accountDetails);
         acc.setServicer(servicer);
 
-        final List<Account> accT = new ArrayList<>();
-        accT.add(acc);
 
-        return accT;
+        return acc;
     }
 
 }
