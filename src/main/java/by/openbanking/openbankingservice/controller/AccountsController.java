@@ -2,9 +2,7 @@ package by.openbanking.openbankingservice.controller;
 
 import by.openbanking.openbankingservice.api.AccountsApi;
 import by.openbanking.openbankingservice.model.*;
-import by.openbanking.openbankingservice.models.Account;
-import by.openbanking.openbankingservice.models.InlineResponse200;
-import by.openbanking.openbankingservice.models.InlineResponse2001;
+import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.AccountsRepository;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +22,37 @@ import java.util.Optional;
 
 @RestController
 public class AccountsController implements AccountsApi {
-    private static final String X_FAPI_INTERACTION_ID = "x-fapi-interaction-id";
+    @Override
+    public ResponseEntity<InlineResponse200> getAccounts(String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<OBReadBalance1> getAccountsAccountIdBalances(@Size(min = 1, max = 35) String accountId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<OBReadStatement2> getAccountsAccountIdStatementsStatementId(@Size(min = 1, max = 35) String statementId, @Size(min = 1, max = 35) String accountId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<OBReadTransaction6> getAccountsAccountIdTransactions(@Size(min = 1, max = 35) String accountId, @Size(min = 1, max = 35) String transactionListId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<InlineResponse2001> getAccountsById(@Size(min = 1, max = 35) String accountId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<OBSetAccountsTransaction> setTransactions(@Valid OBSetTransaction body, @NotNull @Valid Date fromBookingDateTime, @NotNull @Valid Date toBookingDateTime, @Size(min = 1, max = 35) String accountId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
+        return null;
+    }
+
+   /* private static final String X_FAPI_INTERACTION_ID = "x-fapi-interaction-id";
     private final AccountsRepository accountsRepository;
 
     @Autowired
@@ -101,11 +131,23 @@ public class AccountsController implements AccountsApi {
             accData.setAccounts(accountForResponse);
 
             InlineResponse200 respData = new InlineResponse200();
+
+            //Надо не забыть доделать блоки Link и Meta , пока заглушки
+            Date now = new Date();
+            Accounts.Link links = new Accounts.Link();
+            Accounts.Meta meta = new Accounts.Meta();
+            links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
+            meta.setTotalPages(1);
+            meta.setFirstAvailableDateTime(now);
+            meta.setLastAvailableDateTime(now);
+
             respData.setData(accData);
+            respData.setLinks(links);
+            respData.setMeta(meta);
 
             return  new ResponseEntity<>(respData, headers, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+    } */
 }
