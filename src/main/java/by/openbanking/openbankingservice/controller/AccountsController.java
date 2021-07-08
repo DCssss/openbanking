@@ -2,6 +2,7 @@ package by.openbanking.openbankingservice.controller;
 
 import by.openbanking.openbankingservice.api.AccountsApi;
 import by.openbanking.openbankingservice.model.*;
+import by.openbanking.openbankingservice.model.Accounts;
 import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.AccountsRepository;
 import edu.emory.mathcs.backport.java.util.Arrays;
@@ -22,37 +23,9 @@ import java.util.Optional;
 
 @RestController
 public class AccountsController implements AccountsApi {
-    @Override
-    public ResponseEntity<InlineResponse200> getAccounts(String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
-        return null;
-    }
 
-    @Override
-    public ResponseEntity<OBReadBalance1> getAccountsAccountIdBalances(@Size(min = 1, max = 35) String accountId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
-        return null;
-    }
 
-    @Override
-    public ResponseEntity<OBReadStatement2> getAccountsAccountIdStatementsStatementId(@Size(min = 1, max = 35) String statementId, @Size(min = 1, max = 35) String accountId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<OBReadTransaction6> getAccountsAccountIdTransactions(@Size(min = 1, max = 35) String accountId, @Size(min = 1, max = 35) String transactionListId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<InlineResponse2001> getAccountsById(@Size(min = 1, max = 35) String accountId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<OBSetAccountsTransaction> setTransactions(@Valid OBSetTransaction body, @NotNull @Valid Date fromBookingDateTime, @NotNull @Valid Date toBookingDateTime, @Size(min = 1, max = 35) String accountId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
-        return null;
-    }
-
-   /* private static final String X_FAPI_INTERACTION_ID = "x-fapi-interaction-id";
+    private static final String X_FAPI_INTERACTION_ID = "x-fapi-interaction-id";
     private final AccountsRepository accountsRepository;
 
     @Autowired
@@ -61,7 +34,7 @@ public class AccountsController implements AccountsApi {
     }
 
     @Override
-    public ResponseEntity<InlineResponse2001> accountsAccountIdGet(
+    public ResponseEntity<InlineResponse2001> getAccountsById(
             @Size(min = 1, max = 35) final String accountId,
             String xFapiAuthDate,
             String xFapiCustomerIpAddress,
@@ -149,5 +122,25 @@ public class AccountsController implements AccountsApi {
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    } */
+    }
+
+    @Override
+    public ResponseEntity<OBReadBalance1> getAccountsAccountIdBalances(@Size(min = 1, max = 35) String accountId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<OBReadStatement2> getAccountsAccountIdStatementsStatementId(@Size(min = 1, max = 35) String statementId, @Size(min = 1, max = 35) String accountId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<OBReadTransaction6> getAccountsAccountIdTransactions(@Size(min = 1, max = 35) String accountId, @Size(min = 1, max = 35) String transactionListId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<OBSetAccountsTransaction> setTransactions(@Valid OBSetTransaction body, @NotNull @Valid Date fromBookingDateTime, @NotNull @Valid Date toBookingDateTime, @Size(min = 1, max = 35) String accountId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
+        return null;
+    }
 }
