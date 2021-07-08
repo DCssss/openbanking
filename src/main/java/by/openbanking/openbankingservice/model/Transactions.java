@@ -5,66 +5,66 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "OBTransactions")
-public class OBTransactions {
+@Table(name = "OB_TRANSACTIONS")
+public class Transactions {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "TransactionID")
+    @Column(name = "TRANSACTION_ID")
     private long transactionID;
 
-    @Column(name = "AccountID")
+    @Column(name = "ACCOUNT_ID")
     private long accountID;
 
-    @Column(name = "TransactionСreditDebitIndicator")
+    @Column(name = "TRANSACTION_CREDIT_DEBIT_INDICATOR")
     private long transactionСreditDebitIndicator;
 
-    @Column(name = "TransactionBookingTime")
+    @Column(name = "TRANSACTION_BOOKING_TIME")
     private Date transactionBookingTime;
 
-    @Column(name = "TransactionNumber")
+    @Column(name = "TRANSACTION_NUMBER")
     private String transactionNumber;
 
-    @Column(name = "TransactionAmount")
+    @Column(name = "TRANSACTION_AMOUNT")
     private double transactionAmount;
 
-    @Column(name = "TransactionCurrency")
+    @Column(name = "TRANSACTION_CURRENCY")
     private String transactionCurrency;
 
-    @Column(name = "TransactionDetails")
+    @Column(name = "TRANSACTION_DETAILS")
     private String transactionDetails;
 
-    @Column(name = "TransactionDebitTaxIdentification")
+    @Column(name = "TRANSACTION_DEBIT_TAX_IDENTIFICATION")
     private String transactionDebitTaxIdentification;
 
-    @Column(name = "TransactionDebitName")
+    @Column(name = "TRANSACTION_DEBIT_NAME")
     private String transactionDebitName;
 
-    @Column(name = "TransactionDebitAccIdentification")
+    @Column(name = "TRANSACTION_DEBIT_ACC_IDENTIFICATION")
     private String transactionDebitAccIdentification;
 
-    @Column(name = "TransactionDebitBankName")
+    @Column(name = "TRANSACTION_DEBIT_BANK_NAME")
     private String transactionDebitBankName;
 
-    @Column(name = "TransactionDebitBankIdentification")
+    @Column(name = "TRANSACTION_DEBIT_BANK_IDENTIFICATION")
     private String transactionDebitBankIdentification;
 
-    @Column(name = "TransactionCreditTaxIdentification")
+    @Column(name = "TRANSACTION_CREDIT_TAX_IDENTIFICATION")
     private String transactionCreditTaxIdentification;
 
-    @Column(name = "TransactionCreditName")
+    @Column(name = "TRANSACTION_CREDIT_NAME")
     private String transactionCreditName;
 
-    @Column(name = "TransactionCreditAccIdentification")
+    @Column(name = "TRANSACTION_CREDIT_ACC_IDENTIFICATION")
     private String transactionCreditAccIdentification;
 
-    @Column(name = "TransactionCreditBankName")
+    @Column(name = "TRANSACTION_CREDIT_BANK_NAME")
     private String transactionCreditBankName;
 
-    @Column(name = "TransactionCreditBankIdentification")
+    @Column(name = "TRANSACTION_CREDIT_BANK_IDENTIFICATION")
     private String transactionCreditBankIdentification;
 
-    public OBTransactions() {
+    public Transactions() {
     }
 
     public long getTransactionID() {
@@ -214,8 +214,8 @@ public class OBTransactions {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OBTransactions)) return false;
-        OBTransactions that = (OBTransactions) o;
+        if (!(o instanceof Transactions)) return false;
+        Transactions that = (Transactions) o;
         return getTransactionID() == that.getTransactionID() && getAccountID() == that.getAccountID() && getTransactionСreditDebitIndicator() == that.getTransactionСreditDebitIndicator() && Double.compare(that.getTransactionAmount(), getTransactionAmount()) == 0 && Objects.equals(getTransactionBookingTime(), that.getTransactionBookingTime()) && Objects.equals(getTransactionNumber(), that.getTransactionNumber()) && Objects.equals(getTransactionCurrency(), that.getTransactionCurrency()) && Objects.equals(getTransactionDetails(), that.getTransactionDetails()) && Objects.equals(getTransactionNumber(), that.getTransactionNumber()) && Objects.equals(getTransactionDebitTaxIdentification(), that.getTransactionDebitTaxIdentification()) && Objects.equals(getTransactionDebitName(), that.getTransactionDebitName()) && Objects.equals(getTransactionDebitAccIdentification(), that.getTransactionDebitAccIdentification()) && Objects.equals(getTransactionDebitBankName(), that.getTransactionDebitBankName()) && Objects.equals(getTransactionDebitBankIdentification(), that.getTransactionDebitBankIdentification()) && Objects.equals(getTransactionCreditTaxIdentification(), that.getTransactionCreditTaxIdentification()) && Objects.equals(getTransactionCreditName(), that.getTransactionCreditName()) && Objects.equals(getTransactionCreditAccIdentification(), that.getTransactionCreditAccIdentification()) && Objects.equals(getTransactionCreditBankName(), that.getTransactionCreditBankName()) && Objects.equals(getTransactionCreditBankIdentification(), that.getTransactionCreditBankIdentification());
     }
 

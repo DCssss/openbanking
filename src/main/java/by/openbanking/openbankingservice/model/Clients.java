@@ -4,27 +4,27 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "OBClients")
-public class OBClients {
+@Table(name = "OB_CLIENTS")
+public class Clients {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "ClientId")
+    @Column(name = "CLIENT_ID")
     private long clientId;
 
-    @Column(name = "ClientName")
+    @Column(name = "CLIENT_NAME")
     private String clientName;
 
-    @Column(name = "BankId")
+    @Column(name = "BANK_ID")
     private long bankId;
 
-    @Column(name = "ClientAddress")
+    @Column(name = "CLIENT_ADDRESS")
     private String clientAddress;
 
-    @Column(name = "ClientTax")
+    @Column(name = "CLIENT_TAX")
     private String clientTax;
 
-    public OBClients() {
+    public Clients() {
     }
 
     public long getClientId() {
@@ -70,9 +70,9 @@ public class OBClients {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OBClients)) return false;
-        OBClients obClients = (OBClients) o;
-        return getClientId() == obClients.getClientId() && getBankId() == obClients.getBankId() && getClientName().equals(obClients.getClientName()) && Objects.equals(getClientAddress(), obClients.getClientAddress()) && Objects.equals(getClientTax(), obClients.getClientTax());
+        if (!(o instanceof Clients)) return false;
+        Clients clients = (Clients) o;
+        return getClientId() == clients.getClientId() && getBankId() == clients.getBankId() && getClientName().equals(clients.getClientName()) && Objects.equals(getClientAddress(), clients.getClientAddress()) && Objects.equals(getClientTax(), clients.getClientTax());
     }
 
     @Override

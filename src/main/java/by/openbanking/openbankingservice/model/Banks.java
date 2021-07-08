@@ -1,25 +1,24 @@
 package by.openbanking.openbankingservice.model;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "OBBanks")
-public class OBBanks {
+@Table(name = "OB_BANKS")
+public class Banks {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "BankId")
+    @Column(name = "BANK_ID")
     private long bankId;
 
-    @Column(name = "BankName")
+    @Column(name = "BANK_NAME")
     private String bankName;
 
-    @Column(name = "BankIdentifier")
+    @Column(name = "BANK_IDENTIFIER")
     private String bankIdentifier;
 
-    public OBBanks() {
+    public Banks() {
     }
 
     public long getBankId() {
@@ -49,9 +48,9 @@ public class OBBanks {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OBBanks)) return false;
-        OBBanks obBanks = (OBBanks) o;
-        return getBankId() == obBanks.getBankId() && getBankName().equals(obBanks.getBankName()) && getBankIdentifier().equals(obBanks.getBankIdentifier());
+        if (!(o instanceof Banks)) return false;
+        Banks banks = (Banks) o;
+        return getBankId() == banks.getBankId() && getBankName().equals(banks.getBankName()) && getBankIdentifier().equals(banks.getBankIdentifier());
     }
 
     @Override

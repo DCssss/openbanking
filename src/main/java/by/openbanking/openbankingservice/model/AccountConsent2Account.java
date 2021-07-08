@@ -4,21 +4,21 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "OBAccountConsent2Account")
-public class OBAccountConsent2Account {
+@Table(name = "OB_ACCOUNTCONSENT_2_ACCOUNT")
+public class AccountConsent2Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "Id")
+    @Column(name = "ID")
     private long id;
 
-    @Column(name = "AccountConsentID")
+    @Column(name = "ACCOUNT_CONSENT_ID")
     private long accountConsentID;
 
-    @Column(name = "AccountID")
+    @Column(name = "ACCOUNT_ID")
     private long accountID;
 
-    public OBAccountConsent2Account() {
+    public AccountConsent2Account() {
     }
 
     public long getId() {
@@ -48,8 +48,8 @@ public class OBAccountConsent2Account {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OBAccountConsent2Account)) return false;
-        OBAccountConsent2Account that = (OBAccountConsent2Account) o;
+        if (!(o instanceof AccountConsent2Account)) return false;
+        AccountConsent2Account that = (AccountConsent2Account) o;
         return getId() == that.getId() && getAccountConsentID() == that.getAccountConsentID() && getAccountID() == that.getAccountID();
     }
 

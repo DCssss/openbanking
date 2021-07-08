@@ -4,21 +4,21 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "OBFintech")
-public class OBFintech {
+@Table(name = "OB_FINTECH")
+public class Fintech {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "FintechId")
+    @Column(name = "FINTECH_ID")
     private long fintechId;
 
-    @Column(name = "FintechName")
+    @Column(name = "FINTECH_NAME")
     private String fintechName;
 
-    @Column(name = "FintechLogin")
+    @Column(name = "FINTECH_LOGIN")
     private String fintechLogin;
 
-    public OBFintech() {
+    public Fintech() {
     }
 
     public long getFintechId() {
@@ -48,9 +48,9 @@ public class OBFintech {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OBFintech)) return false;
-        OBFintech obFintech = (OBFintech) o;
-        return getFintechId() == obFintech.getFintechId() && getFintechName().equals(obFintech.getFintechName()) && Objects.equals(getFintechLogin(), obFintech.getFintechLogin());
+        if (!(o instanceof Fintech)) return false;
+        Fintech fintech = (Fintech) o;
+        return getFintechId() == fintech.getFintechId() && getFintechName().equals(fintech.getFintechName()) && Objects.equals(getFintechLogin(), fintech.getFintechLogin());
     }
 
     @Override

@@ -4,21 +4,21 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "OBStatement2Transaction")
-public class OBStatement2Transaction {
+@Table(name = "OB_STATEMENT_2_TRANSACTION")
+public class Statement2Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "Id")
+    @Column(name = "ID")
     private long id;
 
-    @Column(name = "StatementID")
+    @Column(name = "STATEMENT_ID")
     private long statementID;
 
-    @Column(name = "TransactionID")
+    @Column(name = "TRANSACTION_ID")
     private long transactionID;
 
-    public OBStatement2Transaction() {
+    public Statement2Transaction() {
     }
 
     public long getId() {
@@ -48,8 +48,8 @@ public class OBStatement2Transaction {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OBStatement2Transaction)) return false;
-        OBStatement2Transaction that = (OBStatement2Transaction) o;
+        if (!(o instanceof Statement2Transaction)) return false;
+        Statement2Transaction that = (Statement2Transaction) o;
         return getId() == that.getId() && getStatementID() == that.getStatementID() && getTransactionID() == that.getTransactionID();
     }
 
