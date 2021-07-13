@@ -1,9 +1,6 @@
 package by.openbanking.openbankingservice.Accounts;
 
-import by.openbanking.openbankingservice.models.InlineResponse200;
-import by.openbanking.openbankingservice.models.InlineResponse2001;
-import by.openbanking.openbankingservice.repository.AccountsRepository;
-import by.openbanking.openbankingservice.service.AccountsService;
+import by.openbanking.openbankingservice.controllers.AccountController;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -11,7 +8,7 @@ import java.sql.SQLException;
 import static org.junit.Assert.assertNotNull;
 
 public class Accounts {
-    private AccountsService accountsService;
+    private AccountController accountsService;
 
 
     @Test
@@ -22,7 +19,7 @@ public class Accounts {
         String xFapiInteractionId = "2";
         String authorization = "sdfsdfs";
 
-        accountsService.getAccounts();
+        //accountsService.getAccounts();
 
     }
 
@@ -35,7 +32,7 @@ public class Accounts {
         String authorization = "rterte2342";
 
 
-      InlineResponse2001 inl =    accountsService.getAccountsById(accountId,xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId,authorization);
+      //InlineResponse2001 inl =    accountsService.getAccountsById(accountId,xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId,authorization);
 
     }
 }

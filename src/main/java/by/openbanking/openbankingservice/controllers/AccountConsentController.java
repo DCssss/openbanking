@@ -1,4 +1,4 @@
-package by.openbanking.openbankingservice.controller;
+package by.openbanking.openbankingservice.controllers;
 
 import by.openbanking.openbankingservice.api.AccountConsentsApi;
 import by.openbanking.openbankingservice.model.AccountConsents;

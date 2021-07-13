@@ -1,4 +1,4 @@
-package by.openbanking.openbankingservice.controller;
+package by.openbanking.openbankingservice.controllers;
 
 import by.openbanking.openbankingservice.api.StatementsApi;
 import by.openbanking.openbankingservice.models.OBReadStatement2Post;

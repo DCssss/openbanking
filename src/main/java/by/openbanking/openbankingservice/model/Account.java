@@ -1,17 +1,12 @@
 package by.openbanking.openbankingservice.model;
 
-import by.openbanking.openbankingservice.models.*;
-import org.apache.commons.collections.ArrayStack;
-
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "OB_ACCOUNTS")
-public class Accounts extends by.openbanking.openbankingservice.models.InlineResponse200 {
+public final class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -51,7 +46,7 @@ public class Accounts extends by.openbanking.openbankingservice.models.InlineRes
     @Column(name = "ACCOUNT_IDENTIFICATION")
     private String accountIdentification;
 
-    public Accounts() {
+    public Account() {
     }
 
     public long getAccountId() {
@@ -153,9 +148,9 @@ public class Accounts extends by.openbanking.openbankingservice.models.InlineRes
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Accounts)) return false;
-        Accounts Accounts = (Accounts) o;
-        return getAccountId() == Accounts.getAccountId() && getClientId() == Accounts.getClientId() && Double.compare(Accounts.getAccountBalanceAmount(), getAccountBalanceAmount()) == 0 && Objects.equals(getAccountStatus(), Accounts.getAccountStatus()) && Objects.equals(getAccountStatusUpdateTime(), Accounts.getAccountStatusUpdateTime()) && Objects.equals(getAccountCurrency(), Accounts.getAccountCurrency()) && Objects.equals(getAccountCreationTime(), Accounts.getAccountCreationTime()) && Objects.equals(getAccountDescription(), Accounts.getAccountDescription()) && Objects.equals(getAccountName(), Accounts.getAccountName()) && Objects.equals(getAccountType(), Accounts.getAccountType()) && Objects.equals(getAccountSubType(), Accounts.getAccountSubType()) && getAccountIdentification().equals(Accounts.getAccountIdentification());
+        if (!(o instanceof Account)) return false;
+        Account Account = (Account) o;
+        return getAccountId() == Account.getAccountId() && getClientId() == Account.getClientId() && Double.compare(Account.getAccountBalanceAmount(), getAccountBalanceAmount()) == 0 && Objects.equals(getAccountStatus(), Account.getAccountStatus()) && Objects.equals(getAccountStatusUpdateTime(), Account.getAccountStatusUpdateTime()) && Objects.equals(getAccountCurrency(), Account.getAccountCurrency()) && Objects.equals(getAccountCreationTime(), Account.getAccountCreationTime()) && Objects.equals(getAccountDescription(), Account.getAccountDescription()) && Objects.equals(getAccountName(), Account.getAccountName()) && Objects.equals(getAccountType(), Account.getAccountType()) && Objects.equals(getAccountSubType(), Account.getAccountSubType()) && getAccountIdentification().equals(Account.getAccountIdentification());
     }
 
     @Override
@@ -181,76 +176,7 @@ public class Accounts extends by.openbanking.openbankingservice.models.InlineRes
                 '}';
     }
 
-    public static final class Data extends InlineResponse200 {
 
-    }
-
-    public static final class Links extends by.openbanking.openbankingservice.models.Links {
-
-    }
-
-    public static final class Link extends by.openbanking.openbankingservice.models.Link {
-
-    }
-
-    public static final class Meta extends by.openbanking.openbankingservice.models.Meta {
-
-    }
-
-
-    public Account toAccount()  {
-
-        Account acc = new Account();
-        Servicer servicer = new Servicer();
-        AccountDetails accountDetails = new AccountDetails();
-        acc.setAccountid(String.valueOf(accountId));
-        acc.setStatus(Account.StatusEnum.PENDING);
-        acc.setStatusUpdateTime(accountStatusUpdateTime);
-        acc.setCurrency(accountCurrency);
-        acc.setAccountType(accountType);
-        acc.setAccountSubType(Account.AccountSubTypeEnum.LOAN);
-        acc.setCreationDataTime(accountCreationTime);
-        acc.setAccountDescription(accountDescription);
-        servicer.setIdentification("ЗАО БСБ Банк");
-        servicer.setName("UNBSBY2X");
-        accountDetails.setIdentification(accountIdentification);
-        accountDetails.setSubstatus("Arrested");
-        accountDetails.setName(accountName);
-        accountDetails.setReason("Арестован согласно Постановления СК");
-        accountDetails.setSchemeName("Схема для осуществления платежа по номеру счета");
-        acc.setAccountDetails(accountDetails);
-        acc.setServicer(servicer);
-
-
-        return acc;
-    }
-
-    public OBReadBalance1Data toOBReadBalance1Data()  {
-
-        OBReadBalance1Data balance1Data = new OBReadBalance1Data();
-        OBReadBalance1DataBalance balance1DataBalance = new OBReadBalance1DataBalance();
-        OBReadBalance1DataCreditLine readBalance1DataCreditLine = new OBReadBalance1DataCreditLine();
-        List<OBReadBalance1DataCreditLine> creditLines = new ArrayList<>();
-        List<OBReadBalance1DataBalance> balance1DataList = new ArrayList<>();
-        creditLines.add(readBalance1DataCreditLine);
-        balance1DataBalance.setBalanceAmount(Double.toString(accountBalanceAmount));
-        balance1DataBalance.setAccountId(String.valueOf(accountId));
-        balance1DataBalance.setBalanceEquivalentAmount(Double.toString(accountBalanceAmount));
-        balance1DataBalance.setCurrency(accountCurrency);
-        balance1DataBalance.setDateTime(accountStatusUpdateTime);
-        balance1DataBalance.setCreditDebitIndicator(OBCreditDebitCode2.CREDIT);
-        balance1DataBalance.setType(OBBalanceType1Code.CLOSINGAVAILABLE);
-        readBalance1DataCreditLine.setCurrency(accountCurrency);
-        readBalance1DataCreditLine.setType(OBReadBalance1DataCreditLine.TypeEnum.REVOLVING);
-        readBalance1DataCreditLine.setIncluded(true);
-        readBalance1DataCreditLine.setCreditLineamount("50.00");
-        balance1DataBalance.setCreditLine(creditLines);
-
-       balance1Data.setBalance(balance1DataList);
-
-
-        return balance1Data;
-    }
 
 }
 

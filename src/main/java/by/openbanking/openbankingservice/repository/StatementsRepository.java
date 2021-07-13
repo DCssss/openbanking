@@ -1,7 +1,6 @@
 package by.openbanking.openbankingservice.repository;
 
 
-import by.openbanking.openbankingservice.model.Accounts;
 import by.openbanking.openbankingservice.model.Statements;
 import org.springframework.data.jpa.repository.JpaRepository;
 

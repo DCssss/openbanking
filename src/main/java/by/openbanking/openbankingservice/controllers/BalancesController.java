@@ -1,9 +1,10 @@
-package by.openbanking.openbankingservice.controller;
+package by.openbanking.openbankingservice.controllers;
 
-import by.openbanking.openbankingservice.api.BalancesApi;
-import by.openbanking.openbankingservice.model.Accounts;
+import by.openbanking.openbankingservice.model.Account;
 import by.openbanking.openbankingservice.models.*;
-import by.openbanking.openbankingservice.repository.AccountsRepository;
+import by.openbanking.openbankingservice.util.AccountConverter;
+import by.openbanking.openbankingservice.repository.AccountRepository;
+import by.openbanking.openbankingservice.api.BalancesApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,10 @@ public class BalancesController implements BalancesApi {
 
     private static final String X_FAPI_INTERACTION_ID = "x-fapi-interaction-id";
 
-    private final AccountsRepository accountsRepository;
+    private final AccountRepository accountsRepository;
 
     @Autowired
-    public BalancesController(AccountsRepository accountsRepository) {
+    public BalancesController(AccountRepository accountsRepository) {
         this.accountsRepository = accountsRepository;
     }
 
@@ -35,10 +36,10 @@ public class BalancesController implements BalancesApi {
             final HttpHeaders headers = new HttpHeaders();
             headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
-            List<Accounts> accountFromRepository = new ArrayList<>(accountsRepository.findAll());
-            List<Account> accountForResponse = new ArrayList<>();
-            for (Accounts ac : accountFromRepository){
-                accountForResponse.add(ac.toAccount());
+            List<Account> accountFromRepository = accountsRepository.findAll();
+            List<by.openbanking.openbankingservice.models.Account> accountForResponse = new ArrayList<>();
+            for (Account ac : accountFromRepository){
+                accountForResponse.add(AccountConverter.toAccount(ac));
             }
 
             if (accountForResponse.isEmpty()) {
@@ -59,7 +60,7 @@ public class BalancesController implements BalancesApi {
             //Надо не забыть доделать блоки Link и Meta , пока заглушки
             Date now = new Date();
             LinksBalance links = new LinksBalance();
-            Accounts.Meta meta = new Accounts.Meta();
+            Meta meta = new Meta();
             links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
             meta.setTotalPages(1);
             meta.setFirstAvailableDateTime(now);

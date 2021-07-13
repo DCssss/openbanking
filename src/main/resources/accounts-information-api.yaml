@@ -68,7 +68,7 @@ paths:
         - Accounts
       summary: Account info by ID
       description: Получение информации по счету
-      operationId: getAccountsById
+      operationId: getAccountById
       parameters:
         - $ref: '#/components/parameters/accountId'
         - $ref: '#/components/parameters/x-fapi-auth-date'
