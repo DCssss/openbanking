@@ -10,11 +10,14 @@
     </parent>
     <groupId>by.openbanking</groupId>
     <artifactId>openbanking-service</artifactId>
+    <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <name>openbanking-service</name>
     <description>OpenApi project from Spring Boot</description>
     <properties>
         <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
     <dependencies>
         <dependency>
@@ -168,30 +171,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.5.2</version>
             </plugin>
-            <plugin>
-                <groupId>io.swagger.codegen.v3</groupId>
-                <artifactId>swagger-codegen-maven-plugin</artifactId>
-                <version>3.0.18</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/accounts-information-api.yaml</inputSpec>
-                            <language>spring</language>
-                            <output>${project.build.directory}/generated-sources/</output>
-                            <generateSupportingFiles>false</generateSupportingFiles>
-                            <apiPackage>by.openbanking.openbankingservice.api</apiPackage>
-                            <modelPackage>by.openbanking.openbankingservice.models</modelPackage>
-                            <configOptions>
-                                <interfaceOnly>true</interfaceOnly>
-                                <dateLibrary>legacy</dateLibrary>
-                            </configOptions>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
@@ -201,4 +181,45 @@
 
     </build>
 
+    <profiles>
+        <!-- Функциональные профили -->
+        <profile>
+            <!-- Генерация прокси оберток для вызова soap-сервисов -->
+            <id>generate-sources</id>
+                <build>
+                    <plugins>
+                    <plugin>
+                        <groupId>io.swagger.codegen.v3</groupId>
+                        <artifactId>swagger-codegen-maven-plugin</artifactId>
+                        <version>3.0.18</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                                <configuration>
+                                    <inputSpec>${project.basedir}/src/main/resources/accounts-information-api.yaml</inputSpec>
+                                    <language>spring</language>
+                                    <output>${project.build.directory}/generated-sources/</output>
+                                    <generateSupportingFiles>false</generateSupportingFiles>
+                                    <apiPackage>by.openbanking.openbankingservice.api</apiPackage>
+                                    <modelPackage>by.openbanking.openbankingservice.models</modelPackage>
+                                    <configOptions>
+                                        <interfaceOnly>true</interfaceOnly>
+                                        <dateLibrary>legacy</dateLibrary>
+                                    </configOptions>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    </plugins>
+                </build>
+        </profile>
+
+        <profile>
+            <!-- Сборка релизной war-ки -->
+            <id>build-release</id>
+        </profile>
+
+    </profiles>
 </project>

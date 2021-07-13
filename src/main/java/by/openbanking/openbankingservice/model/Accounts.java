@@ -1,9 +1,7 @@
 package by.openbanking.openbankingservice.model;
 
-import by.openbanking.openbankingservice.models.Account;
-import by.openbanking.openbankingservice.models.AccountDetails;
-import by.openbanking.openbankingservice.models.InlineResponse200;
-import by.openbanking.openbankingservice.models.Servicer;
+import by.openbanking.openbankingservice.models.*;
+import org.apache.commons.collections.ArrayStack;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -225,6 +223,33 @@ public class Accounts extends by.openbanking.openbankingservice.models.InlineRes
 
 
         return acc;
+    }
+
+    public OBReadBalance1Data toOBReadBalance1Data()  {
+
+        OBReadBalance1Data balance1Data = new OBReadBalance1Data();
+        OBReadBalance1DataBalance balance1DataBalance = new OBReadBalance1DataBalance();
+        OBReadBalance1DataCreditLine readBalance1DataCreditLine = new OBReadBalance1DataCreditLine();
+        List<OBReadBalance1DataCreditLine> creditLines = new ArrayList<>();
+        List<OBReadBalance1DataBalance> balance1DataList = new ArrayList<>();
+        creditLines.add(readBalance1DataCreditLine);
+        balance1DataBalance.setBalanceAmount(Double.toString(accountBalanceAmount));
+        balance1DataBalance.setAccountId(String.valueOf(accountId));
+        balance1DataBalance.setBalanceEquivalentAmount(Double.toString(accountBalanceAmount));
+        balance1DataBalance.setCurrency(accountCurrency);
+        balance1DataBalance.setDateTime(accountStatusUpdateTime);
+        balance1DataBalance.setCreditDebitIndicator(OBCreditDebitCode2.CREDIT);
+        balance1DataBalance.setType(OBBalanceType1Code.CLOSINGAVAILABLE);
+        readBalance1DataCreditLine.setCurrency(accountCurrency);
+        readBalance1DataCreditLine.setType(OBReadBalance1DataCreditLine.TypeEnum.REVOLVING);
+        readBalance1DataCreditLine.setIncluded(true);
+        readBalance1DataCreditLine.setCreditLineamount("50.00");
+        balance1DataBalance.setCreditLine(creditLines);
+
+       balance1Data.setBalance(balance1DataList);
+
+
+        return balance1Data;
     }
 
 }
