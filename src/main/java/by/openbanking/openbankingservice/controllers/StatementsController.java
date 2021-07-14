@@ -11,8 +11,9 @@ import javax.validation.constraints.Size;
 import java.util.Date;
 
 public class StatementsController implements StatementsApi {
+
     @Override
-    public ResponseEntity<OBReadStatement2Post> setStatement(@Valid OBSetStatement body, @NotNull @Valid Date fromBookingDate, @NotNull @Valid Date toBookingDate, @Size(min = 1, max = 35) String accountId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
+    public ResponseEntity<OBReadStatement2Post> setStatement(@Valid OBSetStatement body, @Size(min = 1, max = 35) String accountId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
         return null;
     }
 }

@@ -31,7 +31,7 @@ public final class AccountController implements AccountsApi {
             final String xFapiInteractionId,
             final String authorization
     ) {
-        return mAccountService.getAccountById(accountId, xFapiInteractionId);
+        return mAccountService.getAccountById(accountId, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization );
     }
 
     @Override
@@ -41,26 +41,55 @@ public final class AccountController implements AccountsApi {
             final String xFapiInteractionId,
             final String authorization
     ) {
-        return mAccountService.getAccounts(xFapiInteractionId);
+        return mAccountService.getAccounts(xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId,authorization);
     }
 
     @Override
-    public ResponseEntity<OBReadBalance1> getAccountsAccountIdBalances(@Size(min = 1, max = 35) String accountId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
-        return null;
+    public ResponseEntity<OBReadBalance1> getAccountsAccountIdBalances(
+            @Size(min = 1, max = 35) String accountId,
+            String xFapiAuthDate,
+            String xFapiCustomerIpAddress,
+            String xFapiInteractionId,
+            String authorization
+    ) {
+        return mAccountService.getAccountsAccountIdBalances(accountId,xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId,authorization);
     }
 
     @Override
-    public ResponseEntity<OBReadStatement2> getAccountsAccountIdStatementsStatementId(@Size(min = 1, max = 35) String statementId, @Size(min = 1, max = 35) String accountId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
-        return null;
+    public ResponseEntity<OBReadStatement2> getAccountsAccountIdStatementsStatementId(
+            @Size(min = 1, max = 35) String statementId,
+            @Size(min = 1, max = 35) String accountId,
+            String xFapiAuthDate,
+            String xFapiCustomerIpAddress,
+            String xFapiInteractionId,
+            String authorization
+    ) {
+        return mAccountService.getAccountsAccountIdStatementsStatementId(statementId,accountId,xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId,authorization);
     }
 
     @Override
-    public ResponseEntity<OBReadTransaction6> getAccountsAccountIdTransactions(@Size(min = 1, max = 35) String accountId, @Size(min = 1, max = 35) String transactionListId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
-        return null;
+    public ResponseEntity<OBReadTransaction6> getAccountsAccountIdTransactions(
+            @Size(min = 1, max = 35) String accountId,
+            @Size(min = 1, max = 35) String transactionListId,
+            String xFapiAuthDate,
+            String xFapiCustomerIpAddress,
+            String xFapiInteractionId,
+            String authorization
+    ) {
+        return mAccountService.getAccountsAccountIdTransactions(accountId, transactionListId, xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId,authorization);
     }
 
     @Override
-    public ResponseEntity<OBSetAccountsTransaction> setTransactions(@Valid OBSetTransaction body, @NotNull @Valid Date fromBookingDateTime, @NotNull @Valid Date toBookingDateTime, @Size(min = 1, max = 35) String accountId, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization) {
-        return null;
+    public ResponseEntity<OBSetAccountsTransaction> setTransaction(
+            @Valid OBSetTransaction body,
+            @Size(min = 1, max = 35) String accountId,
+            String xFapiAuthDate,
+            String xFapiCustomerIpAddress,
+            String xFapiInteractionId,
+            String authorization
+    ) {
+        return mAccountService.setTransaction(body,accountId,xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId,authorization);
     }
+
+
 }

@@ -357,8 +357,6 @@ paths:
       operationId: SetStatement
       parameters:
         - $ref: '#/components/parameters/accountId'
-        - $ref: '#/components/parameters/fromBookingDate'
-        - $ref: '#/components/parameters/toBookingDate'
         - $ref: '#/components/parameters/x-fapi-auth-date'
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
@@ -446,11 +444,9 @@ paths:
         - Transactions
       summary: Set Transactions
       description: Создание перечня транзакций по счету
-      operationId: SetTransactions
+      operationId: SetTransaction
       parameters:
         - $ref: '#/components/parameters/accountId'
-        - $ref: '#/components/parameters/fromBookingDateTime'
-        - $ref: '#/components/parameters/toBookingDateTime'
         - $ref: '#/components/parameters/x-fapi-auth-date'
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'

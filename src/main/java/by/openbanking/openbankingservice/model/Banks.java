@@ -18,6 +18,9 @@ public class Banks {
     @Column(name = "BANK_IDENTIFIER")
     private String bankIdentifier;
 
+    /*@OneToOne(mappedBy = "OB_BANKS")
+    private Clients clients;*/
+
     public Banks() {
     }
 

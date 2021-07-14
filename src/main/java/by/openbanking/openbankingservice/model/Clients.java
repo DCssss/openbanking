@@ -24,6 +24,10 @@ public class Clients {
     @Column(name = "CLIENT_TAX")
     private String clientTax;
 
+   /* @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "OB_BANKS_BANK_ID", referencedColumnName = "BANK_ID")
+    private Banks banks; */
+
     public Clients() {
     }
 
