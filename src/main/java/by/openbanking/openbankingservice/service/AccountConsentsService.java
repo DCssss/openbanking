@@ -108,8 +108,17 @@ public class AccountConsentsService {
 
         ResponseEntity<Void> response;
         try {
-            mRepository.deleteById(Long.valueOf(accountConsentId));
-            response = new ResponseEntity<>(headers, HttpStatus.OK);
+            final Optional<AccountConsents> accountConsentsOptional = mRepository.findById(Long.valueOf(accountConsentId));
+            if (accountConsentsOptional.isPresent()) {
+                final AccountConsents accountConsents = accountConsentsOptional.get();
+                accountConsents.setAccountConsentStatus(OBReadConsentResponse1Data.StatusEnum.REVOKED.toString());
+                accountConsents.setStatusUpdateTime(new Date());
+                mRepository.save(accountConsents);
+
+                response = new ResponseEntity<>(headers, HttpStatus.OK);
+            } else {
+                response = new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } catch (Exception e) {
             response = new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
