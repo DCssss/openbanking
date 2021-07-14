@@ -109,7 +109,7 @@ paths:
         - AccountConsents
       summary: Create Account Access Consents
       description: Создание согласия на доступ к информации по счету
-      operationId: CreateAccountAccessConsents
+      operationId: createAccountConsents
       parameters:
         - $ref: '#/components/parameters/x-fapi-auth-date'
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
@@ -150,13 +150,55 @@ paths:
           - oauth2
           - api_key
         optional: false
+  /accountConsents/{accountConsentId}/authorize:
+    post:
+      tags:
+        - AccountConsents
+      summary: Authorize Account Access Consents
+      description: Авторизация согласия
+      operationId: authorizeAccountConsents
+      parameters:
+        - $ref: '#/components/parameters/accountConsentId'
+        - $ref: '#/components/parameters/x-fapi-auth-date'
+        - $ref: '#/components/parameters/x-fapi-customer-ip-address'
+        - $ref: '#/components/parameters/x-fapi-interaction-id'
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/Apikey'
+      responses:
+        '200':
+          $ref: '#/components/responses/AccountConsentsAuthorized'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '401':
+          $ref: '#/components/responses/401Error'
+        '403':
+          $ref: '#/components/responses/403Error'
+        '405':
+          $ref: '#/components/responses/405Error'
+        '406':
+          $ref: '#/components/responses/406Error'
+        '415':
+          $ref: '#/components/responses/415Error'
+        '429':
+          $ref: '#/components/responses/429Error'
+        '500':
+          $ref: '#/components/responses/500Error'
+      security:
+        - default: [ ]
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+      x-wso2-application-security:
+        security-types:
+          - oauth2
+          - api_key
+        optional: false
   '/accountConsents/{accountConsentId}':
     get:
       tags:
         - AccountConsents
       summary: Get Account Access Consents
       description: Получение статуса и параметров согласия на доступ к информации по счету
-      operationId: GetAccountAccessConsentsConsentId
+      operationId: getAccountConsentById
       parameters:
         - $ref: '#/components/parameters/accountConsentId'
         - $ref: '#/components/parameters/x-fapi-auth-date'
@@ -194,7 +236,7 @@ paths:
         - AccountConsents
       summary: Delete Account Access Consents
       description: Удаление (отзыв) согласия на доступ к информации по счету
-      operationId: DeleteAccountAccessConsentsConsentId
+      operationId: deleteAccountConsent
       parameters:
         - $ref: '#/components/parameters/accountConsentId'
         - $ref: '#/components/parameters/x-fapi-auth-date'
@@ -2418,6 +2460,15 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/OBReadConsentResponse1Post'
+    AccountConsentsAuthorized:
+      description: Account Access Consents Authorized
+      headers:
+        x-fapi-interaction-id:
+          description: 'RFC4122 UID, используемый в качестве идентификатора корреляции'
+          style: simple
+          explode: false
+          schema:
+            type: string
     204AccountAccessConsentsConsentIdDeleted:
       description: Account Access Consents Deleted
       headers:
@@ -2734,6 +2785,16 @@ components:
         Стандартный заголовок, который позволяет предоставлять учетные данные
         серверу авторизации и (или) серверу ресурсов в зависимости от типа
         запрашиваемого ресурса
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+    Apikey:
+      name: apikey
+      in: header
+      description: >-
+        Идентификатор, сгенерированный СДБО и переданный программному обеспечению (приложению) Пользователя API первого типа, при успешной идентификации и аутентификации Пользователя API первого типа, а также авторизации им своего программного обеспечения (приложения) на выполнение действий в СДБО от своего имени.
       required: false
       style: simple
       explode: false

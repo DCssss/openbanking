@@ -192,6 +192,10 @@ public final class AccountConsents {
         this.statusUpdateTime = statusUpdateTime;
     }
 
+    public void setClientId(final Long clientId) {
+        this.clientId = clientId;
+    }
+
     public OBReadConsentResponse1Data toOBReadConsentResponse1Data() {
         final OBReadConsentResponse1Data responseData = new OBReadConsentResponse1Data();
         responseData.setAccountConsentId(String.valueOf(accountConsentId));
