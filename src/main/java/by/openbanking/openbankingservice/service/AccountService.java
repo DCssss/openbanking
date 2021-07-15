@@ -7,8 +7,6 @@ import by.openbanking.openbankingservice.repository.AccountRepository;
 import by.openbanking.openbankingservice.repository.ListTransactionRepository;
 import by.openbanking.openbankingservice.repository.StatementsRepository;
 import by.openbanking.openbankingservice.util.AccountConverter;
-import com.sun.xml.bind.v2.TODO;
-import javafx.collections.ObservableListBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
