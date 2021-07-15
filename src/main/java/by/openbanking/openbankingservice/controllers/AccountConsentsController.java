@@ -11,17 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
-import java.util.HashMap;
-import java.util.Map;
 
 
 @RestController
-public final class AccountConsentController implements AccountConsentsApi {
+public final class AccountConsentsController implements AccountConsentsApi {
 
     private final AccountConsentsService mAccountConsentsService;
 
     @Autowired
-    public AccountConsentController(
+    public AccountConsentsController(
             final AccountConsentsService service
     ) {
         mAccountConsentsService = service;
@@ -37,6 +35,18 @@ public final class AccountConsentController implements AccountConsentsApi {
             final String apikey
     ) {
         return mAccountConsentsService.authorizeAccountConsents(accountConsentId, xFapiInteractionId, apikey);
+    }
+
+    @Override
+    public ResponseEntity<Void> rejectAccountConsents(
+            final String accountConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String apikey
+    ) {
+        return mAccountConsentsService.rejectAccountConsents(accountConsentId, xFapiInteractionId, apikey);
     }
 
     @Override

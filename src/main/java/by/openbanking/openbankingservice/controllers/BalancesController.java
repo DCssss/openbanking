@@ -24,8 +24,9 @@ public final class BalancesController implements BalancesApi {
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
-            final String authorization
+            final String authorization,
+            final String apikey
     ) {
-        return mBalancesService.getBalances(xFapiInteractionId);
+        return mBalancesService.getBalances(xFapiInteractionId, apikey);
     }
 }

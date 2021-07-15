@@ -1,6 +1,7 @@
 package by.openbanking.openbankingservice.model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
@@ -23,7 +24,7 @@ public final class Account {
     private Date accountStatusUpdateTime;
 
     @Column(name = "ACCOUNT_BALANCE_AMOUNT")
-    private double accountBalanceAmount;
+    private BigDecimal accountBalanceAmount;
 
     @Column(name = "ACCOUNT_CURRENCY")
     private String accountCurrency;
@@ -81,11 +82,11 @@ public final class Account {
         this.accountStatusUpdateTime = accountStatusUpdateTime;
     }
 
-    public double getAccountBalanceAmount() {
+    public BigDecimal getAccountBalanceAmount() {
         return accountBalanceAmount;
     }
 
-    public void setAccountBalanceAmount(double accountBalanceAmount) {
+    public void setAccountBalanceAmount(final BigDecimal accountBalanceAmount) {
         this.accountBalanceAmount = accountBalanceAmount;
     }
 
@@ -146,11 +147,11 @@ public final class Account {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof Account)) return false;
-        Account Account = (Account) o;
-        return getAccountId() == Account.getAccountId() && getClientId() == Account.getClientId() && Double.compare(Account.getAccountBalanceAmount(), getAccountBalanceAmount()) == 0 && Objects.equals(getAccountStatus(), Account.getAccountStatus()) && Objects.equals(getAccountStatusUpdateTime(), Account.getAccountStatusUpdateTime()) && Objects.equals(getAccountCurrency(), Account.getAccountCurrency()) && Objects.equals(getAccountCreationTime(), Account.getAccountCreationTime()) && Objects.equals(getAccountDescription(), Account.getAccountDescription()) && Objects.equals(getAccountName(), Account.getAccountName()) && Objects.equals(getAccountType(), Account.getAccountType()) && Objects.equals(getAccountSubType(), Account.getAccountSubType()) && getAccountIdentification().equals(Account.getAccountIdentification());
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return accountId == account.accountId && clientId == account.clientId && Objects.equals(accountStatus, account.accountStatus) && Objects.equals(accountStatusUpdateTime, account.accountStatusUpdateTime) && Objects.equals(accountBalanceAmount, account.accountBalanceAmount) && Objects.equals(accountCurrency, account.accountCurrency) && Objects.equals(accountCreationTime, account.accountCreationTime) && Objects.equals(accountDescription, account.accountDescription) && Objects.equals(accountName, account.accountName) && Objects.equals(accountType, account.accountType) && Objects.equals(accountSubType, account.accountSubType) && Objects.equals(accountIdentification, account.accountIdentification);
     }
 
     @Override

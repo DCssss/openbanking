@@ -4,6 +4,7 @@ import by.openbanking.openbankingservice.models.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public final class AccountConsents {
     private long accountConsentId;
 
     @Column(name = "STATUS")
-    private String accountConsentStatus;
+    private String status;
 
     @Column(name = "CREATION_TIME")
     private Date creationTime;
@@ -69,8 +70,8 @@ public final class AccountConsents {
 
     public static AccountConsents valueOf(final OBReadConsent1Data model) {
         AccountConsents accountConsents = new AccountConsents();
-        for (Permissions permissionsEnum : model.getPermissions()) {
-            switch (permissionsEnum) {
+        for (Permission permissionEnum : model.getPermissions()) {
+            switch (permissionEnum) {
                 case READACCOUNTSBASIC:
                     accountConsents.readAccountsBasic = 1;
                     break;
@@ -110,8 +111,8 @@ public final class AccountConsents {
         return accountConsentId;
     }
 
-    public String getAccountConsentStatus() {
-        return accountConsentStatus;
+    public String getStatus() {
+        return status;
     }
 
     public Date getCreationTime() {
@@ -178,8 +179,8 @@ public final class AccountConsents {
         return readTransactionsDebits;
     }
 
-    public void setAccountConsentStatus(final String accountConsentStatus) {
-        this.accountConsentStatus = accountConsentStatus;
+    public void setStatus(final String accountConsentStatus) {
+        this.status = accountConsentStatus;
     }
 
     public void setCreationTime(final Date creationTime) {
@@ -197,42 +198,13 @@ public final class AccountConsents {
     public OBReadConsentResponse1Data toOBReadConsentResponse1Data() {
         final OBReadConsentResponse1Data responseData = new OBReadConsentResponse1Data();
         responseData.setAccountConsentId(String.valueOf(accountConsentId));
-        responseData.setStatus(AccountConsentsStatus.fromValue(accountConsentStatus));
+        responseData.setStatus(AccountConsentsStatus.fromValue(status));
         responseData.setCreationDateTime(creationTime);
         responseData.setStatusUpdateDateTime(statusUpdateTime);
         responseData.setExpirationDate(expirationDate);
         responseData.setTransactionFromDate(transactionFromDate);
         responseData.setTransactionToDate(transactionToDate);
-
-        final List<Permissions> permissions = new ArrayList<>();
-        if (readAccountsBasic == 1) {
-            permissions.add(Permissions.READACCOUNTSBASIC);
-        }
-        if (readAccountsDetail == 1) {
-            permissions.add(Permissions.READACCOUNTSDETAIL);
-        }
-        if (readBalances == 1) {
-            permissions.add(Permissions.READBALANCES);
-        }
-        if (readStatementsBasic == 1) {
-            permissions.add(Permissions.READSTATEMENTSBASIC);
-        }
-        if (readStatementsDetail == 1) {
-            permissions.add(Permissions.READSTATEMENTSDETAIL);
-        }
-        if (readTransactionsBasic == 1) {
-            permissions.add(Permissions.READTRANSACTIONSBASIC);
-        }
-        if (readTransactionsDetail == 1) {
-            permissions.add(Permissions.READTRANSACTIONSDETAIL);
-        }
-        if (readTransactionsCredits == 1) {
-            permissions.add(Permissions.READTRANSACTIONSCREDITS);
-        }
-        if (readTransactionsDebits == 1) {
-            permissions.add(Permissions.READTRANSACTIONSDEBITS);
-        }
-        responseData.setPermissions(permissions);
+        responseData.setPermissions(new ArrayList<>(getPermission()));
 
         return responseData;
     }
@@ -240,41 +212,45 @@ public final class AccountConsents {
     public OBReadConsentResponse1PostData toOBReadConsentResponsePost1Data() {
         final OBReadConsentResponse1PostData responseData = new OBReadConsentResponse1PostData();
         responseData.setAccountConsentId(String.valueOf(accountConsentId));
-        responseData.setStatus(AccountConsentsStatus.fromValue(accountConsentStatus));
+        responseData.setStatus(AccountConsentsStatus.fromValue(status));
         responseData.setCreationDateTime(creationTime);
         responseData.setStatusUpdateDateTime(statusUpdateTime);
         responseData.setExpirationDate(expirationDate);
         responseData.setTransactionFromDate(transactionFromDate);
         responseData.setTransactionToDate(transactionToDate);
-        final List<Permissions> permissions = new ArrayList<>();
+        responseData.setPermissions(new ArrayList<>(getPermission()));
+        return responseData;
+    }
+
+    public Collection<Permission> getPermission() {
+        final List<Permission> permissions = new ArrayList<>();
         if (readAccountsBasic == 1) {
-            permissions.add(Permissions.READACCOUNTSBASIC);
+            permissions.add(Permission.READACCOUNTSBASIC);
         }
         if (readAccountsDetail == 1) {
-            permissions.add(Permissions.READACCOUNTSDETAIL);
+            permissions.add(Permission.READACCOUNTSDETAIL);
         }
         if (readBalances == 1) {
-            permissions.add(Permissions.READBALANCES);
+            permissions.add(Permission.READBALANCES);
         }
         if (readStatementsBasic == 1) {
-            permissions.add(Permissions.READSTATEMENTSBASIC);
+            permissions.add(Permission.READSTATEMENTSBASIC);
         }
         if (readStatementsDetail == 1) {
-            permissions.add(Permissions.READSTATEMENTSDETAIL);
+            permissions.add(Permission.READSTATEMENTSDETAIL);
         }
         if (readTransactionsBasic == 1) {
-            permissions.add(Permissions.READTRANSACTIONSBASIC);
+            permissions.add(Permission.READTRANSACTIONSBASIC);
         }
         if (readTransactionsDetail == 1) {
-            permissions.add(Permissions.READTRANSACTIONSDETAIL);
+            permissions.add(Permission.READTRANSACTIONSDETAIL);
         }
         if (readTransactionsCredits == 1) {
-            permissions.add(Permissions.READTRANSACTIONSCREDITS);
+            permissions.add(Permission.READTRANSACTIONSCREDITS);
         }
         if (readTransactionsDebits == 1) {
-            permissions.add(Permissions.READTRANSACTIONSDEBITS);
+            permissions.add(Permission.READTRANSACTIONSDEBITS);
         }
-        responseData.setPermissions(permissions);
-        return responseData;
+        return permissions;
     }
 }

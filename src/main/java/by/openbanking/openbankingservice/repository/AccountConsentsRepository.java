@@ -1,5 +1,6 @@
 package by.openbanking.openbankingservice.repository;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,4 +12,5 @@ public interface AccountConsentsRepository extends JpaRepository<AccountConsents
 
     List<AccountConsents> findByAccountConsentIdContaining(String accountConsentId);
 
+    Collection<AccountConsents> findByClientId(Long clientId);
 }

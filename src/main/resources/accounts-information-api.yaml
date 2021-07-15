@@ -192,6 +192,50 @@ paths:
           - oauth2
           - api_key
         optional: false
+
+  /accountConsents/{accountConsentId}/reject:
+    post:
+      tags:
+        - AccountConsents
+      summary: Reject Account Access Consents
+      description: Отклонение согласия
+      operationId: rejectAccountConsents
+      parameters:
+        - $ref: '#/components/parameters/accountConsentId'
+        - $ref: '#/components/parameters/x-fapi-auth-date'
+        - $ref: '#/components/parameters/x-fapi-customer-ip-address'
+        - $ref: '#/components/parameters/x-fapi-interaction-id'
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/Apikey'
+      responses:
+        '200':
+          $ref: '#/components/responses/AccountConsentsRejected'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '401':
+          $ref: '#/components/responses/401Error'
+        '403':
+          $ref: '#/components/responses/403Error'
+        '405':
+          $ref: '#/components/responses/405Error'
+        '406':
+          $ref: '#/components/responses/406Error'
+        '415':
+          $ref: '#/components/responses/415Error'
+        '429':
+          $ref: '#/components/responses/429Error'
+        '500':
+          $ref: '#/components/responses/500Error'
+      security:
+        - default: [ ]
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+      x-wso2-application-security:
+        security-types:
+          - oauth2
+          - api_key
+        optional: false
+
   '/accountConsents/{accountConsentId}':
     get:
       tags:
@@ -320,6 +364,7 @@ paths:
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/Apikey'
       responses:
         '200':
           $ref: '#/components/responses/200BalancesRead'
@@ -1636,7 +1681,7 @@ components:
         - Revoked
         - Expired
 
-    Permissions:
+    Permission:
       type: string
       description: >-
         Список разрешений к данным Клиента, к которым имеет доступ
@@ -2061,7 +2106,7 @@ components:
               minItems: 1
               type: array
               items:
-                $ref: '#/components/schemas/Permissions'
+                $ref: '#/components/schemas/Permission'
             ExpirationDate:
               type: string
               description: |-
@@ -2128,7 +2173,7 @@ components:
               minItems: 1
               type: array
               items:
-                $ref: '#/components/schemas/Permissions'
+                $ref: '#/components/schemas/Permission'
             expirationDate:
               type: string
               description: Дата окончания срока действия согласия.
@@ -2188,7 +2233,7 @@ components:
               minItems: 1
               type: array
               items:
-                $ref: '#/components/schemas/Permissions'
+                $ref: '#/components/schemas/Permission'
             expirationDate:
               type: string
               description: Дата окончания срока действия согласия
@@ -2439,6 +2484,17 @@ components:
           explode: false
           schema:
             type: string
+
+    AccountConsentsRejected:
+      description: Account Access Consents Rejected
+      headers:
+        x-fapi-interaction-id:
+          description: 'RFC4122 UID, используемый в качестве идентификатора корреляции'
+          style: simple
+          explode: false
+          schema:
+            type: string
+
     204AccountAccessConsentsConsentIdDeleted:
       description: Account Access Consents Deleted
       headers:
