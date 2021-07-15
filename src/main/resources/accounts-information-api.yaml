@@ -1,5 +1,5 @@
-
 openapi: 3.0.1
+
 info:
   title: Песочница открытых банковских API
   description: Песочница открытых банковских API
@@ -7,9 +7,11 @@ info:
   contact:
     email: apiteam@st.by
   version: '1'
+
 servers:
   - url: 'https://paymentapi.st.by:8243/open-banking/v1.0'
   - url: 'http://paymentapi.st.by:8280/open-banking/v1.0'
+
 tags:
   - name: AccountConsents
     description: Согласие на доступ к счету
@@ -21,6 +23,7 @@ tags:
     description: Транзакции
   - name: Statements
     description: Выписки
+
 paths:
   /accounts:
     get:
@@ -573,6 +576,7 @@ paths:
           - oauth2
           - api_key
         optional: false
+
 components:
   schemas:
     OBSetStatement:

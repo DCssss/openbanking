@@ -57,7 +57,7 @@ public final class AccountConsentsController implements AccountConsentsApi {
             final String xFapiInteractionId,
             final String authorization
     ) {
-        return mAccountConsentsService.createAccountAccessConsents(body, xFapiInteractionId);
+        return mAccountConsentsService.createAccountConsents(body, xFapiInteractionId);
     }
 
     @Override
