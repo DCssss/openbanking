@@ -1063,7 +1063,7 @@ components:
         CreditDebitIndicator:
           $ref: '#/components/schemas/OBCreditDebitCode_2'
         Type:
-          $ref: '#/components/schemas/OBBalanceType1Code'
+          $ref: '#/components/schemas/BalanceType'
         balanceAmount:
           pattern: '^d{1,13}$|^d{1,13}.d{1,5}$'
           type: string
@@ -1622,7 +1622,38 @@ components:
       enum:
         - Credit
         - Debit
-    OBBalanceType1Code:
+
+    AccountConsentsStatus:
+      maxLength: 35
+      minLength: 1
+      type: string
+      description: Статусы  согласия на доступ к информации о счете
+      example: Authorised
+      enum:
+        - AwaitingAuthorisation
+        - Authorised
+        - Rejected
+        - Revoked
+        - Expired
+
+    Permissions:
+      type: string
+      description: >-
+        Список разрешений к данным Клиента, к которым имеет доступ
+        Пользователь API. Разрешения должны быть запрошены для
+        авторизации на стороне Поставщика API и одобрены Клиентом.
+      enum:
+        - ReadAccountsBasic
+        - ReadAccountsDetail
+        - ReadBalances
+        - ReadStatementsBasic
+        - ReadStatementsDetail
+        - ReadTransactionsBasic
+        - ReadTransactionsCredits
+        - ReadTransactionsDebits
+        - ReadTransactionsDetail
+
+    BalanceType:
       type: string
       description: 'Тип баланса, заполняется согласно ISO 20022.'
       enum:
@@ -1636,6 +1667,7 @@ components:
         - OpeningBooked
         - ExpectClosedBooked
         - PreviouslyClosedBooked
+
     OBActiveCurrencyAndAmount_SimpleType:
       pattern: '^d{1,13}$|^d{1,13}.d{1,5}$'
       type: string
@@ -1674,7 +1706,7 @@ components:
                   creditDebitIndicator:
                     $ref: '#/components/schemas/OBCreditDebitCode_2'
                   type:
-                    $ref: '#/components/schemas/OBBalanceType1Code'
+                    $ref: '#/components/schemas/BalanceType'
                   dateTime:
                     type: string
                     description: |-
@@ -2029,21 +2061,7 @@ components:
               minItems: 1
               type: array
               items:
-                type: string
-                description: >-
-                  Список разрешений к данным Клиента, к которым имеет доступ
-                  Пользователь API. Разрешения должны быть запрошены для
-                  авторизации на стороне Поставщика API и одобрены Клиентом.
-                enum:
-                  - ReadAccountsBasic
-                  - ReadAccountsDetail
-                  - ReadBalances
-                  - ReadStatementsBasic
-                  - ReadStatementsDetail
-                  - ReadTransactionsBasic
-                  - ReadTransactionsCredits
-                  - ReadTransactionsDebits
-                  - ReadTransactionsDetail
+                $ref: '#/components/schemas/Permissions'
             ExpirationDate:
               type: string
               description: |-
@@ -2101,17 +2119,7 @@ components:
               description: Идентификатор согласия
               example: 3cgfc598-r5gh-9758-b358-587a5479610s
             status:
-              maxLength: 35
-              minLength: 1
-              type: string
-              description: Статусы  согласия на доступ к информации о счете
-              example: Authorised
-              enum:
-                - AwaitingAuthorisation
-                - Authorised
-                - Rejected
-                - Revoked
-                - Expired
+              $ref: '#/components/schemas/AccountConsentsStatus'
             statusUpdateDateTime:
               $ref: '#/components/schemas/StatusUpdateDateTimeConsent'
             creationDateTime:
@@ -2120,21 +2128,7 @@ components:
               minItems: 1
               type: array
               items:
-                type: string
-                description: >-
-                  Список разрешений к данным Клиента, к которым имеет доступ
-                  Пользователь API. Разрешения должны быть запрошены для
-                  авторизации на стороне Поставщика API и одобрены Клиентом.
-                enum:
-                  - ReadAccountsBasic
-                  - ReadAccountsDetail
-                  - ReadBalances
-                  - ReadStatementsBasic
-                  - ReadStatementsDetail
-                  - ReadTransactionsBasic
-                  - ReadTransactionsDetail
-                  - ReadTransactionsCredits
-                  - ReadTransactionsDebits
+                $ref: '#/components/schemas/Permissions'
             expirationDate:
               type: string
               description: Дата окончания срока действия согласия.
@@ -2185,17 +2179,7 @@ components:
               description: Идентификатор согласия
               example: 3cgfc598-r5gh-9758-b358-587a5479610s
             status:
-              maxLength: 35
-              minLength: 1
-              type: string
-              description: Статусы  согласия на доступ к информации о счете
-              example: AwaitingAuthorisation
-              enum:
-                - AwaitingAuthorisation
-                - Authorised
-                - Rejected
-                - Revoked
-                - Expired
+              $ref: '#/components/schemas/AccountConsentsStatus'
             statusUpdateDateTime:
               $ref: '#/components/schemas/StatusUpdateDateTimeConsent'
             creationDateTime:
@@ -2204,21 +2188,7 @@ components:
               minItems: 1
               type: array
               items:
-                type: string
-                description: >-
-                  Список разрешений к данным Клиента, к которым имеет доступ
-                  Пользователь API. Разрешения должны быть запрошены для
-                  авторизации на стороне Поставщика API и одобрены Клиентом.
-                enum:
-                  - ReadAccountsBasic
-                  - ReadAccountsDetail
-                  - ReadBalances
-                  - ReadStatementsBasic
-                  - ReadStatementsDetail
-                  - ReadTransactionsBasic
-                  - ReadTransactionsDetail
-                  - ReadTransactionsCredits
-                  - ReadTransactionsDebits
+                $ref: '#/components/schemas/Permissions'
             expirationDate:
               type: string
               description: Дата окончания срока действия согласия

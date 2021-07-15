@@ -1,8 +1,6 @@
 package by.openbanking.openbankingservice.model;
 
-import by.openbanking.openbankingservice.models.OBReadConsent1Data;
-import by.openbanking.openbankingservice.models.OBReadConsentResponse1Data;
-import by.openbanking.openbankingservice.models.OBReadConsentResponse1PostData;
+import by.openbanking.openbankingservice.models.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -71,7 +69,7 @@ public final class AccountConsents {
 
     public static AccountConsents valueOf(final OBReadConsent1Data model) {
         AccountConsents accountConsents = new AccountConsents();
-        for (OBReadConsent1Data.PermissionsEnum permissionsEnum : model.getPermissions()) {
+        for (Permissions permissionsEnum : model.getPermissions()) {
             switch (permissionsEnum) {
                 case READACCOUNTSBASIC:
                     accountConsents.readAccountsBasic = 1;
@@ -199,40 +197,40 @@ public final class AccountConsents {
     public OBReadConsentResponse1Data toOBReadConsentResponse1Data() {
         final OBReadConsentResponse1Data responseData = new OBReadConsentResponse1Data();
         responseData.setAccountConsentId(String.valueOf(accountConsentId));
-        responseData.setStatus(OBReadConsentResponse1Data.StatusEnum.fromValue(accountConsentStatus));
+        responseData.setStatus(AccountConsentsStatus.fromValue(accountConsentStatus));
         responseData.setCreationDateTime(creationTime);
         responseData.setStatusUpdateDateTime(statusUpdateTime);
         responseData.setExpirationDate(expirationDate);
         responseData.setTransactionFromDate(transactionFromDate);
         responseData.setTransactionToDate(transactionToDate);
 
-        final List<OBReadConsentResponse1Data.PermissionsEnum> permissions = new ArrayList<>();
+        final List<Permissions> permissions = new ArrayList<>();
         if (readAccountsBasic == 1) {
-            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READACCOUNTSBASIC);
+            permissions.add(Permissions.READACCOUNTSBASIC);
         }
         if (readAccountsDetail == 1) {
-            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READACCOUNTSDETAIL);
+            permissions.add(Permissions.READACCOUNTSDETAIL);
         }
         if (readBalances == 1) {
-            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READBALANCES);
+            permissions.add(Permissions.READBALANCES);
         }
         if (readStatementsBasic == 1) {
-            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READSTATEMENTSBASIC);
+            permissions.add(Permissions.READSTATEMENTSBASIC);
         }
         if (readStatementsDetail == 1) {
-            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READSTATEMENTSDETAIL);
+            permissions.add(Permissions.READSTATEMENTSDETAIL);
         }
         if (readTransactionsBasic == 1) {
-            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READTRANSACTIONSBASIC);
+            permissions.add(Permissions.READTRANSACTIONSBASIC);
         }
         if (readTransactionsDetail == 1) {
-            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READTRANSACTIONSDETAIL);
+            permissions.add(Permissions.READTRANSACTIONSDETAIL);
         }
         if (readTransactionsCredits == 1) {
-            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READTRANSACTIONSCREDITS);
+            permissions.add(Permissions.READTRANSACTIONSCREDITS);
         }
         if (readTransactionsDebits == 1) {
-            permissions.add(OBReadConsentResponse1Data.PermissionsEnum.READTRANSACTIONSDEBITS);
+            permissions.add(Permissions.READTRANSACTIONSDEBITS);
         }
         responseData.setPermissions(permissions);
 
@@ -242,39 +240,39 @@ public final class AccountConsents {
     public OBReadConsentResponse1PostData toOBReadConsentResponsePost1Data() {
         final OBReadConsentResponse1PostData responseData = new OBReadConsentResponse1PostData();
         responseData.setAccountConsentId(String.valueOf(accountConsentId));
-        responseData.setStatus(OBReadConsentResponse1PostData.StatusEnum.fromValue(accountConsentStatus));
+        responseData.setStatus(AccountConsentsStatus.fromValue(accountConsentStatus));
         responseData.setCreationDateTime(creationTime);
         responseData.setStatusUpdateDateTime(statusUpdateTime);
         responseData.setExpirationDate(expirationDate);
         responseData.setTransactionFromDate(transactionFromDate);
         responseData.setTransactionToDate(transactionToDate);
-        final List<OBReadConsentResponse1PostData.PermissionsEnum> permissions = new ArrayList<>();
+        final List<Permissions> permissions = new ArrayList<>();
         if (readAccountsBasic == 1) {
-            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READACCOUNTSBASIC);
+            permissions.add(Permissions.READACCOUNTSBASIC);
         }
         if (readAccountsDetail == 1) {
-            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READACCOUNTSDETAIL);
+            permissions.add(Permissions.READACCOUNTSDETAIL);
         }
         if (readBalances == 1) {
-            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READBALANCES);
+            permissions.add(Permissions.READBALANCES);
         }
         if (readStatementsBasic == 1) {
-            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READSTATEMENTSBASIC);
+            permissions.add(Permissions.READSTATEMENTSBASIC);
         }
         if (readStatementsDetail == 1) {
-            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READSTATEMENTSDETAIL);
+            permissions.add(Permissions.READSTATEMENTSDETAIL);
         }
         if (readTransactionsBasic == 1) {
-            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READTRANSACTIONSBASIC);
+            permissions.add(Permissions.READTRANSACTIONSBASIC);
         }
         if (readTransactionsDetail == 1) {
-            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READTRANSACTIONSDETAIL);
+            permissions.add(Permissions.READTRANSACTIONSDETAIL);
         }
         if (readTransactionsCredits == 1) {
-            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READTRANSACTIONSCREDITS);
+            permissions.add(Permissions.READTRANSACTIONSCREDITS);
         }
         if (readTransactionsDebits == 1) {
-            permissions.add(OBReadConsentResponse1PostData.PermissionsEnum.READTRANSACTIONSDEBITS);
+            permissions.add(Permissions.READTRANSACTIONSDEBITS);
         }
         responseData.setPermissions(permissions);
         return responseData;

@@ -1,10 +1,7 @@
 package by.openbanking.openbankingservice.service;
 
 import by.openbanking.openbankingservice.model.AccountConsents;
-import by.openbanking.openbankingservice.models.OBReadConsent1;
-import by.openbanking.openbankingservice.models.OBReadConsentResponse1;
-import by.openbanking.openbankingservice.models.OBReadConsentResponse1Data;
-import by.openbanking.openbankingservice.models.OBReadConsentResponse1Post;
+import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.AccountConsentsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -57,7 +54,7 @@ public class AccountConsentsService {
 
                 final AccountConsents accountConsents = accountConsentsOptional.get();
                 accountConsents.setClientId(clientId);
-                accountConsents.setAccountConsentStatus(OBReadConsentResponse1Data.StatusEnum.AUTHORISED.toString());
+                accountConsents.setAccountConsentStatus(AccountConsentsStatus.AUTHORISED.toString());
                 accountConsents.setStatusUpdateTime(new Date());
                 mRepository.save(accountConsents);
                 response = new ResponseEntity<>(headers, HttpStatus.OK);
@@ -81,7 +78,7 @@ public class AccountConsentsService {
         ResponseEntity<OBReadConsentResponse1Post> response;
         try {
             final AccountConsents accountConsents = AccountConsents.valueOf(body.getData());
-            accountConsents.setAccountConsentStatus(OBReadConsentResponse1Data.StatusEnum.AWAITINGAUTHORISATION.toString());
+            accountConsents.setAccountConsentStatus(AccountConsentsStatus.AWAITINGAUTHORISATION.toString());
 
             final Date now = new Date();
             accountConsents.setStatusUpdateTime(now);
@@ -111,7 +108,7 @@ public class AccountConsentsService {
             final Optional<AccountConsents> accountConsentsOptional = mRepository.findById(Long.valueOf(accountConsentId));
             if (accountConsentsOptional.isPresent()) {
                 final AccountConsents accountConsents = accountConsentsOptional.get();
-                accountConsents.setAccountConsentStatus(OBReadConsentResponse1Data.StatusEnum.REVOKED.toString());
+                accountConsents.setAccountConsentStatus(AccountConsentsStatus.REVOKED.toString());
                 accountConsents.setStatusUpdateTime(new Date());
                 mRepository.save(accountConsents);
 
