@@ -65,7 +65,7 @@ public class AccountService {
 
         final Optional<by.openbanking.openbankingservice.model.Account> accountData = mAccountRepository.findById(Long.valueOf(accountId));
 
-        final Long clientId = StubData.CLIENTS.get(X_API_KEY);
+        final Long clientId = StubData.CLIENTS.get(xApiKey);
         if (accountData.isPresent() && clientId != null && RightsController.isHaveRights(mAccountConsentsRepository, clientId, "/accounts/{accountId}")) {
 
             final Accounts accData = new Accounts();
@@ -88,7 +88,7 @@ public class AccountService {
 
             responseEntity = new ResponseEntity<>(respData, headers, HttpStatus.OK);
         } else {
-            responseEntity = new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+            responseEntity = new ResponseEntity<>(headers, HttpStatus.UNAUTHORIZED);
         }
 
         return responseEntity;
@@ -116,9 +116,10 @@ public class AccountService {
             final List<by.openbanking.openbankingservice.models.Account> accountsForResponse =
                     AccountConverter.toAccount(mAccountRepository.findAll());
 
-            final Long clientId = StubData.CLIENTS.get(X_API_KEY);
+            final Long clientId = StubData.CLIENTS.get(xApiKey);
 
             if (!accountsForResponse.isEmpty() && clientId != null && RightsController.isHaveRights(mAccountConsentsRepository, clientId, "/accounts")) {
+
                 final Accounts accData = new Accounts();
                 accData.setAccounts(accountsForResponse);
 
@@ -139,7 +140,7 @@ public class AccountService {
 
                 responseEntity = new ResponseEntity<>(respData, headers, HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
 
         } catch (Exception e) {
@@ -167,9 +168,11 @@ public class AccountService {
         headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
         headers.add(AUTHORIZATION, authorization);
 
-        final Optional<by.openbanking.openbankingservice.model.Account> accountData = mAccountRepository.findById(Long.valueOf(accountId));
 
-        if (accountData.isPresent()) {
+        final Optional<by.openbanking.openbankingservice.model.Account> accountData = mAccountRepository.findById(Long.valueOf(accountId));
+        final Long clientId = StubData.CLIENTS.get(xApiKey);
+
+        if (accountData.isPresent() && clientId != null && RightsController.isHaveRights(mAccountConsentsRepository, clientId, "/accounts/{accountId}/balances")) {
 
             OBReadBalance1Data obReadBalance1Data = new OBReadBalance1Data();
             OBReadBalance1DataBalance obReadBalance1DataBalance = new OBReadBalance1DataBalance();
@@ -196,7 +199,7 @@ public class AccountService {
 
             responseEntity = new ResponseEntity<>(respData, headers, HttpStatus.OK);
         } else {
-            responseEntity = new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+            responseEntity = new ResponseEntity<>(headers, HttpStatus.UNAUTHORIZED);
         }
 
         return responseEntity;
@@ -287,8 +290,8 @@ public class AccountService {
 
 
         List<ListTransactions> listForResponse = mListTransactionRepository.findListTransactionsByAccountID(accountId,transactionListId);
-
-        if (!listForResponse.isEmpty()) {
+        final Long clientId = StubData.CLIENTS.get(xApiKey);
+        if (!listForResponse.isEmpty() && clientId != null && RightsController.isHaveRights(mAccountConsentsRepository, clientId, "/accounts/{accountId}/transactions/{transactionListId}")) {
 
             OBReadTransaction6 dataForResponse = new OBReadTransaction6();
             OBReadDataTransaction6 obReadDataTransaction6 = new OBReadDataTransaction6();
@@ -365,7 +368,8 @@ public class AccountService {
 
 
         List<Statements> listForResponse = mStatementsRepository.findStatementsByAccountID(accountId,statementId);
-        if (!listForResponse.isEmpty()) {
+        final Long clientId = StubData.CLIENTS.get(xApiKey);
+        if (!listForResponse.isEmpty() && clientId != null && RightsController.isHaveRights(mAccountConsentsRepository, clientId, "/statements/accounts/{accountId}/statements/{statementId}")) {
 
             final OBReadStatement2 respData = new OBReadStatement2();
             OBReadDataStatement2 obReadDataStatement2 = new OBReadDataStatement2();

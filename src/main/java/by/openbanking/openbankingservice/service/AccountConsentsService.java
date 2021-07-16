@@ -64,7 +64,7 @@ public class AccountConsentsService {
         headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
         ResponseEntity<Void> response;
-        final Long clientId = StubData.CLIENTS.get(X_API_KEY);
+        final Long clientId = StubData.CLIENTS.get(xApiKey);
 
         if (clientId != null) {
 
@@ -116,7 +116,7 @@ public class AccountConsentsService {
         ResponseEntity<Void> response;
 
         //получить ClientId по apikey
-        final Long clientId = StubData.CLIENTS.get(X_API_KEY);
+        final Long clientId = StubData.CLIENTS.get(xApiKey);
 
         if (clientId != null) {
 

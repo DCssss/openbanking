@@ -1,6 +1,7 @@
 package by.openbanking.openbankingservice.util;
 
 import by.openbanking.openbankingservice.model.AccountConsents;
+import by.openbanking.openbankingservice.models.AccountConsentsStatus;
 import by.openbanking.openbankingservice.models.Permission;
 import by.openbanking.openbankingservice.repository.AccountConsentsRepository;
 
@@ -23,6 +24,7 @@ public final class RightsController {
                         .findByClientId(clientId)
                         .stream()
                         .filter(accountConsents -> accountConsents.getExpirationDate().after(new Date()))
+                        .filter(accountConsents -> accountConsents.getStatus().equals(AccountConsentsStatus.AUTHORISED.toString()))
                         .collect(Collectors.toList());
         for (AccountConsents accountConsents : accountConsentsCollection) {
             for (Permission permission : accountConsents.getPermission()) {

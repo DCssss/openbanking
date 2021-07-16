@@ -94,11 +94,11 @@ public class BalancesService {
 
                 responseEntity = new ResponseEntity<>(respData, headers, HttpStatus.OK);
             } else {
-                responseEntity = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                responseEntity = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
 
         } else {
-            responseEntity = new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+            responseEntity = new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
         return responseEntity;
     }
