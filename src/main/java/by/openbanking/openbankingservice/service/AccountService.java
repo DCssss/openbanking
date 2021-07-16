@@ -3,10 +3,13 @@ package by.openbanking.openbankingservice.service;
 import by.openbanking.openbankingservice.model.ListTransactions;
 import by.openbanking.openbankingservice.model.Statements;
 import by.openbanking.openbankingservice.models.*;
+import by.openbanking.openbankingservice.repository.AccountConsentsRepository;
 import by.openbanking.openbankingservice.repository.AccountRepository;
 import by.openbanking.openbankingservice.repository.ListTransactionRepository;
 import by.openbanking.openbankingservice.repository.StatementsRepository;
 import by.openbanking.openbankingservice.util.AccountConverter;
+import by.openbanking.openbankingservice.util.RightsController;
+import by.openbanking.openbankingservice.util.StubData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,17 +28,20 @@ public class AccountService {
     private static final String X_FAPI_CUSTOMER_IP_ADDRESS = "x-fapi-customer-ip-address";
     private static final String X_FAPI_INTERACTION_ID = "x-fapi-interaction-id";
     private static final String AUTHORIZATION = "authorization";
-    private static final String API_KEY = "apikey";
+    private static final String X_API_KEY = "x-api-key";
+    private static final String X_ACCOUNT_CONSENT_ID = "x-accountConsentId";
 
     private final AccountRepository mAccountRepository;
     private final ListTransactionRepository mListTransactionRepository;
     private final StatementsRepository mStatementsRepository;
+    private final AccountConsentsRepository mAccountConsentsRepository;
 
     @Autowired
-    public AccountService(final AccountRepository accountRepository, ListTransactionRepository mListTransactionRepository, StatementsRepository mStatementsRepository) {
+    public AccountService(final AccountRepository accountRepository, ListTransactionRepository mListTransactionRepository, StatementsRepository mStatementsRepository, AccountConsentsRepository mAccountConsentsRepository) {
         this.mAccountRepository = accountRepository;
         this.mListTransactionRepository = mListTransactionRepository;
         this.mStatementsRepository = mStatementsRepository;
+        this.mAccountConsentsRepository = mAccountConsentsRepository;
     }
 
     @Transactional(readOnly = true)
@@ -44,7 +50,9 @@ public class AccountService {
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
-            final String authorization
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
     ) {
         ResponseEntity<InlineResponse2001> responseEntity;
 
@@ -57,7 +65,8 @@ public class AccountService {
 
         final Optional<by.openbanking.openbankingservice.model.Account> accountData = mAccountRepository.findById(Long.valueOf(accountId));
 
-        if (accountData.isPresent()) {
+        final Long clientId = StubData.CLIENTS.get(X_API_KEY);
+        if (accountData.isPresent() && clientId != null && RightsController.isHaveRights(mAccountConsentsRepository, clientId, "/accounts/{accountId}")) {
 
             final Accounts accData = new Accounts();
             accData.setAccounts(Collections.singletonList(AccountConverter.toAccount(accountData.get())));
@@ -90,7 +99,9 @@ public class AccountService {
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
-            final String authorization
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
     ) {
         ResponseEntity<InlineResponse200> responseEntity;
 
@@ -105,7 +116,9 @@ public class AccountService {
             final List<by.openbanking.openbankingservice.models.Account> accountsForResponse =
                     AccountConverter.toAccount(mAccountRepository.findAll());
 
-            if (!accountsForResponse.isEmpty()) {
+            final Long clientId = StubData.CLIENTS.get(X_API_KEY);
+
+            if (!accountsForResponse.isEmpty() && clientId != null && RightsController.isHaveRights(mAccountConsentsRepository, clientId, "/accounts")) {
                 final Accounts accData = new Accounts();
                 accData.setAccounts(accountsForResponse);
 
@@ -139,10 +152,12 @@ public class AccountService {
     @Transactional(readOnly = true)
     public ResponseEntity<OBReadBalance1> getAccountsAccountIdBalances(
             @Size(min = 1, max = 35) String accountId,
-            String xFapiAuthDate,
-            String xFapiCustomerIpAddress,
-            String xFapiInteractionId,
-            String authorization
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
     ) {
         ResponseEntity<OBReadBalance1> responseEntity;
 
@@ -189,12 +204,14 @@ public class AccountService {
 
     @Transactional
     public ResponseEntity<OBSetAccountsTransaction> setTransaction(
-            @Valid OBSetTransaction body,
-            @Size(min = 1, max = 35) String accountId,
-            String xFapiAuthDate,
-            String xFapiCustomerIpAddress,
-            String xFapiInteractionId,
-            String authorization
+            @Valid final OBSetTransaction body,
+            @Size(min = 1, max = 35) final String accountId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
     ) {
         final HttpHeaders headers = new HttpHeaders();
         headers.add(X_FAPI_AUTH_DATE, xFapiAuthDate);
@@ -250,12 +267,14 @@ public class AccountService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<OBReadTransaction6> getAccountsAccountIdTransactions(
-            @Size(min = 1, max = 35) String accountId,
-            @Size(min = 1, max = 35) String transactionListId,
-            String xFapiAuthDate,
-            String xFapiCustomerIpAddress,
-            String xFapiInteractionId,
-            String authorization
+            @Size(min = 1, max = 35) final String accountId,
+            @Size(min = 1, max = 35) final String transactionListId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
     )
     {
         ResponseEntity<OBReadTransaction6> responseEntity;
@@ -297,7 +316,7 @@ public class AccountService {
             List<OBTransaction6> listTransaction6 = new ArrayList<>();
             obTransaction6.setAccountId(accountId);
             obTransaction6.setBookingDateTime(listForResponse.stream().findFirst().get().getListTransactionFromBookingTime());
-            listTransaction6.add(obTransaction6);
+           // listTransaction6.add(obTransaction6);
 
             obReadDataTransaction6.setTransactionListId(transactionListId);
             obReadDataTransaction6.setTransaction(listTransaction6);
@@ -305,7 +324,7 @@ public class AccountService {
 
             // TODO: 13.07.2021 Надо не забыть доделать блоки Link и Meta , пока заглушки
             final LinkGetTransaction links = new LinkGetTransaction();
-            links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
+            links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/" + accountId + "/transaction/" + transactionListId);
 
             final Date now = new Date();
             final MetaGetTransaction meta = new MetaGetTransaction();
@@ -327,12 +346,14 @@ public class AccountService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<OBReadStatement2> getAccountsAccountIdStatementsStatementId(
-            @Size(min = 1, max = 35) String statementId,
-            @Size(min = 1, max = 35) String accountId,
-            String xFapiAuthDate,
-            String xFapiCustomerIpAddress,
-            String xFapiInteractionId,
-            String authorization
+            @Size(min = 1, max = 35) final String statementId,
+            @Size(min = 1, max = 35) final String accountId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
     ) {
         ResponseEntity<OBReadStatement2> responseEntity;
 

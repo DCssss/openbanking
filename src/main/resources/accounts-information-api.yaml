@@ -1,5 +1,4 @@
 openapi: 3.0.1
-
 info:
   title: Песочница открытых банковских API
   description: Песочница открытых банковских API
@@ -7,11 +6,9 @@ info:
   contact:
     email: apiteam@st.by
   version: '1'
-
 servers:
   - url: 'https://paymentapi.st.by:8243/open-banking/v1.0'
   - url: 'http://paymentapi.st.by:8280/open-banking/v1.0'
-
 tags:
   - name: AccountConsents
     description: Согласие на доступ к счету
@@ -23,7 +20,6 @@ tags:
     description: Транзакции
   - name: Statements
     description: Выписки
-
 paths:
   /accounts:
     get:
@@ -37,6 +33,8 @@ paths:
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/x-api-key'
+        - $ref: '#/components/parameters/x-accountConsentId'
       responses:
         '200':
           $ref: '#/components/responses/200GetAccounts'
@@ -78,6 +76,8 @@ paths:
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/x-api-key'
+        - $ref: '#/components/parameters/x-accountConsentId'
       responses:
         '200':
           $ref: '#/components/responses/200AccountById'
@@ -118,6 +118,8 @@ paths:
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/x-api-key'
+        - $ref: '#/components/parameters/x-accountConsentId'
       requestBody:
         description: Default
         content:
@@ -153,7 +155,7 @@ paths:
           - oauth2
           - api_key
         optional: false
-  /accountConsents/{accountConsentId}/authorize:
+  '/accountConsents/{accountConsentId}/authorize':
     post:
       tags:
         - AccountConsents
@@ -166,7 +168,8 @@ paths:
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
-        - $ref: '#/components/parameters/Apikey'
+        - $ref: '#/components/parameters/x-api-key'
+        - $ref: '#/components/parameters/x-accountConsentId'
       responses:
         '200':
           $ref: '#/components/responses/AccountConsentsAuthorized'
@@ -187,7 +190,7 @@ paths:
         '500':
           $ref: '#/components/responses/500Error'
       security:
-        - default: [ ]
+        - default: []
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -195,8 +198,7 @@ paths:
           - oauth2
           - api_key
         optional: false
-
-  /accountConsents/{accountConsentId}/reject:
+  '/accountConsents/{accountConsentId}/reject':
     post:
       tags:
         - AccountConsents
@@ -209,7 +211,8 @@ paths:
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
-        - $ref: '#/components/parameters/Apikey'
+        - $ref: '#/components/parameters/x-api-key'
+        - $ref: '#/components/parameters/x-accountConsentId'
       responses:
         '200':
           $ref: '#/components/responses/AccountConsentsRejected'
@@ -230,7 +233,7 @@ paths:
         '500':
           $ref: '#/components/responses/500Error'
       security:
-        - default: [ ]
+        - default: []
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -238,7 +241,6 @@ paths:
           - oauth2
           - api_key
         optional: false
-
   '/accountConsents/{accountConsentId}':
     get:
       tags:
@@ -252,6 +254,8 @@ paths:
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/x-api-key'
+        - $ref: '#/components/parameters/x-accountConsentId'
       responses:
         '200':
           $ref: '#/components/responses/200AccountAccessConsentsConsentIdRead'
@@ -290,6 +294,8 @@ paths:
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/x-api-key'
+        - $ref: '#/components/parameters/x-accountConsentId'
       responses:
         '204':
           $ref: '#/components/responses/204AccountAccessConsentsConsentIdDeleted'
@@ -329,6 +335,8 @@ paths:
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/x-api-key'
+        - $ref: '#/components/parameters/x-accountConsentId'
       responses:
         '200':
           $ref: '#/components/responses/200AccountsAccountIdBalancesRead'
@@ -367,7 +375,8 @@ paths:
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
-        - $ref: '#/components/parameters/Apikey'
+        - $ref: '#/components/parameters/x-api-key'
+        - $ref: '#/components/parameters/x-accountConsentId'
       responses:
         '200':
           $ref: '#/components/responses/200BalancesRead'
@@ -410,6 +419,8 @@ paths:
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/x-api-key'
+        - $ref: '#/components/parameters/x-accountConsentId'
       responses:
         '200':
           $ref: '#/components/responses/200AccountsAccountIdStatementsStatementIdRead'
@@ -451,6 +462,8 @@ paths:
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/x-api-key'
+        - $ref: '#/components/parameters/x-accountConsentId'
       requestBody:
         description: Default
         content:
@@ -502,6 +515,8 @@ paths:
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/x-api-key'
+        - $ref: '#/components/parameters/x-accountConsentId'
       responses:
         '200':
           $ref: '#/components/responses/200AccountsAccountIdTransactionsRead'
@@ -541,6 +556,8 @@ paths:
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/x-api-key'
+        - $ref: '#/components/parameters/x-accountConsentId'
       requestBody:
         description: Default
         content:
@@ -576,7 +593,6 @@ paths:
           - oauth2
           - api_key
         optional: false
-
 components:
   schemas:
     OBSetStatement:
@@ -1671,7 +1687,6 @@ components:
       enum:
         - Credit
         - Debit
-
     AccountConsentsStatus:
       maxLength: 35
       minLength: 1
@@ -1684,13 +1699,12 @@ components:
         - Rejected
         - Revoked
         - Expired
-
     Permission:
       type: string
       description: >-
-        Список разрешений к данным Клиента, к которым имеет доступ
-        Пользователь API. Разрешения должны быть запрошены для
-        авторизации на стороне Поставщика API и одобрены Клиентом.
+        Список разрешений к данным Клиента, к которым имеет доступ Пользователь
+        API. Разрешения должны быть запрошены для авторизации на стороне
+        Поставщика API и одобрены Клиентом.
       enum:
         - ReadAccountsBasic
         - ReadAccountsDetail
@@ -1701,7 +1715,6 @@ components:
         - ReadTransactionsCredits
         - ReadTransactionsDebits
         - ReadTransactionsDetail
-
     BalanceType:
       type: string
       description: 'Тип баланса, заполняется согласно ISO 20022.'
@@ -1716,7 +1729,6 @@ components:
         - OpeningBooked
         - ExpectClosedBooked
         - PreviouslyClosedBooked
-
     OBActiveCurrencyAndAmount_SimpleType:
       pattern: '^d{1,13}$|^d{1,13}.d{1,5}$'
       type: string
@@ -2229,6 +2241,8 @@ components:
               example: 3cgfc598-r5gh-9758-b358-587a5479610s
             status:
               $ref: '#/components/schemas/AccountConsentsStatus'
+            link:
+              $ref: '#/components/schemas/LinkConsents'
             statusUpdateDateTime:
               $ref: '#/components/schemas/StatusUpdateDateTimeConsent'
             creationDateTime:
@@ -2271,6 +2285,9 @@ components:
       type: string
       format: date-time
       example: '2021-04-15T09:00:07+03:00'
+    LinkConsents:
+      type: string
+      format: url
     LinksConsentPost:
       required:
         - Self
@@ -2488,7 +2505,6 @@ components:
           explode: false
           schema:
             type: string
-
     AccountConsentsRejected:
       description: Account Access Consents Rejected
       headers:
@@ -2498,7 +2514,6 @@ components:
           explode: false
           schema:
             type: string
-
     204AccountAccessConsentsConsentIdDeleted:
       description: Account Access Consents Deleted
       headers:
@@ -2782,8 +2797,8 @@ components:
       schema:
         pattern: >-
           ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), d{2}
-          (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) d{4}
-          d{2}:d{2}:d{2} (GMT|UTC)$
+          (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) d{4} d{2}:d{2}:d{2}
+          (GMT|UTC)$
         type: string
     x-fapi-interaction-id:
       name: x-fapi-interaction-id
@@ -2820,11 +2835,29 @@ components:
       explode: false
       schema:
         type: string
-    Apikey:
-      name: apikey
+    x-accountConsentId:
+      name: x-accountConsentId
       in: header
       description: >-
-        Идентификатор, сгенерированный СДБО и переданный программному обеспечению (приложению) Пользователя API первого типа, при успешной идентификации и аутентификации Пользователя API первого типа, а также авторизации им своего программного обеспечения (приложения) на выполнение действий в СДБО от своего имени.
+        Идентификатор, сгенерированный СДБО и переданный программному
+        обеспечению (приложению) Пользователя API первого типа, при успешной
+        идентификации и аутентификации Пользователя API первого типа, а также
+        авторизации им своего программного обеспечения (приложения) на
+        выполнение действий в СДБО от своего имени.
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+    x-api-key:
+      name: x-api-key
+      in: header
+      description: >-
+        Идентификатор, сгенерированный СДБО и переданный программному
+        обеспечению (приложению) Пользователя API первого типа, при успешной
+        идентификации и аутентификации Пользователя API первого типа, а также
+        авторизации им своего программного обеспечения (приложения) на
+        выполнение действий в СДБО от своего имени.
       required: false
       style: simple
       explode: false
@@ -2848,17 +2881,21 @@ components:
           scopes: {}
 x-wso2-auth-header: Authorization
 x-wso2-cors:
-  corsConfigurationEnabled: false
+  corsConfigurationEnabled: true
   accessControlAllowOrigins:
     - '*'
-  accessControlAllowCredentials: false
+  accessControlAllowCredentials: true
   accessControlAllowHeaders:
     - authorization
     - Access-Control-Allow-Origin
     - Content-Type
     - SOAPAction
-    - apikey
     - testKey
+    - x-fapi-customer-ip-address
+    - x-fapi-interaction-id
+    - x-fapi-auth-date
+    - apikey
+    - xApikey
   accessControlAllowMethods:
     - GET
     - PUT
@@ -2868,18 +2905,16 @@ x-wso2-cors:
     - OPTIONS
 x-wso2-production-endpoints:
   urls:
-    - 'http://paymentapi.st.by:8077'
+    - 'http://localhost:8077'
   type: http
 x-wso2-sandbox-endpoints:
   urls:
-    - 'http://paymentapi.st.by:8088'
+    - 'http://localhost:8088'
   type: http
-x-wso2-basePath: /open-banking/v1.1
+x-wso2-basePath: /accountConsents-service/v1.0
 x-wso2-transports:
   - http
   - https
 x-wso2-response-cache:
-  enabled: true
+  enabled: false
   cacheTimeoutInSeconds: 300
-
-

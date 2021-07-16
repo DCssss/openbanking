@@ -2,6 +2,7 @@ package by.openbanking.openbankingservice.model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -64,8 +65,14 @@ public class Transactions {
     @Column(name = "TRANSACTION_CREDIT_BANK_IDENTIFICATION")
     private String transactionCreditBankIdentification;
 
-    public Transactions() {
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TRANSACTION_ID_HIBERNATE", nullable = false)
+    private Statement2Transaction statement2Transaction;
+
+   /* @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "accountID")
+    private Statements statements;*/
+
 
     public long getTransactionID() {
         return transactionID;

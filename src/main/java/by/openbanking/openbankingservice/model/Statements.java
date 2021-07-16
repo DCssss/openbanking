@@ -2,6 +2,7 @@ package by.openbanking.openbankingservice.model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -24,6 +25,9 @@ public class Statements {
 
     @Column(name = "StatementCreateTime")
     private Date statementCreateTime;
+
+    /*@OneToMany(fetch = FetchType.LAZY, mappedBy = "statements")
+    private List<Transactions> transactionsList; */
 
     public Statements() {
     }

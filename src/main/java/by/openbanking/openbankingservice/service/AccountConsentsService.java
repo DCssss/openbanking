@@ -28,7 +28,12 @@ import java.util.Optional;
 @Service
 public class AccountConsentsService {
 
+    private static final String X_FAPI_AUTH_DATE = "x-fapi-auth-date";
+    private static final String X_FAPI_CUSTOMER_IP_ADDRESS = "x-fapi-customer-ip-address";
     private static final String X_FAPI_INTERACTION_ID = "x-fapi-interaction-id";
+    private static final String AUTHORIZATION = "authorization";
+    private static final String X_API_KEY = "x-api-key";
+    private static final String X_ACCOUNT_CONSENT_ID = "x-accountConsentId";
 
     private final AccountConsentsRepository mAccountConsentsRepository;
     private final AccountRepository mAccountRepository;
@@ -48,14 +53,18 @@ public class AccountConsentsService {
     @Transactional
     public ResponseEntity<Void> authorizeAccountConsents(
             final String accountConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
-            final String apikey
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
     ) {
         final HttpHeaders headers = new HttpHeaders();
         headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
         ResponseEntity<Void> response;
-        final Long clientId = StubData.CLIENTS.get(apikey);
+        final Long clientId = StubData.CLIENTS.get(X_API_KEY);
 
         if (clientId != null) {
 
@@ -93,8 +102,12 @@ public class AccountConsentsService {
     @Transactional
     public ResponseEntity<Void> rejectAccountConsents(
             final String accountConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
-            final String apikey
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
     ) {
 
         final HttpHeaders headers = new HttpHeaders();
@@ -103,7 +116,7 @@ public class AccountConsentsService {
         ResponseEntity<Void> response;
 
         //получить ClientId по apikey
-        final Long clientId = StubData.CLIENTS.get(apikey);
+        final Long clientId = StubData.CLIENTS.get(X_API_KEY);
 
         if (clientId != null) {
 
@@ -132,7 +145,12 @@ public class AccountConsentsService {
     @Transactional
     public ResponseEntity<OBReadConsentResponse1Post> createAccountConsents(
             @Valid final OBReadConsent1 body,
-            final String xFapiInteractionId
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
     ) {
         final HttpHeaders headers = new HttpHeaders();
         headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
@@ -160,7 +178,12 @@ public class AccountConsentsService {
 
     public ResponseEntity<Void> deleteAccountAccessConsentsConsentId(
             @Size(min = 1, max = 35) final String accountConsentId,
-            final String xFapiInteractionId
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
     ) {
         final HttpHeaders headers = new HttpHeaders();
         headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
@@ -186,7 +209,12 @@ public class AccountConsentsService {
 
     public ResponseEntity<OBReadConsentResponse1> getAccountAccessConsentsConsentId(
             @Size(min = 1, max = 35) final String accountConsentId,
-            final String xFapiInteractionId
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
     ) {
         final HttpHeaders headers = new HttpHeaders();
         headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);

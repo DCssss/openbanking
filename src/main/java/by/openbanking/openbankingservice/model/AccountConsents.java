@@ -211,6 +211,7 @@ public final class AccountConsents {
 
     public OBReadConsentResponse1PostData toOBReadConsentResponsePost1Data() {
         final OBReadConsentResponse1PostData responseData = new OBReadConsentResponse1PostData();
+        responseData.setLink("https://sdbo_business.bank.by/accountConsentsId/"+accountConsentId+"/");
         responseData.setAccountConsentId(String.valueOf(accountConsentId));
         responseData.setStatus(AccountConsentsStatus.fromValue(status));
         responseData.setCreationDateTime(creationTime);

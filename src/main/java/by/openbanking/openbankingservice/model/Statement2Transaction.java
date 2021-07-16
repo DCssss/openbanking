@@ -1,7 +1,10 @@
 package by.openbanking.openbankingservice.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "OB_STATEMENT_2_TRANSACTION")
@@ -17,6 +20,9 @@ public class Statement2Transaction {
 
     @Column(name = "TRANSACTION_ID")
     private long transactionID;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "statement2Transaction")
+    private List<Transactions> transactionsList;
 
     public Statement2Transaction() {
     }

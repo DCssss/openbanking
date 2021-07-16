@@ -6,6 +6,7 @@ import by.openbanking.openbankingservice.repository.AccountConsentsRepository;
 import by.openbanking.openbankingservice.repository.AccountRepository;
 import by.openbanking.openbankingservice.util.RightsController;
 import by.openbanking.openbankingservice.util.StubData;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,12 @@ import java.util.List;
 @Service
 public class BalancesService {
 
+    private static final String X_FAPI_AUTH_DATE = "x-fapi-auth-date";
+    private static final String X_FAPI_CUSTOMER_IP_ADDRESS = "x-fapi-customer-ip-address";
     private static final String X_FAPI_INTERACTION_ID = "x-fapi-interaction-id";
+    private static final String AUTHORIZATION = "authorization";
+    private static final String X_API_KEY = "x-api-key";
+    private static final String X_ACCOUNT_CONSENT_ID = "x-accountConsentId";
 
     private final AccountConsentsRepository mAccountConsentsRepository;
     private final AccountRepository mAccountRepository;
@@ -36,16 +42,22 @@ public class BalancesService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<OBReadBalance1> getBalances(
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
-            final String apikey
+            final String authorization,
+            final String xApikey,
+            final String xAccountConsentId
     ) {
         final HttpHeaders headers = new HttpHeaders();
         headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(X_API_KEY, xApikey);
+
 
         ResponseEntity<OBReadBalance1> responseEntity;
 
         //получить ClientId по apikey
-        final Long clientId = StubData.CLIENTS.get(apikey);
+        final Long clientId = StubData.CLIENTS.get(xApikey);
 
         if (clientId != null && RightsController.isHaveRights(mAccountConsentsRepository, clientId, "/balances")) {
 

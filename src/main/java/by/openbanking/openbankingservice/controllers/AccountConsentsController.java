@@ -32,9 +32,10 @@ public final class AccountConsentsController implements AccountConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String apikey
+            final String xApiKey,
+            final String xAccountConsentId
     ) {
-        return mAccountConsentsService.authorizeAccountConsents(accountConsentId, xFapiInteractionId, apikey);
+        return mAccountConsentsService.authorizeAccountConsents(accountConsentId, xFapiAuthDate, xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId, xApiKey, xAccountConsentId);
     }
 
     @Override
@@ -44,9 +45,10 @@ public final class AccountConsentsController implements AccountConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String apikey
+            final String xApiKey,
+            final String xAccountConsentId
     ) {
-        return mAccountConsentsService.rejectAccountConsents(accountConsentId, xFapiInteractionId, apikey);
+        return mAccountConsentsService.rejectAccountConsents(accountConsentId, xFapiAuthDate, xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId, xApiKey, xAccountConsentId);
     }
 
     @Override
@@ -55,9 +57,11 @@ public final class AccountConsentsController implements AccountConsentsApi {
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
-            final String authorization
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
     ) {
-        return mAccountConsentsService.createAccountConsents(body, xFapiInteractionId);
+        return mAccountConsentsService.createAccountConsents(body, xFapiAuthDate, xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId, xApiKey, xAccountConsentId);
     }
 
     @Override
@@ -66,9 +70,11 @@ public final class AccountConsentsController implements AccountConsentsApi {
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
-            final String authorization
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
     ) {
-        return mAccountConsentsService.deleteAccountAccessConsentsConsentId(accountConsentId, xFapiInteractionId);
+        return mAccountConsentsService.deleteAccountAccessConsentsConsentId(accountConsentId,xFapiAuthDate, xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId, xApiKey, xAccountConsentId);
     }
 
     @Override
@@ -77,8 +83,10 @@ public final class AccountConsentsController implements AccountConsentsApi {
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
-            final String authorization
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
     ) {
-        return mAccountConsentsService.getAccountAccessConsentsConsentId(accountConsentId, xFapiInteractionId);
+        return mAccountConsentsService.getAccountAccessConsentsConsentId(accountConsentId, xFapiAuthDate, xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId, xApiKey, xAccountConsentId);
     }
 }
