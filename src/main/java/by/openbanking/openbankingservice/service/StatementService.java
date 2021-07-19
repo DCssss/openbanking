@@ -1,10 +1,9 @@
 package by.openbanking.openbankingservice.service;
 
-import by.openbanking.openbankingservice.model.Statement2Transaction;
-import by.openbanking.openbankingservice.model.Statements;
+import by.openbanking.openbankingservice.model.Statement;
 import by.openbanking.openbankingservice.models.*;
-import by.openbanking.openbankingservice.repository.Statement2TransactionRepository;
-import by.openbanking.openbankingservice.repository.StatementsRepository;
+import by.openbanking.openbankingservice.repository.AccountRepository;
+import by.openbanking.openbankingservice.repository.StatementRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -27,14 +26,16 @@ public class StatementService {
     private static final String X_API_KEY = "x-api-key";
     private static final String X_ACCOUNT_CONSENT_ID = "x-accountConsentId";
 
-    private final StatementsRepository mStatementsRepository;
-    private final Statement2TransactionRepository mStatement2TransactionRepository;
-
+    private final AccountRepository mAccountRepository;
+    private final StatementRepository mStatementRepository;
 
     @Autowired
-    public StatementService(StatementsRepository mStatementsRepository, Statement2TransactionRepository mStatement2TransactionRepository) {
-        this.mStatementsRepository = mStatementsRepository;
-        this.mStatement2TransactionRepository = mStatement2TransactionRepository;
+    public StatementService(
+            final StatementRepository statementRepository,
+            final AccountRepository accountRepository
+    ) {
+        mStatementRepository = statementRepository;
+        mAccountRepository = accountRepository;
     }
 
     public ResponseEntity<OBReadStatement2Post> setStatement(
@@ -55,45 +56,45 @@ public class StatementService {
 
         ResponseEntity<OBReadStatement2Post> response;
 
-            final Date now = new Date();
+        final Date now = new Date();
 
-            Statements statements = new Statements();
-            statements.setAccountID(Long.valueOf(accountId));
-            statements.setStatementCreateTime(now);
-            statements.setStatementFromBookingDate(body.getData().getStatement().getFromBookingDate());
-            statements.setStatementToBookingDate(body.getData().getStatement().getToBookingDate());
-            mStatementsRepository.save(statements);
+        Statement statement = new Statement();
+        statement.setAccount(mAccountRepository.getById(Long.valueOf(accountId)));
+        statement.setCreateTime(now);
+        statement.setFromBookingDate(body.getData().getStatement().getFromBookingDate());
+        statement.setToBookingDate(body.getData().getStatement().getToBookingDate());
+        mStatementRepository.save(statement);
 
-            final LinksStatementPost links = new LinksStatementPost();
+        final LinksStatementPost links = new LinksStatementPost();
 
-            links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/statements/" + accountId );
-            final Meta meta = new Meta();
-            meta.setTotalPages(1);
-            meta.setFirstAvailableDateTime(now);
-            meta.setLastAvailableDateTime(now);
+        links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/statements/" + accountId);
+        final Meta meta = new Meta();
+        meta.setTotalPages(1);
+        meta.setFirstAvailableDateTime(now);
+        meta.setLastAvailableDateTime(now);
 
-            final Statements statements1 = mStatementsRepository.findStatementsById(accountId);
+        final Statement statement1 = mStatementRepository.findStatementsById(accountId);
 
 
-            if (StringUtils.isNotBlank(accountId)) {
-                final OBReadStatement2Post responseContent = new OBReadStatement2Post();
-                final OBReadDataStatement2Post obReadDataStatement2Post = new OBReadDataStatement2Post();
-                final OBStatement2Post obStatement2Post = new OBStatement2Post();
-                final List<OBStatement2Post> listStatements  = new ArrayList<>();
+        if (StringUtils.isNotBlank(accountId)) {
+            final OBReadStatement2Post responseContent = new OBReadStatement2Post();
+            final OBReadDataStatement2Post obReadDataStatement2Post = new OBReadDataStatement2Post();
+            final OBStatement2Post obStatement2Post = new OBStatement2Post();
+            final List<OBStatement2Post> listStatements = new ArrayList<>();
 
-                obStatement2Post.setStatementId(String.valueOf(statements1.getStatementID()));
-                obStatement2Post.setAccountId(String.valueOf(statements1.getAccountID()));
-                obStatement2Post.setFromBookingDate(statements1.getStatementFromBookingDate());
-                obStatement2Post.setToBookingDate(statements1.getStatementToBookingDate());
-                listStatements.add(obStatement2Post);
-                obReadDataStatement2Post.setStatement(listStatements);
-                responseContent.setData(obReadDataStatement2Post);
-                responseContent.setLinks(links);
-                responseContent.setMeta(meta);
-                response = new ResponseEntity<>(responseContent, headers, HttpStatus.OK);
-            } else {
-                response = new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
-            }
+            obStatement2Post.setStatementId(String.valueOf(statement1.getId()));
+            obStatement2Post.setAccountId(String.valueOf(statement1.getAccount().getId()));
+            obStatement2Post.setFromBookingDate(statement1.getFromBookingDate());
+            obStatement2Post.setToBookingDate(statement1.getToBookingDate());
+            listStatements.add(obStatement2Post);
+            obReadDataStatement2Post.setStatement(listStatements);
+            responseContent.setData(obReadDataStatement2Post);
+            responseContent.setLinks(links);
+            responseContent.setMeta(meta);
+            response = new ResponseEntity<>(responseContent, headers, HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+        }
         return response;
     }
 }

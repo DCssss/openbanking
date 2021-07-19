@@ -6,6 +6,13 @@ import java.util.*;
 
 public final class StubData {
 
+    public static final Map<String, Long> FINTECHS = new HashMap<>();
+
+    static {
+        FINTECHS.put("aaa", 1L);
+        FINTECHS.put("bbb", 2L);
+    }
+
     public static final Map<String, Long> CLIENTS = new HashMap<>();
 
     static {

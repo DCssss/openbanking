@@ -1,9 +1,9 @@
 package by.openbanking.openbankingservice.util;
 
-import by.openbanking.openbankingservice.model.AccountConsents;
+import by.openbanking.openbankingservice.model.Consent;
 import by.openbanking.openbankingservice.models.AccountConsentsStatus;
 import by.openbanking.openbankingservice.models.Permission;
-import by.openbanking.openbankingservice.repository.AccountConsentsRepository;
+import by.openbanking.openbankingservice.repository.ConsentRepository;
 
 import java.util.Collection;
 import java.util.Date;
@@ -14,20 +14,20 @@ public final class RightsController {
     }
 
     public static boolean isHaveRights(
-            final AccountConsentsRepository accountConsentsRepository,
+            final ConsentRepository consentRepository,
             final Long clientId,
             final String api
     ) {
         //получить все актуальные согласия пользователя
-        final Collection<AccountConsents> accountConsentsCollection =
-                accountConsentsRepository
+        final Collection<Consent> consentCollection =
+                consentRepository
                         .findByClientId(clientId)
                         .stream()
-                        .filter(accountConsents -> accountConsents.getExpirationDate().after(new Date()))
-                        .filter(accountConsents -> accountConsents.getStatus().equals(AccountConsentsStatus.AUTHORISED.toString()))
+                        .filter(consent -> consent.getExpirationDate().after(new Date()))
+                        .filter(consent -> consent.getStatus().equals(AccountConsentsStatus.AUTHORISED.toString()))
                         .collect(Collectors.toList());
-        for (AccountConsents accountConsents : accountConsentsCollection) {
-            for (Permission permission : accountConsents.getPermission()) {
+        for (Consent consent : consentCollection) {
+            for (Permission permission : consent.getPermission()) {
                 if (StubData.PERMISSIONS_API.get(permission).contains(api)) {
                     return true;
                 }

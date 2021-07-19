@@ -1,12 +1,12 @@
 package by.openbanking.openbankingservice.service;
 
 import by.openbanking.openbankingservice.model.ListTransactions;
-import by.openbanking.openbankingservice.model.Statements;
+import by.openbanking.openbankingservice.model.Statement;
 import by.openbanking.openbankingservice.models.*;
-import by.openbanking.openbankingservice.repository.AccountConsentsRepository;
+import by.openbanking.openbankingservice.repository.ConsentRepository;
 import by.openbanking.openbankingservice.repository.AccountRepository;
 import by.openbanking.openbankingservice.repository.ListTransactionRepository;
-import by.openbanking.openbankingservice.repository.StatementsRepository;
+import by.openbanking.openbankingservice.repository.StatementRepository;
 import by.openbanking.openbankingservice.util.AccountConverter;
 import by.openbanking.openbankingservice.util.RightsController;
 import by.openbanking.openbankingservice.util.StubData;
@@ -33,15 +33,15 @@ public class AccountService {
 
     private final AccountRepository mAccountRepository;
     private final ListTransactionRepository mListTransactionRepository;
-    private final StatementsRepository mStatementsRepository;
-    private final AccountConsentsRepository mAccountConsentsRepository;
+    private final StatementRepository mStatementRepository;
+    private final ConsentRepository mConsentRepository;
 
     @Autowired
-    public AccountService(final AccountRepository accountRepository, ListTransactionRepository mListTransactionRepository, StatementsRepository mStatementsRepository, AccountConsentsRepository mAccountConsentsRepository) {
+    public AccountService(final AccountRepository accountRepository, ListTransactionRepository mListTransactionRepository, StatementRepository mStatementRepository, ConsentRepository mConsentRepository) {
         this.mAccountRepository = accountRepository;
         this.mListTransactionRepository = mListTransactionRepository;
-        this.mStatementsRepository = mStatementsRepository;
-        this.mAccountConsentsRepository = mAccountConsentsRepository;
+        this.mStatementRepository = mStatementRepository;
+        this.mConsentRepository = mConsentRepository;
     }
 
     @Transactional(readOnly = true)
@@ -66,7 +66,7 @@ public class AccountService {
         final Optional<by.openbanking.openbankingservice.model.Account> accountData = mAccountRepository.findById(Long.valueOf(accountId));
 
         final Long clientId = StubData.CLIENTS.get(xApiKey);
-        if (accountData.isPresent() && clientId != null && RightsController.isHaveRights(mAccountConsentsRepository, clientId, "/accounts/{accountId}")) {
+        if (accountData.isPresent() && clientId != null && RightsController.isHaveRights(mConsentRepository, clientId, "/accounts/{accountId}")) {
 
             final Accounts accData = new Accounts();
             accData.setAccounts(Collections.singletonList(AccountConverter.toAccount(accountData.get())));
@@ -118,7 +118,7 @@ public class AccountService {
 
             final Long clientId = StubData.CLIENTS.get(xApiKey);
 
-            if (!accountsForResponse.isEmpty() && clientId != null && RightsController.isHaveRights(mAccountConsentsRepository, clientId, "/accounts")) {
+            if (!accountsForResponse.isEmpty() && clientId != null && RightsController.isHaveRights(mConsentRepository, clientId, "/accounts")) {
 
                 final Accounts accData = new Accounts();
                 accData.setAccounts(accountsForResponse);
@@ -172,7 +172,7 @@ public class AccountService {
         final Optional<by.openbanking.openbankingservice.model.Account> accountData = mAccountRepository.findById(Long.valueOf(accountId));
         final Long clientId = StubData.CLIENTS.get(xApiKey);
 
-        if (accountData.isPresent() && clientId != null && RightsController.isHaveRights(mAccountConsentsRepository, clientId, "/accounts/{accountId}/balances")) {
+        if (accountData.isPresent() && clientId != null && RightsController.isHaveRights(mConsentRepository, clientId, "/accounts/{accountId}/balances")) {
 
             OBReadBalance1Data obReadBalance1Data = new OBReadBalance1Data();
             OBReadBalance1DataBalance obReadBalance1DataBalance = new OBReadBalance1DataBalance();
@@ -291,7 +291,7 @@ public class AccountService {
 
         List<ListTransactions> listForResponse = mListTransactionRepository.findListTransactionsByAccountID(accountId,transactionListId);
         final Long clientId = StubData.CLIENTS.get(xApiKey);
-        if (!listForResponse.isEmpty() && clientId != null && RightsController.isHaveRights(mAccountConsentsRepository, clientId, "/accounts/{accountId}/transactions/{transactionListId}")) {
+        if (!listForResponse.isEmpty() && clientId != null && RightsController.isHaveRights(mConsentRepository, clientId, "/accounts/{accountId}/transactions/{transactionListId}")) {
 
             OBReadTransaction6 dataForResponse = new OBReadTransaction6();
             OBReadDataTransaction6 obReadDataTransaction6 = new OBReadDataTransaction6();
@@ -367,9 +367,9 @@ public class AccountService {
         headers.add(AUTHORIZATION, authorization);
 
 
-        List<Statements> listForResponse = mStatementsRepository.findStatementsByAccountID(accountId,statementId);
+        List<Statement> listForResponse = mStatementRepository.findStatementsByAccountID(accountId,statementId);
         final Long clientId = StubData.CLIENTS.get(xApiKey);
-        if (!listForResponse.isEmpty() && clientId != null && RightsController.isHaveRights(mAccountConsentsRepository, clientId, "/statements/accounts/{accountId}/statements/{statementId}")) {
+        if (!listForResponse.isEmpty() && clientId != null && RightsController.isHaveRights(mConsentRepository, clientId, "/statements/accounts/{accountId}/statements/{statementId}")) {
 
             final OBReadStatement2 respData = new OBReadStatement2();
             OBReadDataStatement2 obReadDataStatement2 = new OBReadDataStatement2();
@@ -380,11 +380,11 @@ public class AccountService {
             List<OBTransaction1> listTransact = new ArrayList<>();
             listTransact.add(obTransaction1);
 
-            obStatement2.setAccountId(String.valueOf(listForResponse.stream().findFirst().get().getAccountID()));
-            obStatement2.setStatementId(String.valueOf(listForResponse.stream().findFirst().get().getStatementID()));
-            obStatement2.setFromBookingDate(listForResponse.stream().findFirst().get().getStatementFromBookingDate());
-            obStatement2.setToBookingDate(listForResponse.stream().findFirst().get().getStatementToBookingDate());
-            obStatement2.setCreationDateTime(listForResponse.stream().findFirst().get().getStatementCreateTime());
+            obStatement2.setAccountId(String.valueOf(listForResponse.stream().findFirst().get().getAccount().getId()));
+            obStatement2.setStatementId(String.valueOf(listForResponse.stream().findFirst().get().getId()));
+            obStatement2.setFromBookingDate(listForResponse.stream().findFirst().get().getFromBookingDate());
+            obStatement2.setToBookingDate(listForResponse.stream().findFirst().get().getToBookingDate());
+            obStatement2.setCreationDateTime(listForResponse.stream().findFirst().get().getCreateTime());
             obStatement2.setTransaction(listTransact);
 
             // TODO: 14.07.2021 CLAVBALANCE,OPAVBALANCE - заглушки пока не знаю откуда тянуть

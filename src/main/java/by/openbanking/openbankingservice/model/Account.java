@@ -1,149 +1,68 @@
 package by.openbanking.openbankingservice.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 
+import static javax.persistence.EnumType.STRING;
+import static javax.persistence.FetchType.LAZY;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "OB_ACCOUNTS")
-public final class Account {
+public final class Account extends BaseEntity<Long> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "ACCOUNT_ID")
-    private long accountId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CLIENT_ID", nullable = false)
+    private Client client;
 
-    @Column(name = "CLIENT_ID")
-    private long clientId;
+    @Column(name = "STATUS")
+    @Enumerated(value = STRING)
+    private by.openbanking.openbankingservice.models.Account.StatusEnum status;
 
-    @Column(name = "ACCOUNT_STATUS")
-    private String accountStatus;
+    @Column(name = "STATUS_UPDATE_TIME")
+    private Date statusUpdateTime;
 
-    @Column(name = "ACCOUNT_STATUS_UPDATE_TIME")
-    private Date accountStatusUpdateTime;
+    @Column(name = "BALANCE_AMOUNT")
+    private BigDecimal balanceAmount;
 
-    @Column(name = "ACCOUNT_BALANCE_AMOUNT")
-    private BigDecimal accountBalanceAmount;
+    @Column(name = "CURRENCY")
+    private String currency;
 
-    @Column(name = "ACCOUNT_CURRENCY")
-    private String accountCurrency;
+    @Column(name = "CREATION_TIME")
+    private Date creationTime;
 
-    @Column(name = "ACCOUNT_CREATION_TIME")
-    private Date accountCreationTime;
+    @Column(name = "DESCRIPTION")
+    private String description;
 
-    @Column(name = "ACCOUNT_DESCRIPTION")
-    private String accountDescription;
+    @Column(name = "NAME")
+    private String name;
 
-    @Column(name = "ACCOUNT_NAME")
-    private String accountName;
+    @Column(name = "TYPE")
+    private String type;
 
-    @Column(name = "ACCOUNT_TYPE")
-    private String accountType;
+    @Column(name = "SUB_TYPE")
+    @Enumerated(value = STRING)
+    private by.openbanking.openbankingservice.models.Account.AccountSubTypeEnum subType;
 
-    @Column(name = "ACCOUNT_SUB_TYPE")
-    private String accountSubType;
+    @Column(name = "IDENTIFICATION")
+    private String identification;
 
-    @Column(name = "ACCOUNT_IDENTIFICATION")
-    private String accountIdentification;
+    @ManyToMany(fetch = LAZY)
+    @JoinTable(
+            name = "OB_CONSENTS_2_ACCOUNTS",
+            joinColumns = @JoinColumn(name = "ACCOUNT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "CONSENT_ID")
+    )
+    private Set<Consent> consents;
 
     public Account() {
-    }
-
-    public long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(long accountId) {
-        this.accountId = accountId;
-    }
-
-    public long getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(long clientId) {
-        this.clientId = clientId;
-    }
-
-    public String getAccountStatus() {
-        return accountStatus;
-    }
-
-    public void setAccountStatus(String accountStatus) {
-        this.accountStatus = accountStatus;
-    }
-
-    public Date getAccountStatusUpdateTime() {
-        return accountStatusUpdateTime;
-    }
-
-    public void setAccountStatusUpdateTime(Date accountStatusUpdateTime) {
-        this.accountStatusUpdateTime = accountStatusUpdateTime;
-    }
-
-    public BigDecimal getAccountBalanceAmount() {
-        return accountBalanceAmount;
-    }
-
-    public void setAccountBalanceAmount(final BigDecimal accountBalanceAmount) {
-        this.accountBalanceAmount = accountBalanceAmount;
-    }
-
-    public String getAccountCurrency() {
-        return accountCurrency;
-    }
-
-    public void setAccountCurrency(String accountCurrency) {
-        this.accountCurrency = accountCurrency;
-    }
-
-    public Date getAccountCreationTime() {
-        return accountCreationTime;
-    }
-
-    public void setAccountCreationTime(Date accountCreationTime) {
-        this.accountCreationTime = accountCreationTime;
-    }
-
-    public String getAccountDescription() {
-        return accountDescription;
-    }
-
-    public void setAccountDescription(String accountDescription) {
-        this.accountDescription = accountDescription;
-    }
-
-    public String getAccountName() {
-        return accountName;
-    }
-
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
-    }
-
-    public String getAccountType() {
-        return accountType;
-    }
-
-    public void setAccountType(String accountType) {
-        this.accountType = accountType;
-    }
-
-    public String getAccountSubType() {
-        return accountSubType;
-    }
-
-    public void setAccountSubType(String accountSubType) {
-        this.accountSubType = accountSubType;
-    }
-
-    public String getAccountIdentification() {
-        return accountIdentification;
-    }
-
-    public void setAccountIdentification(String accountIdentification) {
-        this.accountIdentification = accountIdentification;
     }
 
     @Override
@@ -151,34 +70,31 @@ public final class Account {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Account account = (Account) o;
-        return accountId == account.accountId && clientId == account.clientId && Objects.equals(accountStatus, account.accountStatus) && Objects.equals(accountStatusUpdateTime, account.accountStatusUpdateTime) && Objects.equals(accountBalanceAmount, account.accountBalanceAmount) && Objects.equals(accountCurrency, account.accountCurrency) && Objects.equals(accountCreationTime, account.accountCreationTime) && Objects.equals(accountDescription, account.accountDescription) && Objects.equals(accountName, account.accountName) && Objects.equals(accountType, account.accountType) && Objects.equals(accountSubType, account.accountSubType) && Objects.equals(accountIdentification, account.accountIdentification);
+        return Objects.equals(id, account.id) && Objects.equals(client, account.client) && Objects.equals(status, account.status) && Objects.equals(statusUpdateTime, account.statusUpdateTime) && Objects.equals(balanceAmount, account.balanceAmount) && Objects.equals(currency, account.currency) && Objects.equals(creationTime, account.creationTime) && Objects.equals(description, account.description) && Objects.equals(name, account.name) && Objects.equals(type, account.type) && Objects.equals(subType, account.subType) && Objects.equals(identification, account.identification);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getAccountId(), getClientId(), getAccountStatus(), getAccountStatusUpdateTime(), getAccountBalanceAmount(), getAccountCurrency(), getAccountCreationTime(), getAccountDescription(), getAccountName(), getAccountType(), getAccountSubType(), getAccountIdentification());
+        return Objects.hash(id, client, status, statusUpdateTime, balanceAmount, currency, creationTime, description, name, type, subType, identification);
     }
 
     @Override
     public String toString() {
-        return "Accounts{" +
-                "accountId=" + accountId +
-                ", clientId=" + clientId +
-                ", accountStatus='" + accountStatus + '\'' +
-                ", accountStatusUpdateTime=" + accountStatusUpdateTime +
-                ", accountBalanceAmount=" + accountBalanceAmount +
-                ", accountCurrency='" + accountCurrency + '\'' +
-                ", accountCreationTime=" + accountCreationTime +
-                ", accountDescription='" + accountDescription + '\'' +
-                ", accountName='" + accountName + '\'' +
-                ", accountType='" + accountType + '\'' +
-                ", accountSubType='" + accountSubType + '\'' +
-                ", accountIdentification='" + accountIdentification + '\'' +
+        return "Account{" +
+                "id=" + id +
+                ", client=" + client +
+                ", status='" + status + '\'' +
+                ", statusUpdateTime=" + statusUpdateTime +
+                ", balanceAmount=" + balanceAmount +
+                ", currency='" + currency + '\'' +
+                ", creationTime=" + creationTime +
+                ", description='" + description + '\'' +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", subType='" + subType + '\'' +
+                ", identification='" + identification + '\'' +
                 '}';
     }
-
-
-
 }
 
 

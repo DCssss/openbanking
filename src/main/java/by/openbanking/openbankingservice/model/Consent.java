@@ -1,24 +1,24 @@
 package by.openbanking.openbankingservice.model;
 
 import by.openbanking.openbankingservice.models.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
+import static javax.persistence.EnumType.STRING;
+import static javax.persistence.FetchType.LAZY;
+
+@Getter
+@Setter
 @Entity
-@Table(name = "OB_ACCOUNT_CONSENTS")
-public final class AccountConsents {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "ACCOUNT_CONSENT_ID")
-    private long accountConsentId;
+@Table(name = "OB_CONSENTS")
+public final class Consent extends BaseEntity<Long> {
 
     @Column(name = "STATUS")
-    private String status;
+    @Enumerated(value = STRING)
+    private AccountConsentsStatus status;
 
     @Column(name = "CREATION_TIME")
     private Date creationTime;
@@ -35,11 +35,13 @@ public final class AccountConsents {
     @Column(name = "STATUS_UPDATE_TIME")
     private Date statusUpdateTime;
 
-    @Column(name = "FINTECH_ID")
-    private Long fintechId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FINTECH_ID", nullable = false)
+    private Fintech fintech;
 
-    @Column(name = "CLIENT_ID")
-    private Long clientId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CLIENT_ID", nullable = true)
+    private Client client;
 
     @Column(name = "READ_ACCOUNTS_BASIC")
     private int readAccountsBasic;
@@ -68,137 +70,57 @@ public final class AccountConsents {
     @Column(name = "READ_TRANSACTION_DEBITS")
     private int readTransactionsDebits;
 
-    public static AccountConsents valueOf(final OBReadConsent1Data model) {
-        AccountConsents accountConsents = new AccountConsents();
+    @ManyToMany(fetch = LAZY)
+    @JoinTable(
+            name = "OB_CONSENTS_2_ACCOUNTS",
+            joinColumns = @JoinColumn(name = "CONSENT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "ACCOUNT_ID")
+    )
+    private Set<Account> accounts;
+
+    public static Consent valueOf(final OBReadConsent1Data model) {
+        Consent consent = new Consent();
         for (Permission permissionEnum : model.getPermissions()) {
             switch (permissionEnum) {
                 case READACCOUNTSBASIC:
-                    accountConsents.readAccountsBasic = 1;
+                    consent.readAccountsBasic = 1;
                     break;
                 case READACCOUNTSDETAIL:
-                    accountConsents.readAccountsDetail = 1;
+                    consent.readAccountsDetail = 1;
                     break;
                 case READBALANCES:
-                    accountConsents.readBalances = 1;
+                    consent.readBalances = 1;
                     break;
                 case READSTATEMENTSDETAIL:
-                    accountConsents.readStatementsDetail = 1;
+                    consent.readStatementsDetail = 1;
                     break;
                 case READSTATEMENTSBASIC:
-                    accountConsents.readStatementsBasic = 1;
+                    consent.readStatementsBasic = 1;
                     break;
                 case READTRANSACTIONSBASIC:
-                    accountConsents.readTransactionsBasic = 1;
+                    consent.readTransactionsBasic = 1;
                     break;
                 case READTRANSACTIONSDETAIL:
-                    accountConsents.readTransactionsDetail = 1;
+                    consent.readTransactionsDetail = 1;
                     break;
                 case READTRANSACTIONSCREDITS:
-                    accountConsents.readTransactionsCredits = 1;
+                    consent.readTransactionsCredits = 1;
                     break;
                 case READTRANSACTIONSDEBITS:
-                    accountConsents.readTransactionsDebits = 1;
+                    consent.readTransactionsDebits = 1;
                     break;
             }
         }
-        accountConsents.expirationDate = new Date(model.getExpirationDate().getTime());
-        accountConsents.transactionFromDate = new Date(model.getTransactionFromDate().getTime());
-        accountConsents.transactionToDate = new Date(model.getTransactionToDate().getTime());
-        return accountConsents;
-    }
-
-    public Long getAccountConsentId() {
-        return accountConsentId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public Date getCreationTime() {
-        return creationTime;
-    }
-
-    public Date getExpirationDate() {
-        return expirationDate;
-    }
-
-    public Date getTransactionFromDate() {
-        return transactionFromDate;
-    }
-
-    public Date getTransactionToDate() {
-        return transactionToDate;
-    }
-
-    public Date getStatusUpdateTime() {
-        return statusUpdateTime;
-    }
-
-    public Long getFintechId() {
-        return fintechId;
-    }
-
-    public Long getClientId() {
-        return clientId;
-    }
-
-    public int getReadAccountsBasic() {
-        return readAccountsBasic;
-    }
-
-    public int getReadAccountsDetail() {
-        return readAccountsDetail;
-    }
-
-    public int getReadBalances() {
-        return readBalances;
-    }
-
-    public int getReadStatementsBasic() {
-        return readStatementsBasic;
-    }
-
-    public int getReadStatementsDetail() {
-        return readStatementsDetail;
-    }
-
-    public int getReadTransactionsBasic() {
-        return readTransactionsBasic;
-    }
-
-    public int getReadTransactionsDetail() {
-        return readTransactionsDetail;
-    }
-
-    public int getReadTransactionsCredits() {
-        return readTransactionsCredits;
-    }
-
-    public int getReadTransactionsDebits() {
-        return readTransactionsDebits;
-    }
-
-    public void setStatus(final String accountConsentStatus) {
-        this.status = accountConsentStatus;
-    }
-
-    public void setCreationTime(final Date creationTime) {
-        this.creationTime = creationTime;
-    }
-
-    public void setStatusUpdateTime(final Date statusUpdateTime) {
-        this.statusUpdateTime = statusUpdateTime;
-    }
-
-    public void setClientId(final Long clientId) {
-        this.clientId = clientId;
+        consent.expirationDate = new Date(model.getExpirationDate().getTime());
+        consent.transactionFromDate = new Date(model.getTransactionFromDate().getTime());
+        consent.transactionToDate = new Date(model.getTransactionToDate().getTime());
+        return consent;
     }
 
     public OBReadConsentResponse1Data toOBReadConsentResponse1Data() {
         final OBReadConsentResponse1Data responseData = new OBReadConsentResponse1Data();
-        responseData.setAccountConsentId(String.valueOf(accountConsentId));
-        responseData.setStatus(AccountConsentsStatus.fromValue(status));
+        responseData.setAccountConsentId(String.valueOf(id));
+        responseData.setStatus(status);
         responseData.setCreationDateTime(creationTime);
         responseData.setStatusUpdateDateTime(statusUpdateTime);
         responseData.setExpirationDate(expirationDate);
@@ -211,9 +133,9 @@ public final class AccountConsents {
 
     public OBReadConsentResponse1PostData toOBReadConsentResponsePost1Data() {
         final OBReadConsentResponse1PostData responseData = new OBReadConsentResponse1PostData();
-        responseData.setLink("https://sdbo_business.bank.by/accountConsentsId/"+accountConsentId+"/");
-        responseData.setAccountConsentId(String.valueOf(accountConsentId));
-        responseData.setStatus(AccountConsentsStatus.fromValue(status));
+        responseData.setLink("https://sdbo_business.bank.by/accountConsentsId/" + id + "/");
+        responseData.setAccountConsentId(String.valueOf(id));
+        responseData.setStatus(status);
         responseData.setCreationDateTime(creationTime);
         responseData.setStatusUpdateDateTime(statusUpdateTime);
         responseData.setExpirationDate(expirationDate);

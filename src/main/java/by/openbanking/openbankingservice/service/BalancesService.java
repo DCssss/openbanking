@@ -2,11 +2,10 @@ package by.openbanking.openbankingservice.service;
 
 import by.openbanking.openbankingservice.model.Account;
 import by.openbanking.openbankingservice.models.*;
-import by.openbanking.openbankingservice.repository.AccountConsentsRepository;
+import by.openbanking.openbankingservice.repository.ConsentRepository;
 import by.openbanking.openbankingservice.repository.AccountRepository;
 import by.openbanking.openbankingservice.util.RightsController;
 import by.openbanking.openbankingservice.util.StubData;
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,15 +27,15 @@ public class BalancesService {
     private static final String X_API_KEY = "x-api-key";
     private static final String X_ACCOUNT_CONSENT_ID = "x-accountConsentId";
 
-    private final AccountConsentsRepository mAccountConsentsRepository;
+    private final ConsentRepository mConsentRepository;
     private final AccountRepository mAccountRepository;
 
     @Autowired
     public BalancesService(
-            final AccountConsentsRepository accountConsentsRepository,
+            final ConsentRepository consentRepository,
             final AccountRepository accountRepository
     ) {
-        mAccountConsentsRepository = accountConsentsRepository;
+        mConsentRepository = consentRepository;
         mAccountRepository = accountRepository;
     }
 
@@ -59,7 +58,7 @@ public class BalancesService {
         //получить ClientId по apikey
         final Long clientId = StubData.CLIENTS.get(xApikey);
 
-        if (clientId != null && RightsController.isHaveRights(mAccountConsentsRepository, clientId, "/balances")) {
+        if (clientId != null && RightsController.isHaveRights(mConsentRepository, clientId, "/balances")) {
 
             Date now = new Date();
             final List<Account> accounts = mAccountRepository.findAll();
@@ -68,10 +67,10 @@ public class BalancesService {
 
                 for (Account account : accounts) {
                     final OBReadBalance1DataBalance balance = new OBReadBalance1DataBalance();
-                    balance.setAccountId(String.valueOf(account.getAccountId()));
+                    balance.setAccountId(String.valueOf(account.getId()));
                     balance.setDateTime(now);
-                    balance.setCurrency(account.getAccountCurrency());
-                    balance.setBalanceAmount(account.getAccountBalanceAmount().toString());
+                    balance.setCurrency(account.getCurrency());
+                    balance.setBalanceAmount(account.getBalanceAmount().toString());
 
                     balances.add(balance);
                 }

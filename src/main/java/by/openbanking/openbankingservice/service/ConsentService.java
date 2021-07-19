@@ -1,15 +1,15 @@
 package by.openbanking.openbankingservice.service;
 
-import by.openbanking.openbankingservice.model.Account;
-import by.openbanking.openbankingservice.model.AccountConsent2Account;
-import by.openbanking.openbankingservice.model.AccountConsents;
+import by.openbanking.openbankingservice.model.Client;
+import by.openbanking.openbankingservice.model.Consent;
 import by.openbanking.openbankingservice.models.AccountConsentsStatus;
 import by.openbanking.openbankingservice.models.OBReadConsent1;
 import by.openbanking.openbankingservice.models.OBReadConsentResponse1;
 import by.openbanking.openbankingservice.models.OBReadConsentResponse1Post;
-import by.openbanking.openbankingservice.repository.AccountConsents2AccountRepository;
-import by.openbanking.openbankingservice.repository.AccountConsentsRepository;
+import by.openbanking.openbankingservice.repository.ConsentRepository;
 import by.openbanking.openbankingservice.repository.AccountRepository;
+import by.openbanking.openbankingservice.repository.ClientRepository;
+import by.openbanking.openbankingservice.repository.FintechRepository;
 import by.openbanking.openbankingservice.util.StubData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -20,13 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 @Service
-public class AccountConsentsService {
+public class ConsentService {
 
     private static final String X_FAPI_AUTH_DATE = "x-fapi-auth-date";
     private static final String X_FAPI_CUSTOMER_IP_ADDRESS = "x-fapi-customer-ip-address";
@@ -35,19 +32,22 @@ public class AccountConsentsService {
     private static final String X_API_KEY = "x-api-key";
     private static final String X_ACCOUNT_CONSENT_ID = "x-accountConsentId";
 
-    private final AccountConsentsRepository mAccountConsentsRepository;
+    private final ClientRepository mClientRepository;
+    private final ConsentRepository mConsentRepository;
     private final AccountRepository mAccountRepository;
-    private final AccountConsents2AccountRepository mAccountConsents2AccountRepository;
+    private final FintechRepository mFintechRepository;
 
     @Autowired
-    public AccountConsentsService(
-            final AccountConsentsRepository accountConsentsRepository,
+    public ConsentService(
+            final ClientRepository clientRepository,
+            final ConsentRepository consentRepository,
             final AccountRepository accountRepository,
-            final AccountConsents2AccountRepository accountConsents2AccountRepository
+            final FintechRepository fintechRepository
     ) {
-        mAccountConsentsRepository = accountConsentsRepository;
+        mClientRepository = clientRepository;
+        mConsentRepository = consentRepository;
         mAccountRepository = accountRepository;
-        mAccountConsents2AccountRepository = accountConsents2AccountRepository;
+        mFintechRepository = fintechRepository;
     }
 
     @Transactional
@@ -65,34 +65,20 @@ public class AccountConsentsService {
 
         ResponseEntity<Void> response;
         final Long clientId = StubData.CLIENTS.get(xApiKey);
+        final Client client = mClientRepository.getById(clientId);
 
-        if (clientId != null) {
+        final Optional<Consent> accountConsentsOptional = mConsentRepository.findById(Long.valueOf(accountConsentId));
+        if (accountConsentsOptional.isPresent()) {
 
-            final Optional<AccountConsents> accountConsentsOptional = mAccountConsentsRepository.findById(Long.valueOf(accountConsentId));
-            if (accountConsentsOptional.isPresent()) {
+            final Consent consent = accountConsentsOptional.get();
+            consent.setClient(client);
+            consent.setStatus(AccountConsentsStatus.AUTHORISED);
+            consent.setStatusUpdateTime(new Date());
+            consent.getAccounts().addAll(mAccountRepository.findByClient(client));
+            mConsentRepository.save(consent);
 
-                final AccountConsents accountConsents = accountConsentsOptional.get();
-                accountConsents.setClientId(clientId);
-                accountConsents.setStatus(AccountConsentsStatus.AUTHORISED.toString());
-                accountConsents.setStatusUpdateTime(new Date());
-                mAccountConsentsRepository.save(accountConsents);
+            response = new ResponseEntity<>(headers, HttpStatus.OK);
 
-                final Collection<Account> clientAccounts = mAccountRepository.findByClientId(clientId);
-                final Collection<AccountConsent2Account> accountConsent2Accounts = new ArrayList<>();
-                for (Account account : clientAccounts) {
-                    final AccountConsent2Account accountConsent2Account = new AccountConsent2Account();
-                    accountConsent2Account.setAccountID(account.getAccountId());
-                    accountConsent2Account.setAccountConsentID(Long.parseLong(accountConsentId));
-
-                    accountConsent2Accounts.add(accountConsent2Account);
-                }
-                mAccountConsents2AccountRepository.saveAll(accountConsent2Accounts);
-
-                response = new ResponseEntity<>(headers, HttpStatus.OK);
-
-            } else {
-                response = new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
         } else {
             response = new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -117,28 +103,26 @@ public class AccountConsentsService {
 
         //получить ClientId по apikey
         final Long clientId = StubData.CLIENTS.get(xApiKey);
+        final Client client = mClientRepository.getById(clientId);
 
-        if (clientId != null) {
 
-            //получить согласие
-            final Optional<AccountConsents> accountConsentsOptional = mAccountConsentsRepository.findById(Long.valueOf(accountConsentId));
-            if (accountConsentsOptional.isPresent()) {
+        //получить согласие
+        final Optional<Consent> accountConsentsOptional = mConsentRepository.findById(Long.valueOf(accountConsentId));
+        if (accountConsentsOptional.isPresent()) {
 
-                final AccountConsents accountConsents = accountConsentsOptional.get();
-                accountConsents.setClientId(clientId);
-                //отклонить согласие
-                accountConsents.setStatus(AccountConsentsStatus.REJECTED.toString());
-                accountConsents.setStatusUpdateTime(new Date());
-                //сохранить изменения
-                mAccountConsentsRepository.save(accountConsents);
-                response = new ResponseEntity<>(headers, HttpStatus.OK);
+            final Consent consent = accountConsentsOptional.get();
+            consent.setClient(client);
+            //отклонить согласие
+            consent.setStatus(AccountConsentsStatus.REJECTED);
+            consent.setStatusUpdateTime(new Date());
+            //сохранить изменения
+            mConsentRepository.save(consent);
+            response = new ResponseEntity<>(headers, HttpStatus.OK);
 
-            } else {
-                response = new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
         } else {
             response = new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
         return response;
     }
 
@@ -157,16 +141,17 @@ public class AccountConsentsService {
 
         ResponseEntity<OBReadConsentResponse1Post> response;
         try {
-            final AccountConsents accountConsents = AccountConsents.valueOf(body.getData());
-            accountConsents.setStatus(AccountConsentsStatus.AWAITINGAUTHORISATION.toString());
+            final Consent consent = Consent.valueOf(body.getData());
+            consent.setStatus(AccountConsentsStatus.AWAITINGAUTHORISATION);
 
             final Date now = new Date();
-            accountConsents.setStatusUpdateTime(now);
-            accountConsents.setCreationTime(now);
-            mAccountConsentsRepository.save(accountConsents);
+            consent.setStatusUpdateTime(now);
+            consent.setCreationTime(now);
+            consent.setFintech(mFintechRepository.getById(StubData.FINTECHS.get(xApiKey)));
+            mConsentRepository.save(consent);
 
             final OBReadConsentResponse1Post responseContent = new OBReadConsentResponse1Post();
-            responseContent.setData(accountConsents.toOBReadConsentResponsePost1Data());
+            responseContent.setData(consent.toOBReadConsentResponsePost1Data());
 
             response = new ResponseEntity<>(responseContent, headers, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -190,12 +175,12 @@ public class AccountConsentsService {
 
         ResponseEntity<Void> response;
         try {
-            final Optional<AccountConsents> accountConsentsOptional = mAccountConsentsRepository.findById(Long.valueOf(accountConsentId));
+            final Optional<Consent> accountConsentsOptional = mConsentRepository.findById(Long.valueOf(accountConsentId));
             if (accountConsentsOptional.isPresent()) {
-                final AccountConsents accountConsents = accountConsentsOptional.get();
-                accountConsents.setStatus(AccountConsentsStatus.REVOKED.toString());
-                accountConsents.setStatusUpdateTime(new Date());
-                mAccountConsentsRepository.save(accountConsents);
+                final Consent consent = accountConsentsOptional.get();
+                consent.setStatus(AccountConsentsStatus.REVOKED);
+                consent.setStatusUpdateTime(new Date());
+                mConsentRepository.save(consent);
 
                 response = new ResponseEntity<>(headers, HttpStatus.OK);
             } else {
@@ -221,7 +206,7 @@ public class AccountConsentsService {
 
         ResponseEntity<OBReadConsentResponse1> response;
 
-        final Optional<AccountConsents> accountConsentsData = mAccountConsentsRepository.findById(Long.valueOf(accountConsentId));
+        final Optional<Consent> accountConsentsData = mConsentRepository.findById(Long.valueOf(accountConsentId));
 
         if (accountConsentsData.isPresent()) {
             final OBReadConsentResponse1 obReadConsentResponse1 = new OBReadConsentResponse1();
