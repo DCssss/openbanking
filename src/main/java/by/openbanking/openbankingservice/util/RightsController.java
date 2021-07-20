@@ -1,6 +1,6 @@
 package by.openbanking.openbankingservice.util;
 
-import by.openbanking.openbankingservice.model.Consent;
+import by.openbanking.openbankingservice.entity.Consent;
 import by.openbanking.openbankingservice.models.AccountConsentsStatus;
 import by.openbanking.openbankingservice.models.Permission;
 import by.openbanking.openbankingservice.repository.ConsentRepository;

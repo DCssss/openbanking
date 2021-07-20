@@ -1,7 +1,7 @@
 package by.openbanking.openbankingservice.service;
 
-import by.openbanking.openbankingservice.model.ListTransactions;
-import by.openbanking.openbankingservice.model.Statement;
+import by.openbanking.openbankingservice.entity.ListTransactions;
+import by.openbanking.openbankingservice.entity.Statement;
 import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.ConsentRepository;
 import by.openbanking.openbankingservice.repository.AccountRepository;
@@ -11,7 +11,6 @@ import by.openbanking.openbankingservice.util.AccountConverter;
 import by.openbanking.openbankingservice.util.RightsController;
 import by.openbanking.openbankingservice.util.StubData;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,7 +59,7 @@ public class AccountService {
 
         if (mConsentService.isHaveConsent(Long.valueOf(xAccountConsentId), "/accounts/{accountId}")) {
 
-            final Optional<by.openbanking.openbankingservice.model.Account> accountData = mAccountRepository.findById(Long.valueOf(accountId));
+            final Optional<by.openbanking.openbankingservice.entity.Account> accountData = mAccountRepository.findById(Long.valueOf(accountId));
 
             if (accountData.isPresent()) {
 
@@ -169,7 +168,7 @@ public class AccountService {
         headers.add(AUTHORIZATION, authorization);
 
 
-        final Optional<by.openbanking.openbankingservice.model.Account> accountData = mAccountRepository.findById(Long.valueOf(accountId));
+        final Optional<by.openbanking.openbankingservice.entity.Account> accountData = mAccountRepository.findById(Long.valueOf(accountId));
         final Long clientId = StubData.CLIENTS.get(xApiKey);
 
         if (accountData.isPresent() && clientId != null && RightsController.isHaveRights(mConsentRepository, clientId, "/accounts/{accountId}/balances")) {
@@ -242,7 +241,7 @@ public class AccountService {
             meta.setFirstAvailableDateTime(now);
             meta.setLastAvailableDateTime(now);
 
-            final List<by.openbanking.openbankingservice.model.ListTransactions> listForResponse =
+            final List<by.openbanking.openbankingservice.entity.ListTransactions> listForResponse =
                     mListTransactionRepository.findListTransactionsById(accountId);
 
 

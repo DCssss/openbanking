@@ -1,4 +1,4 @@
-package by.openbanking.openbankingservice.controllers;
+package by.openbanking.openbankingservice.controller;
 
 import by.openbanking.openbankingservice.api.AccountConsentsApi;
 import by.openbanking.openbankingservice.models.OBReadConsent1;
@@ -28,7 +28,7 @@ public final class ConsentController implements AccountConsentsApi {
             final String xApiKey,
             final String xAccountConsentId
     ) {
-        return mConsentService.authorizeAccountConsents(xFapiAuthDate, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, xApiKey, xAccountConsentId);
+        return mConsentService.authorizeConsent(xFapiAuthDate, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, xApiKey, xAccountConsentId);
     }
 
     @Override

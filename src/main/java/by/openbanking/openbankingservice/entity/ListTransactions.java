@@ -1,4 +1,4 @@
-package by.openbanking.openbankingservice.model;
+package by.openbanking.openbankingservice.entity;
 
 import javax.persistence.*;
 import java.util.Date;

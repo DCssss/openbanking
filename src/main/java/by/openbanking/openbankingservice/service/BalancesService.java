@@ -1,6 +1,6 @@
 package by.openbanking.openbankingservice.service;
 
-import by.openbanking.openbankingservice.model.Account;
+import by.openbanking.openbankingservice.entity.Account;
 import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.AccountRepository;
 import by.openbanking.openbankingservice.repository.ConsentRepository;

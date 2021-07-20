@@ -1,15 +1,19 @@
-package by.openbanking.openbankingservice.model;
+package by.openbanking.openbankingservice.entity;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Getter
 @Setter
+@EqualsAndHashCode
+@ToString(callSuper = true)
 @MappedSuperclass
-public class BaseEntity<T extends Serializable> {
+public abstract class BaseEntity<T extends Serializable> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

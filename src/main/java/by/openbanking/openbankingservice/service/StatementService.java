@@ -1,12 +1,11 @@
 package by.openbanking.openbankingservice.service;
 
-import by.openbanking.openbankingservice.model.Statement;
+import by.openbanking.openbankingservice.entity.Statement;
 import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.AccountRepository;
 import by.openbanking.openbankingservice.repository.StatementRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package by.openbanking.openbankingservice.controllers;
+package by.openbanking.openbankingservice.controller;
 
 import by.openbanking.openbankingservice.api.BalancesApi;
 import by.openbanking.openbankingservice.models.OBReadBalance1;

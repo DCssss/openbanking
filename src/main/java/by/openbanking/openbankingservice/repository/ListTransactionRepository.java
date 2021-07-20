@@ -1,7 +1,7 @@
 package by.openbanking.openbankingservice.repository;
 
 
-import by.openbanking.openbankingservice.model.ListTransactions;
+import by.openbanking.openbankingservice.entity.ListTransactions;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

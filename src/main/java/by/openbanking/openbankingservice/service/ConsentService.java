@@ -1,7 +1,7 @@
 package by.openbanking.openbankingservice.service;
 
-import by.openbanking.openbankingservice.model.Client;
-import by.openbanking.openbankingservice.model.Consent;
+import by.openbanking.openbankingservice.entity.Client;
+import by.openbanking.openbankingservice.entity.Consent;
 import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.ConsentRepository;
 import by.openbanking.openbankingservice.repository.AccountRepository;
@@ -9,7 +9,6 @@ import by.openbanking.openbankingservice.repository.ClientRepository;
 import by.openbanking.openbankingservice.repository.FintechRepository;
 import by.openbanking.openbankingservice.util.StubData;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,9 +34,10 @@ public class ConsentService {
     private final ConsentRepository mConsentRepository;
     private final AccountRepository mAccountRepository;
     private final FintechRepository mFintechRepository;
+    private final ClientService mClientService;
 
     @Transactional
-    public ResponseEntity<Void> authorizeAccountConsents(
+    public ResponseEntity<Void> authorizeConsent(
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
@@ -49,8 +49,7 @@ public class ConsentService {
         headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
         ResponseEntity<Void> response;
-        final Long clientId = StubData.CLIENTS.get(xApiKey);
-        final Client client = mClientRepository.getById(clientId);
+        final Client client = mClientService.findClient(xApiKey);
 
         final Optional<Consent> accountConsentsOptional = mConsentRepository.findById(Long.valueOf(xAccountConsentId));
         if (accountConsentsOptional.isPresent()) {
@@ -59,7 +58,7 @@ public class ConsentService {
             consent.setClient(client);
             consent.setStatus(AccountConsentsStatus.AUTHORISED);
             consent.setStatusUpdateTime(new Date());
-            consent.getAccounts().addAll(mAccountRepository.findByClient(client));
+            consent.getAccounts().addAll(client.getAccounts());
             mConsentRepository.save(consent);
 
             response = new ResponseEntity<>(headers, HttpStatus.OK);

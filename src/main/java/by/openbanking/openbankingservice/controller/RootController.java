@@ -1,4 +1,4 @@
-package by.openbanking.openbankingservice.controllers;
+package by.openbanking.openbankingservice.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
