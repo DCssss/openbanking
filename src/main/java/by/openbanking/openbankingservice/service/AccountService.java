@@ -10,6 +10,7 @@ import by.openbanking.openbankingservice.repository.StatementRepository;
 import by.openbanking.openbankingservice.util.AccountConverter;
 import by.openbanking.openbankingservice.util.RightsController;
 import by.openbanking.openbankingservice.util.StubData;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import javax.validation.constraints.Size;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class AccountService {
 
     private static final String X_FAPI_AUTH_DATE = "x-fapi-auth-date";
@@ -36,15 +38,9 @@ public class AccountService {
     private final StatementRepository mStatementRepository;
     private final ConsentRepository mConsentRepository;
 
-    @Autowired
-    public AccountService(final AccountRepository accountRepository, ListTransactionRepository mListTransactionRepository, StatementRepository mStatementRepository, ConsentRepository mConsentRepository) {
-        this.mAccountRepository = accountRepository;
-        this.mListTransactionRepository = mListTransactionRepository;
-        this.mStatementRepository = mStatementRepository;
-        this.mConsentRepository = mConsentRepository;
-    }
+    private final ConsentService mConsentService;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<InlineResponse2001> getAccountById(
             final String accountId,
             final String xFapiAuthDate,
@@ -62,34 +58,38 @@ public class AccountService {
         headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
         headers.add(AUTHORIZATION, authorization);
 
+        if (mConsentService.isHaveConsent(Long.valueOf(xAccountConsentId), "/accounts/{accountId}")) {
 
-        final Optional<by.openbanking.openbankingservice.model.Account> accountData = mAccountRepository.findById(Long.valueOf(accountId));
+            final Optional<by.openbanking.openbankingservice.model.Account> accountData = mAccountRepository.findById(Long.valueOf(accountId));
 
-        final Long clientId = StubData.CLIENTS.get(xApiKey);
-        if (accountData.isPresent() && clientId != null && RightsController.isHaveRights(mConsentRepository, clientId, "/accounts/{accountId}")) {
+            if (accountData.isPresent()) {
 
-            final Accounts accData = new Accounts();
-            accData.setAccounts(Collections.singletonList(AccountConverter.toAccount(accountData.get())));
+                final Accounts accData = new Accounts();
+                accData.setAccounts(Collections.singletonList(AccountConverter.toAccount(accountData.get())));
 
-            // TODO: 13.07.2021 Надо не забыть доделать блоки Link и Meta , пока заглушки
-            final Links links = new Links();
-            links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
+                // TODO: 13.07.2021 Надо не забыть доделать блоки Link и Meta , пока заглушки
+                final Links links = new Links();
+                links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
 
-            final Date now = new Date();
-            final Meta meta = new Meta();
-            meta.setTotalPages(1);
-            meta.setFirstAvailableDateTime(now);
-            meta.setLastAvailableDateTime(now);
+                final Date now = new Date();
+                final Meta meta = new Meta();
+                meta.setTotalPages(1);
+                meta.setFirstAvailableDateTime(now);
+                meta.setLastAvailableDateTime(now);
 
-            final InlineResponse2001 respData = new InlineResponse2001();
-            respData.setData(accData);
-            respData.setLinks(links);
-            respData.setMeta(meta);
+                final InlineResponse2001 respData = new InlineResponse2001();
+                respData.setData(accData);
+                respData.setLinks(links);
+                respData.setMeta(meta);
 
-            responseEntity = new ResponseEntity<>(respData, headers, HttpStatus.OK);
+                responseEntity = new ResponseEntity<>(respData, headers, HttpStatus.OK);
+            } else {
+                responseEntity = new ResponseEntity<>(headers, HttpStatus.UNAUTHORIZED);
+            }
         } else {
-            responseEntity = new ResponseEntity<>(headers, HttpStatus.UNAUTHORIZED);
+            responseEntity = new ResponseEntity<>(headers, HttpStatus.FORBIDDEN);
         }
+
 
         return responseEntity;
     }
@@ -246,18 +246,18 @@ public class AccountService {
                     mListTransactionRepository.findListTransactionsById(accountId);
 
 
-                OBSetAccountsTransAction1 respData = new OBSetAccountsTransAction1();
-                respData.setAccountId(String.valueOf(listForResponse.stream().findFirst().get().getAccountID()));
-                respData.setTransactionListId(String.valueOf(listForResponse.stream().findFirst().get().getListTransactionID()));
-                respData.setFromBookingDateTime(listForResponse.stream().findFirst().get().getListTransactionFromBookingTime());
-                respData.setToBookingDateTime(listForResponse.stream().findFirst().get().getListTransactionToBookingTime());
-                OBSetAccountsTransactionData obSetAccountsTransactionData = new OBSetAccountsTransactionData();
-                List<OBSetAccountsTransAction1> listTransaction = new ArrayList<>();
-                listTransaction.add(respData);
-                obSetAccountsTransactionData.setTransaction(listTransaction);
-                responseContent.setData(obSetAccountsTransactionData);
-                responseContent.setLinks(links);
-                responseContent.setMeta(meta);
+            OBSetAccountsTransAction1 respData = new OBSetAccountsTransAction1();
+            respData.setAccountId(String.valueOf(listForResponse.stream().findFirst().get().getAccountID()));
+            respData.setTransactionListId(String.valueOf(listForResponse.stream().findFirst().get().getListTransactionID()));
+            respData.setFromBookingDateTime(listForResponse.stream().findFirst().get().getListTransactionFromBookingTime());
+            respData.setToBookingDateTime(listForResponse.stream().findFirst().get().getListTransactionToBookingTime());
+            OBSetAccountsTransactionData obSetAccountsTransactionData = new OBSetAccountsTransactionData();
+            List<OBSetAccountsTransAction1> listTransaction = new ArrayList<>();
+            listTransaction.add(respData);
+            obSetAccountsTransactionData.setTransaction(listTransaction);
+            responseContent.setData(obSetAccountsTransactionData);
+            responseContent.setLinks(links);
+            responseContent.setMeta(meta);
 
 
             response = new ResponseEntity<>(responseContent, headers, HttpStatus.CREATED);
@@ -278,8 +278,7 @@ public class AccountService {
             final String authorization,
             final String xApiKey,
             final String xAccountConsentId
-    )
-    {
+    ) {
         ResponseEntity<OBReadTransaction6> responseEntity;
 
         final HttpHeaders headers = new HttpHeaders();
@@ -289,7 +288,7 @@ public class AccountService {
         headers.add(AUTHORIZATION, authorization);
 
 
-        List<ListTransactions> listForResponse = mListTransactionRepository.findListTransactionsByAccountID(accountId,transactionListId);
+        List<ListTransactions> listForResponse = mListTransactionRepository.findListTransactionsByAccountID(accountId, transactionListId);
         final Long clientId = StubData.CLIENTS.get(xApiKey);
         if (!listForResponse.isEmpty() && clientId != null && RightsController.isHaveRights(mConsentRepository, clientId, "/accounts/{accountId}/transactions/{transactionListId}")) {
 
@@ -319,7 +318,7 @@ public class AccountService {
             List<OBTransaction6> listTransaction6 = new ArrayList<>();
             obTransaction6.setAccountId(accountId);
             obTransaction6.setBookingDateTime(listForResponse.stream().findFirst().get().getListTransactionFromBookingTime());
-           // listTransaction6.add(obTransaction6);
+            // listTransaction6.add(obTransaction6);
 
             obReadDataTransaction6.setTransactionListId(transactionListId);
             obReadDataTransaction6.setTransaction(listTransaction6);
@@ -367,7 +366,7 @@ public class AccountService {
         headers.add(AUTHORIZATION, authorization);
 
 
-        List<Statement> listForResponse = mStatementRepository.findStatementsByAccountID(accountId,statementId);
+        List<Statement> listForResponse = mStatementRepository.findStatementsByAccountID(accountId, statementId);
         final Long clientId = StubData.CLIENTS.get(xApiKey);
         if (!listForResponse.isEmpty() && clientId != null && RightsController.isHaveRights(mConsentRepository, clientId, "/statements/accounts/{accountId}/statements/{statementId}")) {
 
@@ -406,7 +405,7 @@ public class AccountService {
 
             // TODO: 13.07.2021 Надо не забыть доделать блоки Link и Meta , пока заглушки
             final LinksStatementGet links = new LinksStatementGet();
-            links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/" + accountId +"/statements/" + statementId);
+            links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/" + accountId + "/statements/" + statementId);
 
             final Date now = new Date();
             final Meta meta = new Meta();

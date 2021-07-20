@@ -4,6 +4,7 @@ import by.openbanking.openbankingservice.model.Statement;
 import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.AccountRepository;
 import by.openbanking.openbankingservice.repository.StatementRepository;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class StatementService {
     private static final String X_FAPI_AUTH_DATE = "x-fapi-auth-date";
     private static final String X_FAPI_CUSTOMER_IP_ADDRESS = "x-fapi-customer-ip-address";
@@ -28,15 +30,6 @@ public class StatementService {
 
     private final AccountRepository mAccountRepository;
     private final StatementRepository mStatementRepository;
-
-    @Autowired
-    public StatementService(
-            final StatementRepository statementRepository,
-            final AccountRepository accountRepository
-    ) {
-        mStatementRepository = statementRepository;
-        mAccountRepository = accountRepository;
-    }
 
     public ResponseEntity<OBReadStatement2Post> setStatement(
             @Valid final OBSetStatement body,

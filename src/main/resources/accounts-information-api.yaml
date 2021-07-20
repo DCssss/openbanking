@@ -119,7 +119,6 @@ paths:
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/x-api-key'
-        - $ref: '#/components/parameters/x-accountConsentId'
       requestBody:
         description: Default
         content:
@@ -155,7 +154,7 @@ paths:
           - oauth2
           - api_key
         optional: false
-  '/accountConsents/{accountConsentId}/authorize':
+  '/accountConsents/authorize':
     post:
       tags:
         - AccountConsents
@@ -163,7 +162,6 @@ paths:
       description: Авторизация согласия
       operationId: authorizeAccountConsents
       parameters:
-        - $ref: '#/components/parameters/accountConsentId'
         - $ref: '#/components/parameters/x-fapi-auth-date'
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
@@ -198,7 +196,7 @@ paths:
           - oauth2
           - api_key
         optional: false
-  '/accountConsents/{accountConsentId}/reject':
+  '/accountConsents/reject':
     post:
       tags:
         - AccountConsents
@@ -206,7 +204,6 @@ paths:
       description: Отклонение согласия
       operationId: rejectAccountConsents
       parameters:
-        - $ref: '#/components/parameters/accountConsentId'
         - $ref: '#/components/parameters/x-fapi-auth-date'
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
         - $ref: '#/components/parameters/x-fapi-interaction-id'
@@ -255,7 +252,6 @@ paths:
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/x-api-key'
-        - $ref: '#/components/parameters/x-accountConsentId'
       responses:
         '200':
           $ref: '#/components/responses/200AccountAccessConsentsConsentIdRead'
@@ -295,7 +291,6 @@ paths:
         - $ref: '#/components/parameters/x-fapi-interaction-id'
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/x-api-key'
-        - $ref: '#/components/parameters/x-accountConsentId'
       responses:
         '204':
           $ref: '#/components/responses/204AccountAccessConsentsConsentIdDeleted'

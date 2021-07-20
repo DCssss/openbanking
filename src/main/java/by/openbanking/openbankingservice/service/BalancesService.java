@@ -2,11 +2,11 @@ package by.openbanking.openbankingservice.service;
 
 import by.openbanking.openbankingservice.model.Account;
 import by.openbanking.openbankingservice.models.*;
-import by.openbanking.openbankingservice.repository.ConsentRepository;
 import by.openbanking.openbankingservice.repository.AccountRepository;
+import by.openbanking.openbankingservice.repository.ConsentRepository;
 import by.openbanking.openbankingservice.util.RightsController;
 import by.openbanking.openbankingservice.util.StubData;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class BalancesService {
 
     private static final String X_FAPI_AUTH_DATE = "x-fapi-auth-date";
@@ -29,15 +30,6 @@ public class BalancesService {
 
     private final ConsentRepository mConsentRepository;
     private final AccountRepository mAccountRepository;
-
-    @Autowired
-    public BalancesService(
-            final ConsentRepository consentRepository,
-            final AccountRepository accountRepository
-    ) {
-        mConsentRepository = consentRepository;
-        mAccountRepository = accountRepository;
-    }
 
     @Transactional(readOnly = true)
     public ResponseEntity<OBReadBalance1> getBalances(

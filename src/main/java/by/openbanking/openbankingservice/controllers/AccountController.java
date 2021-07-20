@@ -3,25 +3,19 @@ package by.openbanking.openbankingservice.controllers;
 import by.openbanking.openbankingservice.api.AccountsApi;
 import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.service.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
 
 
 @RestController
+@RequiredArgsConstructor
 public final class AccountController implements AccountsApi {
 
     private final AccountService mAccountService;
-
-    @Autowired
-    public AccountController(final AccountService accountService) {
-        this.mAccountService = accountService;
-    }
 
     @Override
     public ResponseEntity<InlineResponse2001> getAccountById(
@@ -45,7 +39,7 @@ public final class AccountController implements AccountsApi {
             final String xApiKey,
             final String xAccountConsentId
     ) {
-        return mAccountService.getAccounts(xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId,authorization,xApiKey,xAccountConsentId);
+        return mAccountService.getAccounts(xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization, xApiKey, xAccountConsentId);
     }
 
     @Override
@@ -58,7 +52,7 @@ public final class AccountController implements AccountsApi {
             final String xApiKey,
             final String xAccountConsentId
     ) {
-        return mAccountService.getAccountsAccountIdBalances(accountId,xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId,authorization,xApiKey,xAccountConsentId);
+        return mAccountService.getAccountsAccountIdBalances(accountId, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization, xApiKey, xAccountConsentId);
     }
 
     @Override
@@ -72,7 +66,7 @@ public final class AccountController implements AccountsApi {
             final String xApiKey,
             final String xAccountConsentId
     ) {
-        return mAccountService.getAccountsAccountIdStatementsStatementId(statementId,accountId,xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId,authorization,xApiKey,xAccountConsentId);
+        return mAccountService.getAccountsAccountIdStatementsStatementId(statementId, accountId, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization, xApiKey, xAccountConsentId);
     }
 
     @Override
@@ -86,7 +80,7 @@ public final class AccountController implements AccountsApi {
             final String xApiKey,
             final String xAccountConsentId
     ) {
-        return mAccountService.getAccountsAccountIdTransactions(accountId, transactionListId, xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId,authorization,xApiKey,xAccountConsentId);
+        return mAccountService.getAccountsAccountIdTransactions(accountId, transactionListId, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization, xApiKey, xAccountConsentId);
     }
 
     @Override
@@ -100,7 +94,7 @@ public final class AccountController implements AccountsApi {
             final String xApiKey,
             final String xAccountConsentId
     ) {
-        return mAccountService.setTransaction(body,accountId,xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId,authorization,xApiKey,xAccountConsentId);
+        return mAccountService.setTransaction(body, accountId, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization, xApiKey, xAccountConsentId);
     }
 
 
