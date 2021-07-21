@@ -112,7 +112,7 @@ paths:
         - AccountConsents
       summary: Create Account Access Consents
       description: Создание согласия на доступ к информации по счету
-      operationId: createAccountConsents
+      operationId: createConsent
       parameters:
         - $ref: '#/components/parameters/x-fapi-auth-date'
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
@@ -124,7 +124,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OBReadConsent1'
+              $ref: '#/components/schemas/CreateConsentRequestBody'
         required: true
       responses:
         '201':
@@ -160,7 +160,7 @@ paths:
         - AccountConsents
       summary: Authorize Account Access Consents
       description: Авторизация согласия
-      operationId: authorizeAccountConsents
+      operationId: authorizeConsent
       parameters:
         - $ref: '#/components/parameters/x-fapi-auth-date'
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
@@ -202,7 +202,7 @@ paths:
         - AccountConsents
       summary: Reject Account Access Consents
       description: Отклонение согласия
-      operationId: rejectAccountConsents
+      operationId: rejectConsent
       parameters:
         - $ref: '#/components/parameters/x-fapi-auth-date'
         - $ref: '#/components/parameters/x-fapi-customer-ip-address'
@@ -244,7 +244,7 @@ paths:
         - AccountConsents
       summary: Get Account Access Consents
       description: Получение статуса и параметров согласия на доступ к информации по счету
-      operationId: getAccountConsentById
+      operationId: getConsentById
       parameters:
         - $ref: '#/components/parameters/accountConsentId'
         - $ref: '#/components/parameters/x-fapi-auth-date'
@@ -283,7 +283,7 @@ paths:
         - AccountConsents
       summary: Delete Account Access Consents
       description: Удаление (отзыв) согласия на доступ к информации по счету
-      operationId: deleteAccountConsent
+      operationId: revokeConsent
       parameters:
         - $ref: '#/components/parameters/accountConsentId'
         - $ref: '#/components/parameters/x-fapi-auth-date'
@@ -2102,7 +2102,7 @@ components:
           format: date-time
           nullable: true
           example: '2021-04-17T23:00:00+03:00'
-    OBReadConsent1:
+    CreateConsentRequestBody:
       required:
         - Data
         - Risk
@@ -2213,7 +2213,7 @@ components:
         Meta:
           $ref: '#/components/schemas/Meta'
       additionalProperties: false
-    OBReadConsentResponse1Post:
+    CreateConsentResponseModel:
       required:
         - Data
         - Risk
@@ -2490,7 +2490,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/OBReadConsentResponse1Post'
+            $ref: '#/components/schemas/CreateConsentResponseModel'
     AccountConsentsAuthorized:
       description: Account Access Consents Authorized
       headers:

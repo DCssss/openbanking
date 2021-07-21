@@ -13,8 +13,8 @@ import static javax.persistence.FetchType.LAZY;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"transactions"})
+@ToString(callSuper = true, exclude = {"transactions"})
 @Entity
 @Table(name = "OB_STATEMENTS")
 public final class Statement extends BaseEntity<Long> {

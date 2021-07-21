@@ -11,12 +11,12 @@ import java.io.Serializable;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString(callSuper = true)
+@ToString
 @MappedSuperclass
 public abstract class BaseEntity<T extends Serializable> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "ID")
-    T id;
+    private T id;
 }

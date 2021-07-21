@@ -8,7 +8,6 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Objects;
 import java.util.Set;
 
 import static javax.persistence.EnumType.STRING;
@@ -16,8 +15,8 @@ import static javax.persistence.FetchType.LAZY;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"consents"})
+@ToString(callSuper = true, exclude = {"consents"})
 @Entity
 @Table(name = "OB_ACCOUNTS")
 public final class Account extends BaseEntity<Long> {

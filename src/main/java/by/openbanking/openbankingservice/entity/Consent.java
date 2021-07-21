@@ -14,8 +14,8 @@ import static javax.persistence.FetchType.LAZY;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"accounts"})
+@ToString(callSuper = true, exclude = {"accounts"})
 @Entity
 @Table(name = "OB_CONSENTS")
 public final class Consent extends BaseEntity<Long> {
@@ -82,7 +82,7 @@ public final class Consent extends BaseEntity<Long> {
     )
     private Set<Account> accounts;
 
-    public static Consent valueOf(final OBReadConsent1Data model) {
+    public static Consent valueOf(final CreateConsentRequestModelData model) {
         Consent consent = new Consent();
         for (Permission permissionEnum : model.getPermissions()) {
             switch (permissionEnum) {
@@ -123,7 +123,7 @@ public final class Consent extends BaseEntity<Long> {
 
     public OBReadConsentResponse1Data toOBReadConsentResponse1Data() {
         final OBReadConsentResponse1Data responseData = new OBReadConsentResponse1Data();
-        responseData.setAccountConsentId(String.valueOf(id));
+        responseData.setAccountConsentId(String.valueOf(getId()));
         responseData.setStatus(status);
         responseData.setCreationDateTime(creationTime);
         responseData.setStatusUpdateDateTime(statusUpdateTime);
@@ -135,10 +135,10 @@ public final class Consent extends BaseEntity<Long> {
         return responseData;
     }
 
-    public OBReadConsentResponse1PostData toOBReadConsentResponsePost1Data() {
-        final OBReadConsentResponse1PostData responseData = new OBReadConsentResponse1PostData();
-        responseData.setLink("https://sdbo_business.bank.by/accountConsentsId/" + id + "/");
-        responseData.setAccountConsentId(String.valueOf(id));
+    public CreateConsentResponseModelData toOBReadConsentResponsePost1Data() {
+        final CreateConsentResponseModelData responseData = new CreateConsentResponseModelData();
+        responseData.setLink("https://sdbo_business.bank.by/accountConsentsId/" + getId() + "/");
+        responseData.setAccountConsentId(String.valueOf(getId()));
         responseData.setStatus(status);
         responseData.setCreationDateTime(creationTime);
         responseData.setStatusUpdateDateTime(statusUpdateTime);

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,40 @@ public class ConsentService {
     private final AccountRepository mAccountRepository;
     private final FintechRepository mFintechRepository;
     private final ClientService mClientService;
+
+    @Transactional
+    public ResponseEntity<CreateConsentResponseModel> createConsent(
+            @Valid final CreateConsentRequestModel body,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xApiKey
+    ) {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        ResponseEntity<CreateConsentResponseModel> response;
+        try {
+            final Consent consent = Consent.valueOf(body.getData());
+            consent.setStatus(AccountConsentsStatus.AWAITINGAUTHORISATION);
+
+            final Date now = new Date();
+            consent.setStatusUpdateTime(now);
+            consent.setCreationTime(now);
+            consent.setFintech(mFintechRepository.getById(StubData.FINTECHS.get(xApiKey)));
+            mConsentRepository.save(consent);
+
+            final CreateConsentResponseModel responseContent = new CreateConsentResponseModel();
+            responseContent.setData(consent.toOBReadConsentResponsePost1Data());
+
+            response = new ResponseEntity<>(responseContent, headers, HttpStatus.CREATED);
+        } catch (Exception e) {
+            response = new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return response;
+    }
 
     @Transactional
     public ResponseEntity<Void> authorizeConsent(
@@ -58,7 +93,7 @@ public class ConsentService {
             consent.setClient(client);
             consent.setStatus(AccountConsentsStatus.AUTHORISED);
             consent.setStatusUpdateTime(new Date());
-            consent.getAccounts().addAll(client.getAccounts());
+            consent.getAccounts().addAll(client.getAccounts().stream().filter(account -> new Random().nextBoolean()).collect(Collectors.toList()));
             mConsentRepository.save(consent);
 
             response = new ResponseEntity<>(headers, HttpStatus.OK);
@@ -70,7 +105,7 @@ public class ConsentService {
     }
 
     @Transactional
-    public ResponseEntity<Void> rejectAccountConsents(
+    public ResponseEntity<Void> rejectConsent(
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
@@ -109,41 +144,7 @@ public class ConsentService {
         return response;
     }
 
-    @Transactional
-    public ResponseEntity<OBReadConsentResponse1Post> createAccountConsents(
-            @Valid final OBReadConsent1 body,
-            final String xFapiAuthDate,
-            final String xFapiCustomerIpAddress,
-            final String xFapiInteractionId,
-            final String authorization,
-            final String xApiKey
-    ) {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
-
-        ResponseEntity<OBReadConsentResponse1Post> response;
-        try {
-            final Consent consent = Consent.valueOf(body.getData());
-            consent.setStatus(AccountConsentsStatus.AWAITINGAUTHORISATION);
-
-            final Date now = new Date();
-            consent.setStatusUpdateTime(now);
-            consent.setCreationTime(now);
-            consent.setFintech(mFintechRepository.getById(StubData.FINTECHS.get(xApiKey)));
-            mConsentRepository.save(consent);
-
-            final OBReadConsentResponse1Post responseContent = new OBReadConsentResponse1Post();
-            responseContent.setData(consent.toOBReadConsentResponsePost1Data());
-
-            response = new ResponseEntity<>(responseContent, headers, HttpStatus.CREATED);
-        } catch (Exception e) {
-            response = new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return response;
-    }
-
-    public ResponseEntity<Void> deleteAccountAccessConsentsConsentId(
+    public ResponseEntity<Void> revokeConsent(
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
@@ -173,7 +174,7 @@ public class ConsentService {
         return response;
     }
 
-    public ResponseEntity<OBReadConsentResponse1> getAccountAccessConsentsConsentId(
+    public ResponseEntity<OBReadConsentResponse1> getConsentById(
             @Size(min = 1, max = 35) final String accountConsentId,
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,

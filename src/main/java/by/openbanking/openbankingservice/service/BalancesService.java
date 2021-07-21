@@ -1,6 +1,7 @@
 package by.openbanking.openbankingservice.service;
 
 import by.openbanking.openbankingservice.entity.Account;
+import by.openbanking.openbankingservice.entity.Consent;
 import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.AccountRepository;
 import by.openbanking.openbankingservice.repository.ConsentRepository;
@@ -44,20 +45,18 @@ public class BalancesService {
         headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
         headers.add(X_API_KEY, xApikey);
 
-
         ResponseEntity<OBReadBalance1> responseEntity;
 
         //получить ClientId по apikey
         final Long clientId = StubData.CLIENTS.get(xApikey);
+        if (clientId != null) {
+            final Consent consent = mConsentRepository.getById(Long.valueOf(xAccountConsentId));
+            if (RightsController.isHaveRights(consent, "/balances")) {
 
-        if (clientId != null && RightsController.isHaveRights(mConsentRepository, clientId, "/balances")) {
-
-            Date now = new Date();
-            final List<Account> accounts = mAccountRepository.findAll();
-            if (!accounts.isEmpty()) {
+                final Date now = new Date();
                 final List<OBReadBalance1DataBalance> balances = new ArrayList<>();
 
-                for (Account account : accounts) {
+                for (Account account : consent.getAccounts()) {
                     final OBReadBalance1DataBalance balance = new OBReadBalance1DataBalance();
                     balance.setAccountId(String.valueOf(account.getId()));
                     balance.setDateTime(now);
@@ -85,12 +84,12 @@ public class BalancesService {
 
                 responseEntity = new ResponseEntity<>(respData, headers, HttpStatus.OK);
             } else {
-                responseEntity = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-
         } else {
-            responseEntity = new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+
         return responseEntity;
     }
 }

@@ -8,15 +8,14 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Objects;
 import java.util.Set;
 
 import static javax.persistence.FetchType.LAZY;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"statements"})
+@ToString(callSuper = true, exclude = {"statements"})
 @Entity
 @Table(name = "OB_TRANSACTIONS")
 public final class Transaction extends BaseEntity<Long> {

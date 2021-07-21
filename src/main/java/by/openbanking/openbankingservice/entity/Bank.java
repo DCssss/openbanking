@@ -6,14 +6,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Objects;
 import java.util.Set;
 
 @Getter
 @Setter
 @Entity
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"clients"})
+@ToString(callSuper = true, exclude = {"clients"})
 @Table(name = "OB_BANKS")
 public final class Bank extends BaseEntity<Long> {
 

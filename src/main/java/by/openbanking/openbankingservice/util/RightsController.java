@@ -24,9 +24,25 @@ public final class RightsController {
                         .findByClientId(clientId)
                         .stream()
                         .filter(consent -> consent.getExpirationDate().after(new Date()))
-                        .filter(consent -> consent.getStatus().equals(AccountConsentsStatus.AUTHORISED.toString()))
+                        .filter(consent -> consent.getStatus().equals(AccountConsentsStatus.AUTHORISED))
                         .collect(Collectors.toList());
         for (Consent consent : consentCollection) {
+            for (Permission permission : consent.getPermission()) {
+                if (StubData.PERMISSIONS_API.get(permission).contains(api)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    public static boolean isHaveRights(
+            final Consent consent,
+            final String api
+    ) {
+        if (consent.getExpirationDate().after(new Date())
+                && consent.getStatus() == AccountConsentsStatus.AUTHORISED) {
             for (Permission permission : consent.getPermission()) {
                 if (StubData.PERMISSIONS_API.get(permission).contains(api)) {
                     return true;
