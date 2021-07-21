@@ -82,7 +82,7 @@ public final class Consent extends BaseEntity<Long> {
     )
     private Set<Account> accounts;
 
-    public static Consent valueOf(final CreateConsentRequestModelData model) {
+    public static Consent valueOf(final CreateConsentRequestBodyData model) {
         Consent consent = new Consent();
         for (Permission permissionEnum : model.getPermissions()) {
             switch (permissionEnum) {
@@ -135,8 +135,8 @@ public final class Consent extends BaseEntity<Long> {
         return responseData;
     }
 
-    public CreateConsentResponseModelData toOBReadConsentResponsePost1Data() {
-        final CreateConsentResponseModelData responseData = new CreateConsentResponseModelData();
+    public CreateConsentResponseBodyData toOBReadConsentResponsePost1Data() {
+        final CreateConsentResponseBodyData responseData = new CreateConsentResponseBodyData();
         responseData.setLink("https://sdbo_business.bank.by/accountConsentsId/" + getId() + "/");
         responseData.setAccountConsentId(String.valueOf(getId()));
         responseData.setStatus(status);

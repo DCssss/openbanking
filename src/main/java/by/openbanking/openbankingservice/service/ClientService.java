@@ -19,7 +19,7 @@ public class ClientService {
         if (clientId != null) {
             return mClientRepository.getById(clientId);
         } else {
-            throw new RuntimeException("Illegal ApiKey");
+            throw new IllegalArgumentException("Illegal ApiKey");
         }
     }
 }

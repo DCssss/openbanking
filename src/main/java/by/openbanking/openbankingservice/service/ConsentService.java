@@ -38,8 +38,8 @@ public class ConsentService {
     private final ClientService mClientService;
 
     @Transactional
-    public ResponseEntity<CreateConsentResponseModel> createConsent(
-            @Valid final CreateConsentRequestModel body,
+    public ResponseEntity<CreateConsentResponseBody> createConsent(
+            @Valid final CreateConsentRequestBody body,
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
@@ -49,7 +49,7 @@ public class ConsentService {
         final HttpHeaders headers = new HttpHeaders();
         headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
-        ResponseEntity<CreateConsentResponseModel> response;
+        ResponseEntity<CreateConsentResponseBody> response;
         try {
             final Consent consent = Consent.valueOf(body.getData());
             consent.setStatus(AccountConsentsStatus.AWAITINGAUTHORISATION);
@@ -60,7 +60,7 @@ public class ConsentService {
             consent.setFintech(mFintechRepository.getById(StubData.FINTECHS.get(xApiKey)));
             mConsentRepository.save(consent);
 
-            final CreateConsentResponseModel responseContent = new CreateConsentResponseModel();
+            final CreateConsentResponseBody responseContent = new CreateConsentResponseBody();
             responseContent.setData(consent.toOBReadConsentResponsePost1Data());
 
             response = new ResponseEntity<>(responseContent, headers, HttpStatus.CREATED);
@@ -86,10 +86,9 @@ public class ConsentService {
         ResponseEntity<Void> response;
         final Client client = mClientService.findClient(xApiKey);
 
-        final Optional<Consent> accountConsentsOptional = mConsentRepository.findById(Long.valueOf(xAccountConsentId));
-        if (accountConsentsOptional.isPresent()) {
+        final Consent consent = mConsentRepository.getById(Long.valueOf(xAccountConsentId));
 
-            final Consent consent = accountConsentsOptional.get();
+        if (consent.getStatus() == AccountConsentsStatus.AWAITINGAUTHORISATION) {
             consent.setClient(client);
             consent.setStatus(AccountConsentsStatus.AUTHORISED);
             consent.setStatusUpdateTime(new Date());
@@ -97,10 +96,10 @@ public class ConsentService {
             mConsentRepository.save(consent);
 
             response = new ResponseEntity<>(headers, HttpStatus.OK);
-
         } else {
-            response = new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new IllegalStateException("Consent status not AwaitingAuthorisation");
         }
+
         return response;
     }
 
@@ -125,10 +124,10 @@ public class ConsentService {
 
 
         //получить согласие
-        final Optional<Consent> accountConsentsOptional = mConsentRepository.findById(Long.valueOf(xAccountConsentId));
-        if (accountConsentsOptional.isPresent()) {
+        final Consent consent = mConsentRepository.getById(Long.valueOf(xAccountConsentId));
 
-            final Consent consent = accountConsentsOptional.get();
+        if (consent.getStatus() == AccountConsentsStatus.AWAITINGAUTHORISATION) {
+
             consent.setClient(client);
             //отклонить согласие
             consent.setStatus(AccountConsentsStatus.REJECTED);
@@ -138,7 +137,7 @@ public class ConsentService {
             response = new ResponseEntity<>(headers, HttpStatus.OK);
 
         } else {
-            response = new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new IllegalStateException("Consent status not AwaitingAuthorisation");
         }
 
         return response;
@@ -156,21 +155,18 @@ public class ConsentService {
         headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
         ResponseEntity<Void> response;
-        try {
-            final Optional<Consent> accountConsentsOptional = mConsentRepository.findById(Long.valueOf(xAccountConsentId));
-            if (accountConsentsOptional.isPresent()) {
-                final Consent consent = accountConsentsOptional.get();
-                consent.setStatus(AccountConsentsStatus.REVOKED);
-                consent.setStatusUpdateTime(new Date());
-                mConsentRepository.save(consent);
+        final Consent consent = mConsentRepository.getById(Long.valueOf(xAccountConsentId));
+        if (consent.getStatus() == AccountConsentsStatus.AUTHORISED) {
 
-                response = new ResponseEntity<>(headers, HttpStatus.OK);
-            } else {
-                response = new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } catch (Exception e) {
-            response = new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+            consent.setStatus(AccountConsentsStatus.REVOKED);
+            consent.setStatusUpdateTime(new Date());
+            mConsentRepository.save(consent);
+
+            response = new ResponseEntity<>(headers, HttpStatus.OK);
+        } else {
+            throw new IllegalStateException("Consent status not Authorized");
         }
+
         return response;
     }
 

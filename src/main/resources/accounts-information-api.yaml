@@ -2213,7 +2213,7 @@ components:
         Meta:
           $ref: '#/components/schemas/Meta'
       additionalProperties: false
-    CreateConsentResponseModel:
+    CreateConsentResponseBody:
       required:
         - Data
         - Risk
@@ -2490,7 +2490,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/CreateConsentResponseModel'
+            $ref: '#/components/schemas/CreateConsentResponseBody'
     AccountConsentsAuthorized:
       description: Account Access Consents Authorized
       headers:
