@@ -7,15 +7,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Target({ FIELD })
+@Target({ FIELD, PARAMETER })
 @Retention(RUNTIME)
-@Constraint(validatedBy = CreateConsentRequestBodyValidator.class)
+@Constraint(validatedBy = ConsentBodyValidator.class)
 @Documented
-public @interface CreateConsentRequestBody {
+public @interface ConsentBody {
 
-    String message() default "{CreateConsentRequestBody.invalid}";
+    String message() default "{ConsentBody.invalid}";
 
     Class<?>[] groups() default { };
 

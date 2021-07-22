@@ -1906,7 +1906,7 @@ components:
           format: uri
       additionalProperties: false
       description: 'Ссылки, относящиеся к полезной нагрузке.'
-    OBError1:
+    OBError:
       minProperties: 1
       required:
         - ErrorCode
@@ -1934,7 +1934,7 @@ components:
             URL-адрес, предоставляющий дополнительную информацию для решения
             проблемы.
       additionalProperties: false
-    OBErrorResponse1:
+    OBErrorResponse:
       required:
         - Code
         - Errors
@@ -1964,7 +1964,7 @@ components:
           minItems: 1
           type: array
           items:
-            $ref: '#/components/schemas/OBError1'
+            $ref: '#/components/schemas/OBError'
       additionalProperties: false
       description: >-
         Массив подробных кодов ошибок, сообщений и URL-адресов для
@@ -2472,7 +2472,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/OBErrorResponse1'
+            $ref: '#/components/schemas/OBErrorResponse'
     401Error:
       description: Unauthorized
       headers:
@@ -2494,7 +2494,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/OBErrorResponse1'
+            $ref: '#/components/schemas/OBErrorResponse'
     404Error:
       description: Not found
       headers:
@@ -2558,7 +2558,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/OBErrorResponse1'
+            $ref: '#/components/schemas/OBErrorResponse'
   parameters:
     permissions:
       name: Permissions

@@ -4,8 +4,10 @@ import by.openbanking.openbankingservice.api.AccountConsentsApi;
 import by.openbanking.openbankingservice.models.Consent;
 import by.openbanking.openbankingservice.models.ConsentResponse;
 import by.openbanking.openbankingservice.service.ConsentService;
+import by.openbanking.openbankingservice.validation.ConsentBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -14,7 +16,7 @@ import javax.validation.constraints.Size;
 
 @RestController
 @RequiredArgsConstructor
-public final class ConsentController implements AccountConsentsApi {
+public class ConsentController implements AccountConsentsApi {
 
     private final ConsentService mConsentService;
 

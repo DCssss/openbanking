@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public final class BalancesController implements BalancesApi {
+public class BalancesController implements BalancesApi {
 
     private final BalancesService mBalancesService;
 

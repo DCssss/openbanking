@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 
 @RestController
 @RequiredArgsConstructor
-public final class AccountController implements AccountsApi {
+public class AccountController implements AccountsApi {
 
     private final AccountService mAccountService;
 

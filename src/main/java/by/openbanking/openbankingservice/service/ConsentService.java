@@ -10,12 +10,14 @@ import by.openbanking.openbankingservice.repository.FintechRepository;
 import by.openbanking.openbankingservice.util.ConsentConverter;
 import by.openbanking.openbankingservice.util.OBHttpHeaders;
 import by.openbanking.openbankingservice.util.StubData;
+import by.openbanking.openbankingservice.validation.ConsentBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Validated
 public class ConsentService {
 
     private final ClientRepository mClientRepository;
@@ -33,7 +36,7 @@ public class ConsentService {
 
     @Transactional
     public ResponseEntity<ConsentResponse> createConsent(
-            @Valid final Consent body,
+            @Valid @ConsentBody final Consent body,
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
