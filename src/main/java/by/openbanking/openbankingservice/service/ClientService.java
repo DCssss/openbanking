@@ -1,6 +1,6 @@
 package by.openbanking.openbankingservice.service;
 
-import by.openbanking.openbankingservice.entity.Client;
+import by.openbanking.openbankingservice.entity.ClientEntity;
 import by.openbanking.openbankingservice.repository.ClientRepository;
 import by.openbanking.openbankingservice.util.StubData;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ public class ClientService {
 
     private final ClientRepository mClientRepository;
 
-    public Client findClient(
+    public ClientEntity identifyClient(
             final String apiKey
     ) {
         final Long clientId = StubData.CLIENTS.get(apiKey);

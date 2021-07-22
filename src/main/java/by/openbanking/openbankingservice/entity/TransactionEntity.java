@@ -18,11 +18,11 @@ import static javax.persistence.FetchType.LAZY;
 @ToString(callSuper = true, exclude = {"statements"})
 @Entity
 @Table(name = "OB_TRANSACTIONS")
-public final class Transaction extends BaseEntity<Long> {
+public final class TransactionEntity extends BaseEntity<Long> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ACCOUNT_ID")
-    private Account account;
+    private AccountEntity account;
 
     @Column(name = "CREDIT_DEBIT_INDICATOR")
     private Integer creditDebitIndicator;
@@ -78,9 +78,9 @@ public final class Transaction extends BaseEntity<Long> {
             joinColumns = @JoinColumn(name = "TRANSACTION_ID"),
             inverseJoinColumns = @JoinColumn(name = "STATEMENT_ID")
     )
-    private Set<Statement> statements;
+    private Set<StatementEntity> statements;
 
-    public Transaction() {
+    public TransactionEntity() {
     }
 
 }

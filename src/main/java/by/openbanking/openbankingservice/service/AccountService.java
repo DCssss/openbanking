@@ -1,7 +1,9 @@
 package by.openbanking.openbankingservice.service;
 
+import by.openbanking.openbankingservice.entity.AccountEntity;
+import by.openbanking.openbankingservice.entity.ConsentEntity;
 import by.openbanking.openbankingservice.entity.ListTransactions;
-import by.openbanking.openbankingservice.entity.Statement;
+import by.openbanking.openbankingservice.entity.StatementEntity;
 import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.ConsentRepository;
 import by.openbanking.openbankingservice.repository.AccountRepository;
@@ -16,31 +18,28 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import by.openbanking.openbankingservice.util.OBHttpHeaders;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.*;
 
+import static by.openbanking.openbankingservice.util.OBHttpHeaders.X_FAPI_INTERACTION_ID;
+
 @Service
 @RequiredArgsConstructor
 public class AccountService {
-
-    private static final String X_FAPI_AUTH_DATE = "x-fapi-auth-date";
-    private static final String X_FAPI_CUSTOMER_IP_ADDRESS = "x-fapi-customer-ip-address";
-    private static final String X_FAPI_INTERACTION_ID = "x-fapi-interaction-id";
-    private static final String AUTHORIZATION = "authorization";
-    private static final String X_API_KEY = "x-api-key";
-    private static final String X_ACCOUNT_CONSENT_ID = "x-accountConsentId";
 
     private final AccountRepository mAccountRepository;
     private final ListTransactionRepository mListTransactionRepository;
     private final StatementRepository mStatementRepository;
     private final ConsentRepository mConsentRepository;
 
+    private final ClientService mClientService;
     private final ConsentService mConsentService;
 
     @Transactional
-    public ResponseEntity<InlineResponse2001> getAccountById(
+    public ResponseEntity<AccountResponse> getAccountById(
             final String accountId,
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
@@ -49,140 +48,22 @@ public class AccountService {
             final String xApiKey,
             final String xAccountConsentId
     ) {
-        ResponseEntity<InlineResponse2001> responseEntity;
+        mClientService.identifyClient(xApiKey);
+        final ConsentEntity consent = mConsentService.checkPermissionAndGetConsent(Long.valueOf(xAccountConsentId), "/accounts/{accountId}");
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_AUTH_DATE, xFapiAuthDate);
-        headers.add(X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
-        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(AUTHORIZATION, authorization);
-
-        if (mConsentService.isHaveConsent(Long.valueOf(xAccountConsentId), "/accounts/{accountId}")) {
-
-            final Optional<by.openbanking.openbankingservice.entity.Account> accountData = mAccountRepository.findById(Long.valueOf(accountId));
-
-            if (accountData.isPresent()) {
-
-                final Accounts accData = new Accounts();
-                accData.setAccounts(Collections.singletonList(AccountConverter.toAccount(accountData.get())));
-
-                // TODO: 13.07.2021 Надо не забыть доделать блоки Link и Meta , пока заглушки
-                final Links links = new Links();
-                links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
-
-                final Date now = new Date();
-                final Meta meta = new Meta();
-                meta.setTotalPages(1);
-                meta.setFirstAvailableDateTime(now);
-                meta.setLastAvailableDateTime(now);
-
-                final InlineResponse2001 respData = new InlineResponse2001();
-                respData.setData(accData);
-                respData.setLinks(links);
-                respData.setMeta(meta);
-
-                responseEntity = new ResponseEntity<>(respData, headers, HttpStatus.OK);
-            } else {
-                responseEntity = new ResponseEntity<>(headers, HttpStatus.UNAUTHORIZED);
-            }
-        } else {
-            responseEntity = new ResponseEntity<>(headers, HttpStatus.FORBIDDEN);
-        }
-
-
-        return responseEntity;
-    }
-
-    @Transactional(readOnly = true)
-    public ResponseEntity<InlineResponse200> getAccounts(
-            final String xFapiAuthDate,
-            final String xFapiCustomerIpAddress,
-            final String xFapiInteractionId,
-            final String authorization,
-            final String xApiKey,
-            final String xAccountConsentId
-    ) {
-        ResponseEntity<InlineResponse200> responseEntity;
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_AUTH_DATE, xFapiAuthDate);
-        headers.add(X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
-        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(AUTHORIZATION, authorization);
-
-        try {
-
-            final List<by.openbanking.openbankingservice.models.Account> accountsForResponse =
-                    AccountConverter.toAccount(mAccountRepository.findAll());
-
-            final Long clientId = StubData.CLIENTS.get(xApiKey);
-
-            if (!accountsForResponse.isEmpty() && clientId != null && RightsController.isHaveRights(mConsentRepository, clientId, "/accounts")) {
-
-                final Accounts accData = new Accounts();
-                accData.setAccounts(accountsForResponse);
-
-                // TODO: 13.07.2021 Надо не забыть доделать блоки Link и Meta , пока заглушки
-                final Link links = new Link();
-                links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
-
-                final Date now = new Date();
-                final Meta meta = new Meta();
-                meta.setTotalPages(1);
-                meta.setFirstAvailableDateTime(now);
-                meta.setLastAvailableDateTime(now);
-
-                final InlineResponse200 respData = new InlineResponse200();
-                respData.setData(accData);
-                respData.setLinks(links);
-                respData.setMeta(meta);
-
-                responseEntity = new ResponseEntity<>(respData, headers, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
-
-        } catch (Exception e) {
-            responseEntity = new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return responseEntity;
-    }
-
-    @Transactional(readOnly = true)
-    public ResponseEntity<OBReadBalance1> getAccountsAccountIdBalances(
-            @Size(min = 1, max = 35) String accountId,
-            final String xFapiAuthDate,
-            final String xFapiCustomerIpAddress,
-            final String xFapiInteractionId,
-            final String authorization,
-            final String xApiKey,
-            final String xAccountConsentId
-    ) {
-        ResponseEntity<OBReadBalance1> responseEntity;
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_AUTH_DATE, xFapiAuthDate);
-        headers.add(X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
-        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(AUTHORIZATION, authorization);
-
-
-        final Optional<by.openbanking.openbankingservice.entity.Account> accountData = mAccountRepository.findById(Long.valueOf(accountId));
-        final Long clientId = StubData.CLIENTS.get(xApiKey);
-
-        if (accountData.isPresent() && clientId != null && RightsController.isHaveRights(mConsentRepository, clientId, "/accounts/{accountId}/balances")) {
-
-            OBReadBalance1Data obReadBalance1Data = new OBReadBalance1Data();
-            OBReadBalance1DataBalance obReadBalance1DataBalance = new OBReadBalance1DataBalance();
-            List<OBReadBalance1DataBalance> listBalance = new ArrayList<>();
-            listBalance.add(obReadBalance1DataBalance);
-            obReadBalance1Data.setBalance(listBalance);
-            final Accounts accData = new Accounts();
-            accData.setAccounts(Collections.singletonList(AccountConverter.toAccount(accountData.get())));
+        final Optional<AccountEntity> optionalAccount =
+                consent
+                        .getAccounts()
+                        .stream()
+                        .filter(accountEntity -> accountEntity.getId().equals(Long.valueOf(accountId)))
+                        .findFirst();
+        if (optionalAccount.isPresent()) {
+            final AccountEntity account = optionalAccount.get();
+            final AccountResponseData accountResponseData = new AccountResponseData();
+            accountResponseData.setAccount(Collections.singletonList(AccountConverter.toAccount(account, consent.getPermission().contains(Permission.READACCOUNTSDETAIL))));
 
             // TODO: 13.07.2021 Надо не забыть доделать блоки Link и Meta , пока заглушки
-            final LinksBalance links = new LinksBalance();
+            final Link links = new Link();
             links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
 
             final Date now = new Date();
@@ -191,17 +72,109 @@ public class AccountService {
             meta.setFirstAvailableDateTime(now);
             meta.setLastAvailableDateTime(now);
 
-            final OBReadBalance1 respData = new OBReadBalance1();
-            respData.setData(obReadBalance1Data);
+            final AccountResponse respData = new AccountResponse();
+            respData.setData(accountResponseData);
             respData.setLinks(links);
             respData.setMeta(meta);
 
-            responseEntity = new ResponseEntity<>(respData, headers, HttpStatus.OK);
-        } else {
-            responseEntity = new ResponseEntity<>(headers, HttpStatus.UNAUTHORIZED);
-        }
+            final HttpHeaders headers = new HttpHeaders();
+            headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
-        return responseEntity;
+            return new ResponseEntity<>(respData, headers, HttpStatus.OK);
+        } else {
+            throw new RuntimeException("There is no account or does not have permission");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<AccountResponse> getAccounts(
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
+    ) {
+
+        mClientService.identifyClient(xApiKey);
+        final ConsentEntity consent = mConsentService.checkPermissionAndGetConsent(Long.valueOf(xAccountConsentId), "/accounts");
+
+        final AccountResponseData accountResponseData = new AccountResponseData();
+        accountResponseData.setAccount(AccountConverter.toAccount(consent.getAccounts(), consent.getPermission().contains(Permission.READACCOUNTSDETAIL)));
+
+        // TODO: 13.07.2021 Надо не забыть доделать блоки Link и Meta , пока заглушки
+        final Link links = new Link();
+        links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
+
+        final Date now = new Date();
+        final Meta meta = new Meta();
+        meta.setTotalPages(1);
+        meta.setFirstAvailableDateTime(now);
+        meta.setLastAvailableDateTime(now);
+
+        final AccountResponse respData = new AccountResponse();
+        respData.setData(accountResponseData);
+        respData.setLinks(links);
+        respData.setMeta(meta);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(respData, headers, HttpStatus.OK);
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<BalanceResponse> getAccountsAccountIdBalances(
+            @Size(min = 1, max = 35) String accountId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
+    ) {
+        mClientService.identifyClient(xApiKey);
+        final ConsentEntity consent = mConsentService.checkPermissionAndGetConsent(Long.valueOf(xAccountConsentId), "/accounts/{accountId}");
+
+        final Optional<AccountEntity> optionalAccount =
+                consent.getAccounts()
+                        .stream()
+                        .filter(accountEntity -> accountEntity.getId().equals(Long.valueOf(accountId)))
+                        .findFirst();
+        if (optionalAccount.isPresent()) {
+            final AccountEntity account = optionalAccount.get();
+
+            final Date now = new Date();
+
+            final Balance balance = new Balance();
+            balance.setAccountId(String.valueOf(account.getId()));
+            balance.setDateTime(now);
+            balance.setCurrency(account.getCurrency());
+            balance.setBalanceAmount(account.getBalanceAmount().toString());
+
+            final BalanceResponseData balanceResponseData = new BalanceResponseData();
+            balanceResponseData.setBalance(Collections.singletonList(balance));
+
+            final LinksBalance links = new LinksBalance();
+            links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
+
+            final Meta meta = new Meta();
+            meta.setTotalPages(1);
+            meta.setFirstAvailableDateTime(now);
+            meta.setLastAvailableDateTime(now);
+
+            final BalanceResponse respData = new BalanceResponse();
+            respData.setData(balanceResponseData);
+            respData.setLinks(links);
+            respData.setMeta(meta);
+
+            final HttpHeaders headers = new HttpHeaders();
+            headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+            return new ResponseEntity<>(respData, headers, HttpStatus.OK);
+        } else {
+            throw new RuntimeException("There is no account or does not have permission");
+        }
     }
 
     @Transactional
@@ -216,10 +189,10 @@ public class AccountService {
             final String xAccountConsentId
     ) {
         final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_AUTH_DATE, xFapiAuthDate);
-        headers.add(X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
         headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
 
         ResponseEntity<OBSetAccountsTransaction> response;
         try {
@@ -281,10 +254,10 @@ public class AccountService {
         ResponseEntity<OBReadTransaction6> responseEntity;
 
         final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_AUTH_DATE, xFapiAuthDate);
-        headers.add(X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
         headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
 
 
         List<ListTransactions> listForResponse = mListTransactionRepository.findListTransactionsByAccountID(accountId, transactionListId);
@@ -359,13 +332,13 @@ public class AccountService {
         ResponseEntity<OBReadStatement2> responseEntity;
 
         final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_AUTH_DATE, xFapiAuthDate);
-        headers.add(X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
         headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
 
 
-        List<Statement> listForResponse = mStatementRepository.findStatementsByAccountID(accountId, statementId);
+        List<StatementEntity> listForResponse = mStatementRepository.findStatementsByAccountID(accountId, statementId);
         final Long clientId = StubData.CLIENTS.get(xApiKey);
         if (!listForResponse.isEmpty() && clientId != null && RightsController.isHaveRights(mConsentRepository, clientId, "/statements/accounts/{accountId}/statements/{statementId}")) {
 

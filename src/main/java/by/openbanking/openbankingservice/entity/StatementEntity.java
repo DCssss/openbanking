@@ -17,11 +17,11 @@ import static javax.persistence.FetchType.LAZY;
 @ToString(callSuper = true, exclude = {"transactions"})
 @Entity
 @Table(name = "OB_STATEMENTS")
-public final class Statement extends BaseEntity<Long> {
+public final class StatementEntity extends BaseEntity<Long> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ACCOUNT_ID", nullable = false)
-    private Account account;
+    private AccountEntity account;
 
     @Column(name = "FROM_BOOKING_DATE")
     private Date fromBookingDate;
@@ -38,9 +38,9 @@ public final class Statement extends BaseEntity<Long> {
             joinColumns = @JoinColumn(name = "STATEMENT_ID"),
             inverseJoinColumns = @JoinColumn(name = "TRANSACTION_ID")
     )
-    private Set<Transaction> transactions;
+    private Set<TransactionEntity> transactions;
 
-    public Statement() {
+    public StatementEntity() {
     }
 
 }

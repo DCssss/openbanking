@@ -14,7 +14,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true, exclude = {"clients"})
 @ToString(callSuper = true, exclude = {"clients"})
 @Table(name = "OB_BANKS")
-public final class Bank extends BaseEntity<Long> {
+public final class BankEntity extends BaseEntity<Long> {
 
     @Column(name = "NAME")
     private String name;
@@ -23,9 +23,9 @@ public final class Bank extends BaseEntity<Long> {
     private String identifier;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "bank")
-    private Set<Client> clients;
+    private Set<ClientEntity> clients;
 
-    public Bank() {
+    public BankEntity() {
     }
 
 }

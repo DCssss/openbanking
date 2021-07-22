@@ -18,7 +18,7 @@ public final class AccountController implements AccountsApi {
     private final AccountService mAccountService;
 
     @Override
-    public ResponseEntity<InlineResponse2001> getAccountById(
+    public ResponseEntity<AccountResponse> getAccountById(
             @Size(min = 1, max = 35) final String accountId,
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
@@ -31,7 +31,7 @@ public final class AccountController implements AccountsApi {
     }
 
     @Override
-    public ResponseEntity<InlineResponse200> getAccounts(
+    public ResponseEntity<AccountResponse> getAccounts(
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
@@ -43,7 +43,7 @@ public final class AccountController implements AccountsApi {
     }
 
     @Override
-    public ResponseEntity<OBReadBalance1> getAccountsAccountIdBalances(
+    public ResponseEntity<BalanceResponse> getAccountBalanceById(
             @Size(min = 1, max = 35) final String accountId,
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,

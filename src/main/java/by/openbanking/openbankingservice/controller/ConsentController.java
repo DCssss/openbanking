@@ -1,9 +1,8 @@
 package by.openbanking.openbankingservice.controller;
 
 import by.openbanking.openbankingservice.api.AccountConsentsApi;
-import by.openbanking.openbankingservice.models.CreateConsentRequestBody;
-import by.openbanking.openbankingservice.models.CreateConsentResponseBody;
-import by.openbanking.openbankingservice.models.OBReadConsentResponse1;
+import by.openbanking.openbankingservice.models.Consent;
+import by.openbanking.openbankingservice.models.ConsentResponse;
 import by.openbanking.openbankingservice.service.ConsentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +19,8 @@ public final class ConsentController implements AccountConsentsApi {
     private final ConsentService mConsentService;
 
     @Override
-    public ResponseEntity<CreateConsentResponseBody> createConsent(
-            @Valid final CreateConsentRequestBody body,
+    public ResponseEntity<ConsentResponse> createConsent(
+            @Valid final Consent body,
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
@@ -89,7 +88,7 @@ public final class ConsentController implements AccountConsentsApi {
     }
 
     @Override
-    public ResponseEntity<OBReadConsentResponse1> getConsentById(
+    public ResponseEntity<ConsentResponse> getConsentById(
             @Size(min = 1, max = 35) final String accountConsentId,
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,

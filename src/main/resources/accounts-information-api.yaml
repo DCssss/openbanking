@@ -55,7 +55,7 @@ paths:
         '500':
           $ref: '#/components/responses/500Error'
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -98,7 +98,7 @@ paths:
         '500':
           $ref: '#/components/responses/500Error'
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -124,7 +124,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateConsentRequestBody'
+              $ref: '#/components/schemas/Consent'
         required: true
       responses:
         '201':
@@ -146,7 +146,7 @@ paths:
         '500':
           $ref: '#/components/responses/500Error'
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -188,7 +188,7 @@ paths:
         '500':
           $ref: '#/components/responses/500Error'
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -230,7 +230,7 @@ paths:
         '500':
           $ref: '#/components/responses/500Error'
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -270,7 +270,7 @@ paths:
         '500':
           $ref: '#/components/responses/500Error'
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -309,7 +309,7 @@ paths:
         '500':
           $ref: '#/components/responses/500Error'
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -323,7 +323,7 @@ paths:
         - Balances
       summary: Get Balances
       description: Получение баланса по счету
-      operationId: GetAccountsAccountIdBalances
+      operationId: getAccountBalanceById
       parameters:
         - $ref: '#/components/parameters/accountId'
         - $ref: '#/components/parameters/x-fapi-auth-date'
@@ -350,7 +350,7 @@ paths:
         '500':
           $ref: '#/components/responses/500Error'
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -392,7 +392,7 @@ paths:
         '500':
           $ref: '#/components/responses/500Error'
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -436,7 +436,7 @@ paths:
         '500':
           $ref: '#/components/responses/500Error'
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -486,7 +486,7 @@ paths:
         '500':
           $ref: '#/components/responses/500Error'
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -530,7 +530,7 @@ paths:
         '500':
           $ref: '#/components/responses/500Error'
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -580,7 +580,7 @@ paths:
         '500':
           $ref: '#/components/responses/500Error'
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -1734,93 +1734,116 @@ components:
       description: >-
         Код, присвоенный валюте, в соответствии с международным стандартом ISO
         4217".
-    OBReadBalance1:
+    AccountResponseData:
+      properties:
+        Account:
+          type: array
+          description: Информация о счете.
+          items:
+            $ref: '#/components/schemas/Account'
+    AccountResponse:
       required:
         - Data
       type: object
       properties:
         Data:
-          required:
-            - Balance
-          type: object
-          properties:
-            Balance:
-              minItems: 1
-              type: array
-              items:
-                required:
-                  - accountId
-                  - balanceAmount
-                  - creditDebitIndicator
-                  - currency
-                  - dateTime
-                  - type
-                type: object
-                properties:
-                  accountId:
-                    $ref: '#/components/schemas/AccountId'
-                  creditDebitIndicator:
-                    $ref: '#/components/schemas/OBCreditDebitCode_2'
-                  type:
-                    $ref: '#/components/schemas/BalanceType'
-                  dateTime:
-                    type: string
-                    description: |-
-                      Дата и время суммы остатка на счете (баланса) .
-                      Все поля даты и времени должны включать часовой пояс:
-                      2017-04-05T10:43:07+03:00
-                    format: date-time
-                    example: '2021-04-18T10:43:07+03:00'
-                  balanceAmount:
-                    pattern: '^d{1,18}$|^d{1,18}.d{1,5}$'
-                    type: string
-                    example: '100.00000'
-                  currency:
-                    pattern: '[A-Z]{3}'
-                    type: string
-                    example: BYN
-                  balanceEquivalentAmount:
-                    pattern: '^d{1,18}$|^d{1,18}.d{1,2}$'
-                    type: string
-                    example: '100.00'
-                  creditLine:
-                    type: array
-                    items:
-                      required:
-                        - creditLineAmount
-                        - currency
-                        - included
-                      type: object
-                      properties:
-                        included:
-                          type: boolean
-                          description: >-
-                            Указывает, включена ли кредитная линия в баланс
-                            счета
-
-                            Usage: Если нет, кредитная линия не учитывается в
-                            размере остатка на счете.
-                        type:
-                          type: string
-                          description: Тип кредитной линии
-                          enum:
-                            - Revolving
-                            - Non-revolving
-                        creditLineamount:
-                          pattern: '^d{1,13}$|^d{1,13}.d{1,5}$'
-                          type: string
-                          description: Сумма кредитной линии.
-                          example: '50.00000'
-                        currency:
-                          pattern: '[A-Z]{3}'
-                          type: string
-                          example: BYN
-                      description: >-
-                        Набор элементов, используемых для предоставления
-                        сведений о кредитной линии.
+          $ref: '#/components/schemas/AccountResponseData'
+        Links:
+          $ref: '#/components/schemas/Link'
+        Meta:
+          $ref: '#/components/schemas/Meta'
+      additionalProperties: false
+    Balance:
+      required:
+        - accountId
+        - balanceAmount
+        - creditDebitIndicator
+        - currency
+        - dateTime
+        - type
+      type: object
+      properties:
+        accountId:
+          $ref: '#/components/schemas/AccountId'
+        creditDebitIndicator:
+          $ref: '#/components/schemas/OBCreditDebitCode_2'
+        type:
+          $ref: '#/components/schemas/BalanceType'
+        dateTime:
+          type: string
+          description: |-
+            Дата и время суммы остатка на счете (баланса) .
+            Все поля даты и времени должны включать часовой пояс:
+            2017-04-05T10:43:07+03:00
+          format: date-time
+          example: '2021-04-18T10:43:07+03:00'
+        balanceAmount:
+          pattern: '^d{1,18}$|^d{1,18}.d{1,5}$'
+          type: string
+          example: '100.00000'
+        currency:
+          pattern: '[A-Z]{3}'
+          type: string
+          example: BYN
+        balanceEquivalentAmount:
+          pattern: '^d{1,18}$|^d{1,18}.d{1,2}$'
+          type: string
+          example: '100.00'
+        creditLine:
+          type: array
+          items:
+            required:
+              - creditLineAmount
+              - currency
+              - included
+            type: object
+            properties:
+              included:
+                type: boolean
                 description: >-
-                  Набор элементов сипользуемых для предоставления сведений о
-                  деталях баланса.
+                  Указывает, включена ли кредитная линия в баланс
+                  счета
+
+                  Usage: Если нет, кредитная линия не учитывается в
+                  размере остатка на счете.
+              type:
+                type: string
+                description: Тип кредитной линии
+                enum:
+                  - Revolving
+                  - Non-revolving
+              creditLineamount:
+                pattern: '^d{1,13}$|^d{1,13}.d{1,5}$'
+                type: string
+                description: Сумма кредитной линии.
+                example: '50.00000'
+              currency:
+                pattern: '[A-Z]{3}'
+                type: string
+                example: BYN
+            description: >-
+              Набор элементов, используемых для предоставления
+              сведений о кредитной линии.
+      description: >-
+        Набор элементов используемых для предоставления сведений о
+        деталях баланса.
+    BalanceResponseData:
+      required:
+        - Balance
+      type: object
+      properties:
+        Balance:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/Balance'
+    BalanceResponse:
+      required:
+        - Data
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/BalanceResponseData'
         Links:
           $ref: '#/components/schemas/LinksBalance'
         Meta:
@@ -1948,7 +1971,7 @@ components:
         документирования.
     OBRisk2:
       type: object
-      properties: {}
+      properties: { }
       additionalProperties: false
       description: >-
         Раздел «Риск» отправляется инициирующей стороной. Используется для
@@ -2019,13 +2042,6 @@ components:
           $ref: '#/components/schemas/AccountDetails'
         servicer:
           $ref: '#/components/schemas/Servicer'
-    Accounts:
-      properties:
-        Accounts:
-          type: array
-          description: Информация о счете.
-          items:
-            $ref: '#/components/schemas/Account'
     AccountDetails:
       required:
         - identification
@@ -2102,7 +2118,7 @@ components:
           format: date-time
           nullable: true
           example: '2021-04-17T23:00:00+03:00'
-    CreateConsentRequestBody:
+    Consent:
       required:
         - Data
         - Risk
@@ -2153,67 +2169,7 @@ components:
         Risk:
           $ref: '#/components/schemas/OBRisk2'
       additionalProperties: false
-    OBReadConsentResponse1:
-      required:
-        - Data
-        - Risk
-      type: object
-      properties:
-        Data:
-          required:
-            - accountConsentId
-            - creationDateTime
-            - permissions
-            - status
-            - statusUpdateDateTime
-          type: object
-          properties:
-            accountConsentId:
-              maxLength: 35
-              minLength: 1
-              type: string
-              description: Идентификатор согласия
-              example: 3cgfc598-r5gh-9758-b358-587a5479610s
-            status:
-              $ref: '#/components/schemas/AccountConsentsStatus'
-            statusUpdateDateTime:
-              $ref: '#/components/schemas/StatusUpdateDateTimeConsent'
-            creationDateTime:
-              $ref: '#/components/schemas/CreationDateTimeConsent'
-            permissions:
-              minItems: 1
-              type: array
-              items:
-                $ref: '#/components/schemas/Permission'
-            expirationDate:
-              type: string
-              description: Дата окончания срока действия согласия.
-              format: date
-              example: '2021-08-17'
-            transactionFromDate:
-              type: string
-              description: >-
-                Дата начала периода, с которого можно получить транзакции
-                Клиента на стороне Поставщика API. Если он не указан, данные
-                будут возвращены с самой первой из доступных транзакций.
-              format: date
-              example: '2021-04-20'
-            transactionToDate:
-              type: string
-              description: >-
-                Дата окончания периода, после которого нельзя получить
-                транзакции Клиента на стороне Поставщика API. Если он не указан,
-                данные будут возвращены до самой последней доступной транзакции.
-              format: date
-              example: '2021-04-22'
-        Risk:
-          $ref: '#/components/schemas/OBRisk2'
-        Links:
-          $ref: '#/components/schemas/LinksConsentPost'
-        Meta:
-          $ref: '#/components/schemas/Meta'
-      additionalProperties: false
-    CreateConsentResponseBody:
+    ConsentResponse:
       required:
         - Data
         - Risk
@@ -2332,7 +2288,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/OBReadBalance1'
+            $ref: '#/components/schemas/BalanceResponse'
     200GetAccounts:
       description: OK
       headers:
@@ -2344,14 +2300,7 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              Data:
-                $ref: '#/components/schemas/Accounts'
-              Links:
-                $ref: '#/components/schemas/Link'
-              Meta:
-                $ref: '#/components/schemas/Meta'
+            $ref: '#/components/schemas/AccountResponse'
       links:
         getAccounts:
           operationId: getAccounts
@@ -2431,7 +2380,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/OBReadConsentResponse1'
+            $ref: '#/components/schemas/ConsentResponse'
     200AccountsAccountIdStatementsStatementIdTransactionsRead:
       description: Transactions Read
       headers:
@@ -2457,7 +2406,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/OBReadBalance1'
+            $ref: '#/components/schemas/BalanceResponse'
     200AccountById:
       description: OK
       headers:
@@ -2470,14 +2419,7 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              Data:
-                $ref: '#/components/schemas/Accounts'
-              Links:
-                $ref: '#/components/schemas/Links'
-              Meta:
-                $ref: '#/components/schemas/Meta'
+            $ref: '#/components/schemas/AccountResponse'
     201AccountAccessConsentsCreated:
       description: Account Access Consents Created
       headers:
@@ -2490,7 +2432,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/CreateConsentResponseBody'
+            $ref: '#/components/schemas/ConsentResponse'
     AccountConsentsAuthorized:
       description: Account Access Consents Authorized
       headers:
@@ -2873,7 +2815,7 @@ components:
       flows:
         implicit:
           authorizationUrl: ''
-          scopes: {}
+          scopes: { }
 x-wso2-auth-header: Authorization
 x-wso2-cors:
   corsConfigurationEnabled: true

@@ -18,7 +18,7 @@ import static javax.persistence.FetchType.LAZY;
 @ToString(callSuper = true, exclude = {"accounts"})
 @Entity
 @Table(name = "OB_CONSENTS")
-public final class Consent extends BaseEntity<Long> {
+public final class ConsentEntity extends BaseEntity<Long> {
 
     @Column(name = "STATUS")
     @Enumerated(value = STRING)
@@ -41,11 +41,11 @@ public final class Consent extends BaseEntity<Long> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FINTECH_ID", nullable = false)
-    private Fintech fintech;
+    private FintechEntity fintech;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CLIENT_ID")
-    private Client client;
+    private ClientEntity client;
 
     @Column(name = "READ_ACCOUNTS_BASIC")
     private int readAccountsBasic;
@@ -80,10 +80,10 @@ public final class Consent extends BaseEntity<Long> {
             joinColumns = @JoinColumn(name = "CONSENT_ID"),
             inverseJoinColumns = @JoinColumn(name = "ACCOUNT_ID")
     )
-    private Set<Account> accounts;
+    private Set<AccountEntity> accounts;
 
-    public static Consent valueOf(final CreateConsentRequestBodyData model) {
-        Consent consent = new Consent();
+    public static ConsentEntity valueOf(final ConsentData model) {
+        ConsentEntity consent = new ConsentEntity();
         for (Permission permissionEnum : model.getPermissions()) {
             switch (permissionEnum) {
                 case READACCOUNTSBASIC:
@@ -121,33 +121,6 @@ public final class Consent extends BaseEntity<Long> {
         return consent;
     }
 
-    public OBReadConsentResponse1Data toOBReadConsentResponse1Data() {
-        final OBReadConsentResponse1Data responseData = new OBReadConsentResponse1Data();
-        responseData.setAccountConsentId(String.valueOf(getId()));
-        responseData.setStatus(status);
-        responseData.setCreationDateTime(creationTime);
-        responseData.setStatusUpdateDateTime(statusUpdateTime);
-        responseData.setExpirationDate(expirationDate);
-        responseData.setTransactionFromDate(transactionFromDate);
-        responseData.setTransactionToDate(transactionToDate);
-        responseData.setPermissions(new ArrayList<>(getPermission()));
-
-        return responseData;
-    }
-
-    public CreateConsentResponseBodyData toOBReadConsentResponsePost1Data() {
-        final CreateConsentResponseBodyData responseData = new CreateConsentResponseBodyData();
-        responseData.setLink("https://sdbo_business.bank.by/accountConsentsId/" + getId() + "/");
-        responseData.setAccountConsentId(String.valueOf(getId()));
-        responseData.setStatus(status);
-        responseData.setCreationDateTime(creationTime);
-        responseData.setStatusUpdateDateTime(statusUpdateTime);
-        responseData.setExpirationDate(expirationDate);
-        responseData.setTransactionFromDate(transactionFromDate);
-        responseData.setTransactionToDate(transactionToDate);
-        responseData.setPermissions(new ArrayList<>(getPermission()));
-        return responseData;
-    }
 
     public Collection<Permission> getPermission() {
         final List<Permission> permissions = new ArrayList<>();

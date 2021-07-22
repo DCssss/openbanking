@@ -1,6 +1,6 @@
 package by.openbanking.openbankingservice.service;
 
-import by.openbanking.openbankingservice.entity.Statement;
+import by.openbanking.openbankingservice.entity.StatementEntity;
 import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.AccountRepository;
 import by.openbanking.openbankingservice.repository.StatementRepository;
@@ -50,7 +50,7 @@ public class StatementService {
 
         final Date now = new Date();
 
-        Statement statement = new Statement();
+        StatementEntity statement = new StatementEntity();
         statement.setAccount(mAccountRepository.getById(Long.valueOf(accountId)));
         statement.setCreateTime(now);
         statement.setFromBookingDate(body.getData().getStatement().getFromBookingDate());
@@ -65,7 +65,7 @@ public class StatementService {
         meta.setFirstAvailableDateTime(now);
         meta.setLastAvailableDateTime(now);
 
-        final Statement statement1 = mStatementRepository.findStatementsById(accountId);
+        final StatementEntity statement1 = mStatementRepository.findStatementsById(accountId);
 
 
         if (StringUtils.isNotBlank(accountId)) {

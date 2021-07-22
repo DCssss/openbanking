@@ -14,14 +14,14 @@ import java.util.Set;
 @ToString(callSuper = true, exclude = {"accounts", "consents"})
 @Entity
 @Table(name = "OB_CLIENTS")
-public final class Client extends BaseEntity<Long> {
+public final class ClientEntity extends BaseEntity<Long> {
 
     @Column(name = "NAME")
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BANK_ID", nullable = false)
-    private Bank bank;
+    private BankEntity bank;
 
     @Column(name = "ADDRESS")
     private String address;
@@ -30,12 +30,12 @@ public final class Client extends BaseEntity<Long> {
     private String tax;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "client")
-    private Set<Account> accounts;
+    private Set<AccountEntity> accounts;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "client")
-    private Set<Consent> consents;
+    private Set<ConsentEntity> consents;
 
-    public Client() {
+    public ClientEntity() {
     }
 
 }

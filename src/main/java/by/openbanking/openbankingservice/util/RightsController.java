@@ -1,6 +1,6 @@
 package by.openbanking.openbankingservice.util;
 
-import by.openbanking.openbankingservice.entity.Consent;
+import by.openbanking.openbankingservice.entity.ConsentEntity;
 import by.openbanking.openbankingservice.models.AccountConsentsStatus;
 import by.openbanking.openbankingservice.models.Permission;
 import by.openbanking.openbankingservice.repository.ConsentRepository;
@@ -19,14 +19,14 @@ public final class RightsController {
             final String api
     ) {
         //получить все актуальные согласия пользователя
-        final Collection<Consent> consentCollection =
+        final Collection<ConsentEntity> consentCollection =
                 consentRepository
                         .findByClientId(clientId)
                         .stream()
                         .filter(consent -> consent.getExpirationDate().after(new Date()))
                         .filter(consent -> consent.getStatus().equals(AccountConsentsStatus.AUTHORISED))
                         .collect(Collectors.toList());
-        for (Consent consent : consentCollection) {
+        for (ConsentEntity consent : consentCollection) {
             for (Permission permission : consent.getPermission()) {
                 if (StubData.PERMISSIONS_API.get(permission).contains(api)) {
                     return true;
@@ -38,7 +38,7 @@ public final class RightsController {
 
 
     public static boolean isHaveRights(
-            final Consent consent,
+            final ConsentEntity consent,
             final String api
     ) {
         if (consent.getExpirationDate().after(new Date())

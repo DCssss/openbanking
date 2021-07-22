@@ -1,12 +1,14 @@
 package by.openbanking.openbankingservice.service;
 
-import by.openbanking.openbankingservice.entity.Client;
-import by.openbanking.openbankingservice.entity.Consent;
+import by.openbanking.openbankingservice.entity.ClientEntity;
+import by.openbanking.openbankingservice.entity.ConsentEntity;
 import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.ConsentRepository;
 import by.openbanking.openbankingservice.repository.AccountRepository;
 import by.openbanking.openbankingservice.repository.ClientRepository;
 import by.openbanking.openbankingservice.repository.FintechRepository;
+import by.openbanking.openbankingservice.util.ConsentConverter;
+import by.openbanking.openbankingservice.util.OBHttpHeaders;
 import by.openbanking.openbankingservice.util.StubData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -24,22 +26,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ConsentService {
 
-    private static final String X_FAPI_AUTH_DATE = "x-fapi-auth-date";
-    private static final String X_FAPI_CUSTOMER_IP_ADDRESS = "x-fapi-customer-ip-address";
-    private static final String X_FAPI_INTERACTION_ID = "x-fapi-interaction-id";
-    private static final String AUTHORIZATION = "authorization";
-    private static final String X_API_KEY = "x-api-key";
-    private static final String X_ACCOUNT_CONSENT_ID = "x-accountConsentId";
-
     private final ClientRepository mClientRepository;
     private final ConsentRepository mConsentRepository;
-    private final AccountRepository mAccountRepository;
     private final FintechRepository mFintechRepository;
     private final ClientService mClientService;
 
     @Transactional
-    public ResponseEntity<CreateConsentResponseBody> createConsent(
-            @Valid final CreateConsentRequestBody body,
+    public ResponseEntity<ConsentResponse> createConsent(
+            @Valid final Consent body,
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
@@ -47,28 +41,22 @@ public class ConsentService {
             final String xApiKey
     ) {
         final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
-        ResponseEntity<CreateConsentResponseBody> response;
-        try {
-            final Consent consent = Consent.valueOf(body.getData());
-            consent.setStatus(AccountConsentsStatus.AWAITINGAUTHORISATION);
+        final ConsentEntity consent = ConsentEntity.valueOf(body.getData());
+        consent.setStatus(AccountConsentsStatus.AWAITINGAUTHORISATION);
 
-            final Date now = new Date();
-            consent.setStatusUpdateTime(now);
-            consent.setCreationTime(now);
-            consent.setFintech(mFintechRepository.getById(StubData.FINTECHS.get(xApiKey)));
-            mConsentRepository.save(consent);
+        final Date now = new Date();
+        consent.setStatusUpdateTime(now);
+        consent.setCreationTime(now);
+        consent.setFintech(mFintechRepository.getById(StubData.FINTECHS.get(xApiKey)));
+        mConsentRepository.save(consent);
 
-            final CreateConsentResponseBody responseContent = new CreateConsentResponseBody();
-            responseContent.setData(consent.toOBReadConsentResponsePost1Data());
+        final ConsentResponse responseContent = new ConsentResponse();
+        responseContent.setData(ConsentConverter.toConsentResponseData(consent));
 
-            response = new ResponseEntity<>(responseContent, headers, HttpStatus.CREATED);
-        } catch (Exception e) {
-            response = new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(responseContent, headers, HttpStatus.CREATED);
 
-        return response;
     }
 
     @Transactional
@@ -81,12 +69,12 @@ public class ConsentService {
             final String xAccountConsentId
     ) {
         final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
         ResponseEntity<Void> response;
-        final Client client = mClientService.findClient(xApiKey);
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
 
-        final Consent consent = mConsentRepository.getById(Long.valueOf(xAccountConsentId));
+        final ConsentEntity consent = mConsentRepository.getById(Long.valueOf(xAccountConsentId));
 
         if (consent.getStatus() == AccountConsentsStatus.AWAITINGAUTHORISATION) {
             consent.setClient(client);
@@ -114,17 +102,17 @@ public class ConsentService {
     ) {
 
         final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
         ResponseEntity<Void> response;
 
         //получить ClientId по apikey
         final Long clientId = StubData.CLIENTS.get(xApiKey);
-        final Client client = mClientRepository.getById(clientId);
+        final ClientEntity client = mClientRepository.getById(clientId);
 
 
         //получить согласие
-        final Consent consent = mConsentRepository.getById(Long.valueOf(xAccountConsentId));
+        final ConsentEntity consent = mConsentRepository.getById(Long.valueOf(xAccountConsentId));
 
         if (consent.getStatus() == AccountConsentsStatus.AWAITINGAUTHORISATION) {
 
@@ -152,10 +140,10 @@ public class ConsentService {
             final String xAccountConsentId
     ) {
         final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
         ResponseEntity<Void> response;
-        final Consent consent = mConsentRepository.getById(Long.valueOf(xAccountConsentId));
+        final ConsentEntity consent = mConsentRepository.getById(Long.valueOf(xAccountConsentId));
         if (consent.getStatus() == AccountConsentsStatus.AUTHORISED) {
 
             consent.setStatus(AccountConsentsStatus.REVOKED);
@@ -170,7 +158,7 @@ public class ConsentService {
         return response;
     }
 
-    public ResponseEntity<OBReadConsentResponse1> getConsentById(
+    public ResponseEntity<ConsentResponse> getConsentById(
             @Size(min = 1, max = 35) final String accountConsentId,
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
@@ -179,52 +167,53 @@ public class ConsentService {
             final String xApiKey
     ) {
         final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
-        ResponseEntity<OBReadConsentResponse1> response;
+        final ConsentEntity consent = mConsentRepository.getById(Long.valueOf(accountConsentId));
 
-        final Optional<Consent> accountConsentsData = mConsentRepository.findById(Long.valueOf(accountConsentId));
+        final ConsentResponse consentResponse = new ConsentResponse();
+        consentResponse.setData(ConsentConverter.toConsentResponseData(consent));
 
-        if (accountConsentsData.isPresent()) {
-            final OBReadConsentResponse1 obReadConsentResponse1 = new OBReadConsentResponse1();
-            obReadConsentResponse1.setData(accountConsentsData.get().toOBReadConsentResponse1Data());
+        return new ResponseEntity<>(consentResponse, headers, HttpStatus.OK);
 
-            response = new ResponseEntity<>(obReadConsentResponse1, headers, HttpStatus.OK);
-        } else {
-            response = new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
-        }
-
-        return response;
     }
 
-    public boolean isHaveConsent(
+    ConsentEntity checkPermissionAndGetConsent(
             final Long consentId,
             final String api
-    ) {
-        //найти согласие
-        final Optional<Consent> optionalConsent = mConsentRepository.findById(consentId);
-
-        if (optionalConsent.isPresent()) {
-            final Consent consent = optionalConsent.get();
-
-            //если такое согласие существует, проверить дату согласия
-            if (consent.getExpirationDate().after(new Date())) {
-                //если согласие актуально, проверить дает ли оно право на запрашиваемое АПИ
-                for (Permission permission : consent.getPermission()) {
-                    if (StubData.PERMISSIONS_API.get(permission).contains(api)) {
-                        return true;
-                    }
-                }
-
-            } else {
-                //если дата согласия истекла, установить статус EXPIRED и сохранить
-                consent.setStatus(AccountConsentsStatus.EXPIRED);
-                mConsentRepository.save(consent);
-            }
-
-            return false;
+    ){
+        final ConsentEntity consent = getConsent(consentId);
+        if (isHavePermission(consent, api)){
+            return consent;
         } else {
-            return false;
+            throw new RuntimeException("Forbidden");
         }
+    }
+
+    private boolean isHavePermission(
+            final ConsentEntity consent,
+            final String api
+    ) {
+        for (Permission permission : consent.getPermission()) {
+            if (StubData.PERMISSIONS_API.get(permission).contains(api)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private ConsentEntity getConsent(final Long id) {
+        final ConsentEntity consent = mConsentRepository.getById(id);
+
+        if (consent.getExpirationDate().before(new Date())) {
+            //если дата согласия истекла, установить статус EXPIRED и сохранить
+            consent.setStatus(AccountConsentsStatus.EXPIRED);
+            mConsentRepository.save(consent);
+
+            throw new IllegalStateException("Consent expired");
+        }
+
+        return consent;
     }
 }

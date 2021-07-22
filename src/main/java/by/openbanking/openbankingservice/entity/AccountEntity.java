@@ -19,11 +19,11 @@ import static javax.persistence.FetchType.LAZY;
 @ToString(callSuper = true, exclude = {"consents"})
 @Entity
 @Table(name = "OB_ACCOUNTS")
-public final class Account extends BaseEntity<Long> {
+public final class AccountEntity extends BaseEntity<Long> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CLIENT_ID", nullable = false)
-    private Client client;
+    private ClientEntity client;
 
     @Column(name = "STATUS")
     @Enumerated(value = STRING)
@@ -63,9 +63,9 @@ public final class Account extends BaseEntity<Long> {
             joinColumns = @JoinColumn(name = "ACCOUNT_ID"),
             inverseJoinColumns = @JoinColumn(name = "CONSENT_ID")
     )
-    private Set<Consent> consents;
+    private Set<ConsentEntity> consents;
 
-    public Account() {
+    public AccountEntity() {
     }
 
 }

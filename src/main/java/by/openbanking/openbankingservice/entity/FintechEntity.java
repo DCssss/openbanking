@@ -14,7 +14,7 @@ import java.util.Objects;
 @ToString(callSuper = true)
 @Entity
 @Table(name = "OB_FINTECHS")
-public final class Fintech extends BaseEntity<Long> {
+public final class FintechEntity extends BaseEntity<Long> {
 
     @Column(name = "NAME")
     private String name;
@@ -22,7 +22,7 @@ public final class Fintech extends BaseEntity<Long> {
     @Column(name = "LOGIN")
     private String login;
 
-    public Fintech() {
+    public FintechEntity() {
     }
 
 }

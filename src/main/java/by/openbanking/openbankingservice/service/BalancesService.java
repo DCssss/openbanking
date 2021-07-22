@@ -1,7 +1,7 @@
 package by.openbanking.openbankingservice.service;
 
-import by.openbanking.openbankingservice.entity.Account;
-import by.openbanking.openbankingservice.entity.Consent;
+import by.openbanking.openbankingservice.entity.AccountEntity;
+import by.openbanking.openbankingservice.entity.ConsentEntity;
 import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.AccountRepository;
 import by.openbanking.openbankingservice.repository.ConsentRepository;
@@ -32,8 +32,11 @@ public class BalancesService {
     private final ConsentRepository mConsentRepository;
     private final AccountRepository mAccountRepository;
 
+    private final ClientService mClientService;
+    private final ConsentService mConsentService;
+
     @Transactional(readOnly = true)
-    public ResponseEntity<OBReadBalance1> getBalances(
+    public ResponseEntity<BalanceResponse> getBalances(
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
@@ -41,55 +44,42 @@ public class BalancesService {
             final String xApikey,
             final String xAccountConsentId
     ) {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(X_API_KEY, xApikey);
+        mClientService.identifyClient(xApikey);
+        final ConsentEntity consent = mConsentService.checkPermissionAndGetConsent(Long.valueOf(xAccountConsentId), "/balances");
 
-        ResponseEntity<OBReadBalance1> responseEntity;
+        final Date now = new Date();
+        final List<Balance> balances = new ArrayList<>();
 
-        //получить ClientId по apikey
-        final Long clientId = StubData.CLIENTS.get(xApikey);
-        if (clientId != null) {
-            final Consent consent = mConsentRepository.getById(Long.valueOf(xAccountConsentId));
-            if (RightsController.isHaveRights(consent, "/balances")) {
+        for (AccountEntity account : consent.getAccounts()) {
+            final Balance balance = new Balance();
+            balance.setAccountId(String.valueOf(account.getId()));
+            balance.setDateTime(now);
+            balance.setCurrency(account.getCurrency());
+            balance.setBalanceAmount(account.getBalanceAmount().toString());
 
-                final Date now = new Date();
-                final List<OBReadBalance1DataBalance> balances = new ArrayList<>();
-
-                for (Account account : consent.getAccounts()) {
-                    final OBReadBalance1DataBalance balance = new OBReadBalance1DataBalance();
-                    balance.setAccountId(String.valueOf(account.getId()));
-                    balance.setDateTime(now);
-                    balance.setCurrency(account.getCurrency());
-                    balance.setBalanceAmount(account.getBalanceAmount().toString());
-
-                    balances.add(balance);
-                }
-
-                final OBReadBalance1Data readBalance1Data = new OBReadBalance1Data();
-                readBalance1Data.setBalance(balances);
-
-                final LinksBalance links = new LinksBalance();
-                links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
-
-                final Meta meta = new Meta();
-                meta.setTotalPages(1);
-                meta.setFirstAvailableDateTime(now);
-                meta.setLastAvailableDateTime(now);
-
-                final OBReadBalance1 respData = new OBReadBalance1();
-                respData.setData(readBalance1Data);
-                respData.setLinks(links);
-                respData.setMeta(meta);
-
-                responseEntity = new ResponseEntity<>(respData, headers, HttpStatus.OK);
-            } else {
-                responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
-        } else {
-            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            balances.add(balance);
         }
 
-        return responseEntity;
+        final BalanceResponseData balanceResponseData = new BalanceResponseData();
+        balanceResponseData.setBalance(balances);
+
+        final LinksBalance links = new LinksBalance();
+        links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
+
+        final Meta meta = new Meta();
+        meta.setTotalPages(1);
+        meta.setFirstAvailableDateTime(now);
+        meta.setLastAvailableDateTime(now);
+
+        final BalanceResponse respData = new BalanceResponse();
+        respData.setData(balanceResponseData);
+        respData.setLinks(links);
+        respData.setMeta(meta);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(respData, headers, HttpStatus.OK);
+
     }
 }
