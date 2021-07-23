@@ -4,12 +4,14 @@ import by.openbanking.openbankingservice.entity.AccountEntity;
 import by.openbanking.openbankingservice.entity.ConsentEntity;
 import by.openbanking.openbankingservice.entity.ListTransactions;
 import by.openbanking.openbankingservice.entity.StatementEntity;
+import by.openbanking.openbankingservice.exception.OBErrorCode;
+import by.openbanking.openbankingservice.exception.OBException;
 import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.ConsentRepository;
-import by.openbanking.openbankingservice.repository.AccountRepository;
 import by.openbanking.openbankingservice.repository.ListTransactionRepository;
 import by.openbanking.openbankingservice.repository.StatementRepository;
 import by.openbanking.openbankingservice.util.AccountConverter;
+import by.openbanking.openbankingservice.util.OBHttpHeaders;
 import by.openbanking.openbankingservice.util.RightsController;
 import by.openbanking.openbankingservice.util.StubData;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import by.openbanking.openbankingservice.util.OBHttpHeaders;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
@@ -30,7 +31,6 @@ import static by.openbanking.openbankingservice.util.OBHttpHeaders.X_FAPI_INTERA
 @RequiredArgsConstructor
 public class AccountService {
 
-    private final AccountRepository mAccountRepository;
     private final ListTransactionRepository mListTransactionRepository;
     private final StatementRepository mStatementRepository;
     private final ConsentRepository mConsentRepository;
@@ -82,7 +82,7 @@ public class AccountService {
 
             return new ResponseEntity<>(respData, headers, HttpStatus.OK);
         } else {
-            throw new RuntimeException("There is no account or does not have permission");
+            throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND, "Account not found");
         }
     }
 

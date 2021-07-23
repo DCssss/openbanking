@@ -4,10 +4,8 @@ import by.openbanking.openbankingservice.api.AccountConsentsApi;
 import by.openbanking.openbankingservice.models.Consent;
 import by.openbanking.openbankingservice.models.ConsentResponse;
 import by.openbanking.openbankingservice.service.ConsentService;
-import by.openbanking.openbankingservice.validation.ConsentBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -79,12 +77,12 @@ public class ConsentController implements AccountConsentsApi {
 
     @Override
     public ResponseEntity<Void> revokeConsent(
+            final String xAccountConsentId,
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xApiKey,
-            final String xAccountConsentId
+            final String xApiKey
     ) {
         return mConsentService.revokeConsent(xFapiAuthDate, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, xApiKey, xAccountConsentId);
     }

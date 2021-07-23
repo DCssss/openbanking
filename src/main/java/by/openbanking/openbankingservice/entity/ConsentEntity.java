@@ -1,6 +1,8 @@
 package by.openbanking.openbankingservice.entity;
 
-import by.openbanking.openbankingservice.models.*;
+import by.openbanking.openbankingservice.models.AccountConsentsStatus;
+import by.openbanking.openbankingservice.models.ConsentData;
+import by.openbanking.openbankingservice.models.Permission;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;

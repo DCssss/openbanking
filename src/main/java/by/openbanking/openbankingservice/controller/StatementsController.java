@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @RestController
 public class StatementsController implements StatementsApi {
 
-  private final StatementService mStatementService;
+    private final StatementService mStatementService;
 
     @Autowired
     public StatementsController(final StatementService statementService) {
@@ -32,7 +32,7 @@ public class StatementsController implements StatementsApi {
             String authorization,
             String xApiKey,
             String xAccountConsentId
-            ) {
-        return mStatementService.setStatement(body,accountId,xFapiAuthDate,xFapiCustomerIpAddress,xFapiInteractionId,authorization,xApiKey,xAccountConsentId);
+    ) {
+        return mStatementService.setStatement(body, accountId, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization, xApiKey, xAccountConsentId);
     }
 }

@@ -7,7 +7,8 @@ import java.util.ArrayList;
 
 public final class ConsentConverter {
 
-    private ConsentConverter(){}
+    private ConsentConverter() {
+    }
 
     public static ConsentResponseData toConsentResponseData(final ConsentEntity consentEntity) {
         final ConsentResponseData responseData = new ConsentResponseData();

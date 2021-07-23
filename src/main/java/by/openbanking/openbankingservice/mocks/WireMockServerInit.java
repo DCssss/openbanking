@@ -15,12 +15,12 @@ public class WireMockServerInit implements InitializingBean {
     }
 
     @Override
-   public void afterPropertiesSet() throws Exception {
-            wireMockServer.start();
+    public void afterPropertiesSet() throws Exception {
+        wireMockServer.start();
     }
 
     @PreDestroy
     public void onExit() {
-       wireMockServer.stop();
+        wireMockServer.stop();
     }
 }

@@ -5,8 +5,6 @@ import by.openbanking.openbankingservice.entity.ConsentEntity;
 import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.AccountRepository;
 import by.openbanking.openbankingservice.repository.ConsentRepository;
-import by.openbanking.openbankingservice.util.RightsController;
-import by.openbanking.openbankingservice.util.StubData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

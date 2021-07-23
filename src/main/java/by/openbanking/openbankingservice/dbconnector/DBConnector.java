@@ -1,20 +1,13 @@
 package by.openbanking.openbankingservice.dbconnector;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * Database connector and low level functions
  *
  * @author Mario Pascucci
- *
  */
 public class DBConnector {
 
@@ -30,7 +23,6 @@ public class DBConnector {
 
 
     /**
-     *
      * @param dbname
      * @param dbuser
      * @param dboptions
@@ -39,8 +31,8 @@ public class DBConnector {
      */
     public DBConnector(String dbname, String dbuser, String dboptions) throws SQLException, ClassNotFoundException {
         Class.forName("org.h2.Driver");
-        this.conn = DriverManager.getConnection("jdbc:h2:"+dbname+
-                ";FILE_LOCK=SOCKET;TRACE_MAX_FILE_SIZE=1;"+dboptions,dbuser, "");
+        this.conn = DriverManager.getConnection("jdbc:h2:" + dbname +
+                ";FILE_LOCK=SOCKET;TRACE_MAX_FILE_SIZE=1;" + dboptions, dbuser, "");
 
         inited = initDB();
     }
@@ -48,6 +40,7 @@ public class DBConnector {
 
     /**
      * Reads database version constant
+     *
      * @param dbver constant name
      * @return version ID as integer or -1 if dbver was not found
      */
@@ -58,7 +51,7 @@ public class DBConnector {
 
         try {
             st = conn.createStatement();
-            rs = st.executeQuery("SELECT "+dbver );
+            rs = st.executeQuery("SELECT " + dbver);
             rs.next();
             return rs.getInt(1);
         } catch (SQLException e) {
@@ -70,6 +63,7 @@ public class DBConnector {
     /**
      * Startup operations for database <br/>
      * Initialize full text engine using Lucene for H2 database
+     *
      * @return true if database is ready
      * @throws SQLException if fails
      */
@@ -86,17 +80,16 @@ public class DBConnector {
 
         try {
             // remove any previous table
-            st.execute("DROP TABLE IF EXISTS "+DUMMYTABLE);
+            st.execute("DROP TABLE IF EXISTS " + DUMMYTABLE);
             // create a dummy table
-            st.execute("CREATE TABLE IF NOT EXISTS "+DUMMYTABLE+" (id INT PRIMARY KEY AUTO_INCREMENT, "+DUMMYFIELD+" VARCHAR(32))");
+            st.execute("CREATE TABLE IF NOT EXISTS " + DUMMYTABLE + " (id INT PRIMARY KEY AUTO_INCREMENT, " + DUMMYFIELD + " VARCHAR(32))");
             // create a dummy FTS index
             createFTS(DUMMYTABLE, DUMMYFIELD);
             // this causes a complete FTS index rebuild on all tables that have FTS index, as stated in H2 online manual:
             // http://h2database.com/html/tutorial.html#fulltext par. "Using the Apache Lucene Fulltext Search"
             deleteFTS(DUMMYTABLE);
-            st.execute("DROP TABLE IF EXISTS "+DUMMYTABLE);
-        }
-        catch (SQLException e) {
+            st.execute("DROP TABLE IF EXISTS " + DUMMYTABLE);
+        } catch (SQLException e) {
             Logger.getGlobal().log(Level.SEVERE, "[initDB] Unable to refresh full text index.", e);
         }
 
@@ -106,21 +99,20 @@ public class DBConnector {
     }
 
 
-
     /**
      * Defines database version for tables and data
-     * @param dbver constant name for version storage
+     *
+     * @param dbver   constant name for version storage
      * @param version defines version ID
      * @throws SQLException if fails
      */
     public void setDbVersion(String dbver, int version) throws SQLException {
 
         Statement st = conn.createStatement();
-        st.execute("DROP CONSTANT IF EXISTS "+dbver);
+        st.execute("DROP CONSTANT IF EXISTS " + dbver);
         // replace constant
-        st.execute("CREATE CONSTANT IF NOT EXISTS "+ dbver + " VALUE "+version);
+        st.execute("CREATE CONSTANT IF NOT EXISTS " + dbver + " VALUE " + version);
     }
-
 
 
     public boolean isInited() {
@@ -128,10 +120,10 @@ public class DBConnector {
     }
 
 
-
     /**
      * Checks if your db is obsolete
-     * @param dbver db version name
+     *
+     * @param dbver         db version name
      * @param neededVersion version you need
      * @return true if db needs upgrade
      */
@@ -143,7 +135,6 @@ public class DBConnector {
         }
         return needUpgrade;
     }
-
 
 
     /**
@@ -172,7 +163,7 @@ public class DBConnector {
             st = conn.createStatement();
             rs = st.executeQuery("SELECT count(*) as res FROM INFORMATION_SCHEMA.TABLES WHERE " +
                     "TABLE_SCHEMA='PUBLIC' " +
-                    " AND TABLE_NAME='"+tableName.toUpperCase()+"'" );
+                    " AND TABLE_NAME='" + tableName.toUpperCase() + "'");
             rs.next();
             return rs.getInt(1) == 1;
         } catch (SQLException e) {
@@ -195,11 +186,11 @@ public class DBConnector {
     }
 
 
-
     /**
      * Checks if a table have a full text search index
+     *
      * @param tableName table to check
-     * @param fields list of fields to index (comma delimited, no whitespaces)
+     * @param fields    list of fields to index (comma delimited, no whitespaces)
      * @return true if table is indexed via FTS
      */
     public boolean checkFTS(String tableName, String fields) {
@@ -211,7 +202,7 @@ public class DBConnector {
             st = conn.createStatement();
             rs = st.executeQuery("SELECT COLUMNS FROM FTL.INDEXES WHERE " +
                     "SCHEMA='PUBLIC' " +
-                    " AND TABLE='"+tableName.toUpperCase()+"'" );
+                    " AND TABLE='" + tableName.toUpperCase() + "'");
             rs.next();
             return rs.getString(1).equalsIgnoreCase(fields);
         } catch (SQLException e) {
@@ -233,7 +224,8 @@ public class DBConnector {
     /**
      * Creates Full text search index
      * Deletes any existing index for same table
-     * @param table table name
+     *
+     * @param table  table name
      * @param fields list of field names to index (comma delimited)
      * @throws SQLException if unable to create index
      */
@@ -243,13 +235,14 @@ public class DBConnector {
 
         deleteFTS(table);
         st = conn.createStatement();
-        st.execute("CALL FTL_CREATE_INDEX('PUBLIC','"+table.toUpperCase()+"','"+fields.toUpperCase()+"')");
+        st.execute("CALL FTL_CREATE_INDEX('PUBLIC','" + table.toUpperCase() + "','" + fields.toUpperCase() + "')");
 
     }
 
 
     /**
      * Deletes any full text index for table
+     *
      * @param table index table name to delete
      */
     public void deleteFTS(String table) {
@@ -259,10 +252,9 @@ public class DBConnector {
         try {
             st = conn.createStatement();
             // drop old index, if exists
-            st.execute("CALL FTL_DROP_INDEX('PUBLIC','"+table.toUpperCase()+"')");
-        }
-        catch (SQLException e) {
-            Logger.getGlobal().log(Level.WARNING, "[deleteFTS] Error in delete fulltext search index, table: "+table, e);
+            st.execute("CALL FTL_DROP_INDEX('PUBLIC','" + table.toUpperCase() + "')");
+        } catch (SQLException e) {
+            Logger.getGlobal().log(Level.WARNING, "[deleteFTS] Error in delete fulltext search index, table: " + table, e);
         }
     }
 
@@ -283,9 +275,9 @@ public class DBConnector {
     }
 
 
-
     /**
      * enable autocommit, if supported by DB
+     *
      * @throws SQLException
      */
     public void autocommitEnable() throws SQLException {
@@ -297,9 +289,9 @@ public class DBConnector {
     }
 
 
-
     /**
      * rollbacks a transaction
+     *
      * @throws SQLException
      */
     public void rollback() throws SQLException {
@@ -311,9 +303,9 @@ public class DBConnector {
     }
 
 
-
     /**
      * Commit pending transaction
+     *
      * @throws SQLException
      */
     public void commit() throws SQLException {

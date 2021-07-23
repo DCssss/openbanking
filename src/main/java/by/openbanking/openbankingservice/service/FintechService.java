@@ -1,25 +1,25 @@
 package by.openbanking.openbankingservice.service;
 
-import by.openbanking.openbankingservice.entity.ClientEntity;
+import by.openbanking.openbankingservice.entity.FintechEntity;
 import by.openbanking.openbankingservice.exception.OBErrorCode;
 import by.openbanking.openbankingservice.exception.OBException;
-import by.openbanking.openbankingservice.repository.ClientRepository;
+import by.openbanking.openbankingservice.repository.FintechRepository;
 import by.openbanking.openbankingservice.util.StubData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ClientService {
+public class FintechService {
 
-    private final ClientRepository mClientRepository;
+    private final FintechRepository mFintechRepository;
 
-    public ClientEntity identifyClient(
+    public FintechEntity identifyFintech(
             final String apiKey
     ) {
-        final Long clientId = StubData.CLIENTS.get(apiKey);
-        if (clientId != null) {
-            return mClientRepository.getById(clientId);
+        final Long fintechId = StubData.FINTECHS.get(apiKey);
+        if (fintechId != null) {
+            return mFintechRepository.getById(fintechId);
         } else {
             throw new OBException(OBErrorCode.BY_NBRB_HEADER_INVALID, "Illegal ApiKey");
         }
