@@ -14,7 +14,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.UUID;
 
 @ControllerAdvice
-public class RestResponseExceptionHandler {
+public final class RestResponseExceptionHandler {
 
     private static final String HIGH_LEVEL_CODE_PATTERN = "%d %s";
 

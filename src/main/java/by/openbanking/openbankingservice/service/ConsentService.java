@@ -51,7 +51,7 @@ public class ConsentService {
 
         final Date now = new Date();
 
-        final ConsentEntity consent = ConsentEntity.valueOf(body.getData());
+        final ConsentEntity consent = ConsentConverter.toConsentEntity(body.getData());
         consent.setStatus(AccountConsentsStatus.AWAITINGAUTHORISATION);
         consent.setStatusUpdateTime(now);
         consent.setCreationTime(now);

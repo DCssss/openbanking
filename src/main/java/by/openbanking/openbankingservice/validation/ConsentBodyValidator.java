@@ -7,7 +7,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.Collection;
 
-public class ConsentBodyValidator implements ConstraintValidator<ConsentBody, Consent> {
+public final class ConsentBodyValidator implements ConstraintValidator<ConsentBody, Consent> {
 
     @Override
     public boolean isValid(

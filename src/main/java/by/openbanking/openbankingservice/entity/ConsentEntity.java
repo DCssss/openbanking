@@ -1,7 +1,8 @@
 package by.openbanking.openbankingservice.entity;
 
+import by.openbanking.openbankingservice.exception.OBErrorCode;
+import by.openbanking.openbankingservice.exception.OBException;
 import by.openbanking.openbankingservice.models.AccountConsentsStatus;
-import by.openbanking.openbankingservice.models.ConsentData;
 import by.openbanking.openbankingservice.models.Permission;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -84,46 +85,6 @@ public final class ConsentEntity extends BaseEntity<Long> {
     )
     private Set<AccountEntity> accounts;
 
-    public static ConsentEntity valueOf(final ConsentData model) {
-        ConsentEntity consent = new ConsentEntity();
-        for (Permission permissionEnum : model.getPermissions()) {
-            switch (permissionEnum) {
-                case READACCOUNTSBASIC:
-                    consent.readAccountsBasic = 1;
-                    break;
-                case READACCOUNTSDETAIL:
-                    consent.readAccountsDetail = 1;
-                    break;
-                case READBALANCES:
-                    consent.readBalances = 1;
-                    break;
-                case READSTATEMENTSDETAIL:
-                    consent.readStatementsDetail = 1;
-                    break;
-                case READSTATEMENTSBASIC:
-                    consent.readStatementsBasic = 1;
-                    break;
-                case READTRANSACTIONSBASIC:
-                    consent.readTransactionsBasic = 1;
-                    break;
-                case READTRANSACTIONSDETAIL:
-                    consent.readTransactionsDetail = 1;
-                    break;
-                case READTRANSACTIONSCREDITS:
-                    consent.readTransactionsCredits = 1;
-                    break;
-                case READTRANSACTIONSDEBITS:
-                    consent.readTransactionsDebits = 1;
-                    break;
-            }
-        }
-        consent.expirationDate = new Date(model.getExpirationDate().getTime());
-        consent.transactionFromDate = new Date(model.getTransactionFromDate().getTime());
-        consent.transactionToDate = new Date(model.getTransactionToDate().getTime());
-        return consent;
-    }
-
-
     public Collection<Permission> getPermission() {
         final List<Permission> permissions = new ArrayList<>();
         if (readAccountsBasic == 1) {
@@ -154,5 +115,19 @@ public final class ConsentEntity extends BaseEntity<Long> {
             permissions.add(Permission.READTRANSACTIONSDEBITS);
         }
         return permissions;
+    }
+
+    public AccountEntity getAccount(final Long accountId) {
+        final Optional<AccountEntity> optionalAccount =
+                getAccounts()
+                        .stream()
+                        .filter(accountEntity -> accountEntity.getId().equals(accountId))
+                        .findFirst();
+
+        if (!optionalAccount.isPresent()) {
+            throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND, "Account not found");
+        }
+
+        return optionalAccount.get();
     }
 }

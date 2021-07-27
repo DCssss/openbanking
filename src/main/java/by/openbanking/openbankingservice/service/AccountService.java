@@ -44,41 +44,30 @@ public class AccountService {
     ) {
         mClientService.identifyClient(xApiKey);
         final ConsentEntity consent = mConsentService.checkPermissionAndGetConsent(Long.valueOf(xAccountConsentId), "/accounts/{accountId}");
+        final AccountEntity account = consent.getAccount(Long.valueOf(accountId));
+        final AccountResponseData accountResponseData = new AccountResponseData();
+        accountResponseData.setAccount(Collections.singletonList(AccountConverter.toAccount(account, consent.getPermission().contains(Permission.READACCOUNTSDETAIL))));
 
-        final Optional<AccountEntity> optionalAccount =
-                consent
-                        .getAccounts()
-                        .stream()
-                        .filter(accountEntity -> accountEntity.getId().equals(Long.valueOf(accountId)))
-                        .findFirst();
-        if (optionalAccount.isPresent()) {
-            final AccountEntity account = optionalAccount.get();
-            final AccountResponseData accountResponseData = new AccountResponseData();
-            accountResponseData.setAccount(Collections.singletonList(AccountConverter.toAccount(account, consent.getPermission().contains(Permission.READACCOUNTSDETAIL))));
+        // TODO: 13.07.2021 Надо не забыть доделать блоки Link и Meta , пока заглушки
+        final Link links = new Link()
+                .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
 
-            // TODO: 13.07.2021 Надо не забыть доделать блоки Link и Meta , пока заглушки
-            final Link links = new Link()
-                    .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
+        final Date now = new Date();
 
-            final Date now = new Date();
+        final Meta meta = new Meta()
+                .totalPages(1)
+                .firstAvailableDateTime(now)
+                .lastAvailableDateTime(now);
 
-            final Meta meta = new Meta()
-                    .totalPages(1)
-                    .firstAvailableDateTime(now)
-                    .lastAvailableDateTime(now);
+        final AccountResponse response = new AccountResponse()
+                .data(accountResponseData)
+                .links(links)
+                .meta(meta);
 
-            final AccountResponse response = new AccountResponse()
-                    .data(accountResponseData)
-                    .links(links)
-                    .meta(meta);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
-            final HttpHeaders headers = new HttpHeaders();
-            headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
-
-            return new ResponseEntity<>(response, headers, HttpStatus.OK);
-        } else {
-            throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND, "Account not found");
-        }
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
     @Transactional(readOnly = true)
@@ -131,46 +120,36 @@ public class AccountService {
     ) {
         mClientService.identifyClient(xApiKey);
         final ConsentEntity consent = mConsentService.checkPermissionAndGetConsent(Long.valueOf(xAccountConsentId), "/accounts/{accountId}");
+        final AccountEntity account = consent.getAccount(Long.valueOf(accountId));
 
-        final Optional<AccountEntity> optionalAccount =
-                consent.getAccounts()
-                        .stream()
-                        .filter(accountEntity -> accountEntity.getId().equals(Long.valueOf(accountId)))
-                        .findFirst();
-        if (optionalAccount.isPresent()) {
-            final AccountEntity account = optionalAccount.get();
+        final Date now = new Date();
 
-            final Date now = new Date();
+        final Balance balance = new Balance()
+                .accountId(String.valueOf(account.getId()))
+                .dateTime(now)
+                .currency(account.getCurrency())
+                .balanceAmount(account.getBalanceAmount().toString());
 
-            final Balance balance = new Balance()
-                    .accountId(String.valueOf(account.getId()))
-                    .dateTime(now)
-                    .currency(account.getCurrency())
-                    .balanceAmount(account.getBalanceAmount().toString());
+        final BalanceResponseData balanceResponseData = new BalanceResponseData()
+                .balance(Collections.singletonList(balance));
 
-            final BalanceResponseData balanceResponseData = new BalanceResponseData()
-                    .balance(Collections.singletonList(balance));
+        final LinksBalance links = new LinksBalance()
+                .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
 
-            final LinksBalance links = new LinksBalance()
-                    .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
+        final Meta meta = new Meta()
+                .totalPages(1)
+                .firstAvailableDateTime(now)
+                .lastAvailableDateTime(now);
 
-            final Meta meta = new Meta()
-                    .totalPages(1)
-                    .firstAvailableDateTime(now)
-                    .lastAvailableDateTime(now);
+        final BalanceResponse respData = new BalanceResponse()
+                .data(balanceResponseData)
+                .links(links)
+                .meta(meta);
 
-            final BalanceResponse respData = new BalanceResponse()
-                    .data(balanceResponseData)
-                    .links(links)
-                    .meta(meta);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
-            final HttpHeaders headers = new HttpHeaders();
-            headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
-
-            return new ResponseEntity<>(respData, headers, HttpStatus.OK);
-        } else {
-            throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND, "Account not found");
-        }
+        return new ResponseEntity<>(respData, headers, HttpStatus.OK);
     }
 
     @Transactional
@@ -186,47 +165,37 @@ public class AccountService {
     ) {
         mClientService.identifyClient(xApiKey);
         final ConsentEntity consent = mConsentService.checkPermissionAndGetConsent(Long.valueOf(xAccountConsentId), "/accounts/{accountId}");
+        final AccountEntity account = consent.getAccount(Long.valueOf(accountId));
 
-        final Optional<AccountEntity> optionalAccount =
-                consent.getAccounts()
-                        .stream()
-                        .filter(accountEntity -> accountEntity.getId().equals(Long.valueOf(accountId)))
-                        .findFirst();
-        if (optionalAccount.isPresent()) {
-            final AccountEntity account = optionalAccount.get();
+        final Date now = new Date();
 
-            final Date now = new Date();
+        final TransactionListEntity transactionList = new TransactionListEntity();
+        transactionList.setCreateTime(now);
+        transactionList.setAccount(account);
+        transactionList.setFromBookingTime(body.getData().getTransaction().getFromBookingDateTime());
+        transactionList.setToBookingTime(body.getData().getTransaction().getToBookingDateTime());
+        mListTransactionRepository.save(transactionList);
 
-            final TransactionListEntity transactionList = new TransactionListEntity();
-            transactionList.setCreateTime(now);
-            transactionList.setAccount(account);
-            transactionList.setFromBookingTime(body.getData().getTransaction().getFromBookingDateTime());
-            transactionList.setToBookingTime(body.getData().getTransaction().getToBookingDateTime());
-            mListTransactionRepository.save(transactionList);
+        final Links links = new Links()
+                .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/" + accountId + "/transactions");
 
-            final Links links = new Links()
-                    .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/" + accountId + "/transactions");
+        final Meta meta = new Meta()
+                .totalPages(1)
+                .firstAvailableDateTime(now)
+                .lastAvailableDateTime(now);
 
-            final Meta meta = new Meta()
-                    .totalPages(1)
-                    .firstAvailableDateTime(now)
-                    .lastAvailableDateTime(now);
+        final OBSetAccountsTransactionData data = new OBSetAccountsTransactionData()
+                .transaction(TransactionListConverter.toOBSetAccountsTransAction1(transactionList));
 
-            final OBSetAccountsTransactionData data = new OBSetAccountsTransactionData()
-                    .transaction(TransactionListConverter.toOBSetAccountsTransAction1(transactionList));
+        final OBSetAccountsTransaction response = new OBSetAccountsTransaction()
+                .data(data)
+                .links(links)
+                .meta(meta);
 
-            final OBSetAccountsTransaction response = new OBSetAccountsTransaction()
-                    .data(data)
-                    .links(links)
-                    .meta(meta);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
-            final HttpHeaders headers = new HttpHeaders();
-            headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
-
-            return new ResponseEntity<>(response, headers, HttpStatus.OK);
-        } else {
-            throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND, "Account not found");
-        }
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
     @Transactional(readOnly = true)
@@ -242,57 +211,45 @@ public class AccountService {
     ) {
         mClientService.identifyClient(xApiKey);
         final ConsentEntity consent = mConsentService.checkPermissionAndGetConsent(Long.valueOf(xAccountConsentId), "/accounts/{accountId}");
+        final AccountEntity account = consent.getAccount(Long.valueOf(accountId));
 
-        final Optional<AccountEntity> optionalAccount =
-                consent.getAccounts()
+        final Optional<TransactionListEntity> optionalTransactionList =
+                account.getTransactionLists()
                         .stream()
-                        .filter(accountEntity -> accountEntity.getId().equals(Long.valueOf(accountId)))
+                        .filter(transactionList -> transactionList.getId().equals(Long.valueOf(transactionListId)))
                         .findFirst();
-        if (optionalAccount.isPresent()) {
-            final AccountEntity account = optionalAccount.get();
 
-            final Optional<TransactionListEntity> optionalTransactionList =
-                    account.getTransactionLists()
-                            .stream()
-                            .filter(transactionList -> transactionList.getId().equals(Long.valueOf(transactionListId)))
-                            .findFirst();
-
-            if (optionalTransactionList.isPresent()) {
-                final TransactionListEntity transactionList = optionalTransactionList.get();
-
-                final List<TransactionEntity> transactions = mTransactionRepository.findAllByBookingTimeBetween(transactionList.getFromBookingTime(), transactionList.getToBookingTime());
-
-
-
-                final LinkGetTransaction links = new LinkGetTransaction()
-                        .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/" + accountId + "/transactions");
-
-                final Date now = new Date();
-
-                final MetaGetTransaction meta = new MetaGetTransaction()
-                        .totalPages(1)
-                        .firstAvailableDateTime(now)
-                        .lastAvailableDateTime(now);
-
-                final OBReadDataTransaction6 data = new OBReadDataTransaction6()
-                        .transactionListId(transactionList.getId().toString())
-                        .transaction(TransactionConverter.toOBTransaction6(transactions));
-
-                final OBReadTransaction6 response = new OBReadTransaction6()
-                        .data(data)
-                        .links(links)
-                        .meta(meta);
-
-                final HttpHeaders headers = new HttpHeaders();
-                headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
-
-                return new ResponseEntity<>(response, headers, HttpStatus.OK);
-            } else {
-                throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND, "Transaction list not found");
-            }
-        } else {
-            throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND, "Account not found");
+        if (!optionalTransactionList.isPresent()) {
+            throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND, "Transaction list not found");
         }
+
+        final TransactionListEntity transactionList = optionalTransactionList.get();
+
+        final List<TransactionEntity> transactions = mTransactionRepository.findAllByBookingTimeBetween(transactionList.getFromBookingTime(), transactionList.getToBookingTime());
+
+        final LinkGetTransaction links = new LinkGetTransaction()
+                .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/" + accountId + "/transactions");
+
+        final Date now = new Date();
+
+        final MetaGetTransaction meta = new MetaGetTransaction()
+                .totalPages(1)
+                .firstAvailableDateTime(now)
+                .lastAvailableDateTime(now);
+
+        final OBReadDataTransaction6 data = new OBReadDataTransaction6()
+                .transactionListId(transactionList.getId().toString())
+                .transaction(TransactionConverter.toOBTransaction6(transactions));
+
+        final OBReadTransaction6 response = new OBReadTransaction6()
+                .data(data)
+                .links(links)
+                .meta(meta);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
     @Transactional(readOnly = true)
@@ -308,77 +265,66 @@ public class AccountService {
     ) {
         mClientService.identifyClient(xApiKey);
         final ConsentEntity consent = mConsentService.checkPermissionAndGetConsent(Long.valueOf(xAccountConsentId), "/accounts/{accountId}/statements/{statementId}");
+        final AccountEntity account = consent.getAccount(Long.valueOf(accountId));
 
-        final Optional<AccountEntity> optionalAccount =
-                consent.getAccounts()
+        final Optional<StatementEntity> optionalStatement =
+                account.getStatements()
                         .stream()
-                        .filter(accountEntity -> accountEntity.getId().equals(Long.valueOf(accountId)))
+                        .filter(statementEntity -> statementEntity.getId().equals(Long.valueOf(statementId)))
                         .findFirst();
 
-        if (optionalAccount.isPresent()) {
-            final AccountEntity account = optionalAccount.get();
-
-            final Optional<StatementEntity> optionalStatement =
-                    account.getStatements()
-                            .stream()
-                            .filter(statementEntity -> statementEntity.getId().equals(Long.valueOf(statementId)))
-                            .findFirst();
-
-            if (optionalStatement.isPresent()) {
-                final StatementEntity statement = optionalStatement.get();
-
-                final OpavBalance opavBalance = new OpavBalance()
-                        .amount("100.00")
-                        .currency("BYN")
-                        .equivalentAmount("100.0000")
-                        .creditDebitIndicator(OBCreditDebitCode1.CREDIT);
-
-                final ClavBalance clavBalance = new ClavBalance()
-                        .amount("5.00")
-                        .currency("BYN")
-                        .equivalentAmount("5.0000")
-                        .creditDebitIndicator(OBCreditDebitCode1.CREDIT);
-
-                final List<OBTransaction1> listTransact = new ArrayList<>(TransactionConverter.toOBTransaction1(statement.getTransactions()));
-
-                final OBStatement2 obStatement2 = new OBStatement2()
-                        .accountId(statement.getAccount().getId().toString())
-                        .statementId(statement.getId().toString())
-                        .fromBookingDate(statement.getFromBookingDate())
-                        .toBookingDate(statement.getToBookingDate())
-                        .creationDateTime(statement.getCreateTime())
-                        .opavBalance(opavBalance)
-                        .clavBalance(clavBalance)
-                        .transaction(listTransact);
-
-                final OBReadDataStatement2 obReadDataStatement2 = new OBReadDataStatement2()
-                        .statement(Collections.singletonList(obStatement2));
-
-                final LinksStatementGet links = new LinksStatementGet()
-                        .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/" + accountId + "/statements/" + statementId);
-
-                final Date now = new Date();
-
-                final Meta meta = new Meta()
-                        .totalPages(1)
-                        .firstAvailableDateTime(now)
-                        .lastAvailableDateTime(now);
-
-                final OBReadStatement2 response = new OBReadStatement2()
-                        .data(obReadDataStatement2)
-                        .links(links)
-                        .meta(meta);
-
-                final HttpHeaders headers = new HttpHeaders();
-                headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
-
-                return new ResponseEntity<>(response, headers, HttpStatus.OK);
-            } else {
-                throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND, "Statement not found");
-            }
-        } else {
-            throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND, "Account not found");
+        if (!optionalStatement.isPresent()) {
+            throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND, "Statement not found");
         }
+
+        final StatementEntity statement = optionalStatement.get();
+
+        final OpavBalance opavBalance = new OpavBalance()
+                .amount("100.00")
+                .currency("BYN")
+                .equivalentAmount("100.0000")
+                .creditDebitIndicator(OBCreditDebitCode1.CREDIT);
+
+        final ClavBalance clavBalance = new ClavBalance()
+                .amount("5.00")
+                .currency("BYN")
+                .equivalentAmount("5.0000")
+                .creditDebitIndicator(OBCreditDebitCode1.CREDIT);
+
+        final List<OBTransaction1> listTransact = new ArrayList<>(TransactionConverter.toOBTransaction1(statement.getTransactions()));
+
+        final OBStatement2 obStatement2 = new OBStatement2()
+                .accountId(statement.getAccount().getId().toString())
+                .statementId(statement.getId().toString())
+                .fromBookingDate(statement.getFromBookingDate())
+                .toBookingDate(statement.getToBookingDate())
+                .creationDateTime(statement.getCreateTime())
+                .opavBalance(opavBalance)
+                .clavBalance(clavBalance)
+                .transaction(listTransact);
+
+        final OBReadDataStatement2 obReadDataStatement2 = new OBReadDataStatement2()
+                .statement(Collections.singletonList(obStatement2));
+
+        final LinksStatementGet links = new LinksStatementGet()
+                .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/" + accountId + "/statements/" + statementId);
+
+        final Date now = new Date();
+
+        final Meta meta = new Meta()
+                .totalPages(1)
+                .firstAvailableDateTime(now)
+                .lastAvailableDateTime(now);
+
+        final OBReadStatement2 response = new OBReadStatement2()
+                .data(obReadDataStatement2)
+                .links(links)
+                .meta(meta);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 }
 
