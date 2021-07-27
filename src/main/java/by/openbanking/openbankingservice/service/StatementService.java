@@ -1,9 +1,16 @@
 package by.openbanking.openbankingservice.service;
 
+import by.openbanking.openbankingservice.entity.AccountEntity;
+import by.openbanking.openbankingservice.entity.ConsentEntity;
 import by.openbanking.openbankingservice.entity.StatementEntity;
+import by.openbanking.openbankingservice.exception.OBErrorCode;
+import by.openbanking.openbankingservice.exception.OBException;
 import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.AccountRepository;
 import by.openbanking.openbankingservice.repository.StatementRepository;
+import by.openbanking.openbankingservice.util.AccountConverter;
+import by.openbanking.openbankingservice.util.OBHttpHeaders;
+import by.openbanking.openbankingservice.util.StatementConverter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -13,25 +20,22 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
+import static by.openbanking.openbankingservice.util.OBHttpHeaders.X_FAPI_INTERACTION_ID;
 
 @Service
 @RequiredArgsConstructor
 public class StatementService {
-    private static final String X_FAPI_AUTH_DATE = "x-fapi-auth-date";
-    private static final String X_FAPI_CUSTOMER_IP_ADDRESS = "x-fapi-customer-ip-address";
-    private static final String X_FAPI_INTERACTION_ID = "x-fapi-interaction-id";
-    private static final String AUTHORIZATION = "authorization";
-    private static final String X_API_KEY = "x-api-key";
-    private static final String X_ACCOUNT_CONSENT_ID = "x-accountConsentId";
 
     private final AccountRepository mAccountRepository;
     private final StatementRepository mStatementRepository;
 
-    public ResponseEntity<OBReadStatement2Post> setStatement(
-            @Valid final OBSetStatement body,
+    private final ClientService mClientService;
+    private final ConsentService mConsentService;
+
+    public ResponseEntity<StatementResponse> setStatement(
+            @Valid final StatementRequest body,
             @Size(min = 1, max = 35) final String accountId,
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
@@ -40,53 +44,48 @@ public class StatementService {
             final String xApiKey,
             final String xAccountConsentId
     ) {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_AUTH_DATE, xFapiAuthDate);
-        headers.add(X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
-        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(AUTHORIZATION, authorization);
+        mClientService.identifyClient(xApiKey);
+        final ConsentEntity consent = mConsentService.checkPermissionAndGetConsent(Long.valueOf(xAccountConsentId), "/statements/{accountId}");
 
-        ResponseEntity<OBReadStatement2Post> response;
+        final Optional<AccountEntity> optionalAccount =
+                consent
+                        .getAccounts()
+                        .stream()
+                        .filter(accountEntity -> accountEntity.getId().equals(Long.valueOf(accountId)))
+                        .findFirst();
+        if (optionalAccount.isPresent()) {
 
-        final Date now = new Date();
+            final Date now = new Date();
 
-        StatementEntity statement = new StatementEntity();
-        statement.setAccount(mAccountRepository.getById(Long.valueOf(accountId)));
-        statement.setCreateTime(now);
-        statement.setFromBookingDate(body.getData().getStatement().getFromBookingDate());
-        statement.setToBookingDate(body.getData().getStatement().getToBookingDate());
-        mStatementRepository.save(statement);
+            final StatementEntity statementEntity = new StatementEntity();
+            statementEntity.setAccount(mAccountRepository.getById(Long.valueOf(accountId)));
+            statementEntity.setCreateTime(now);
+            statementEntity.setFromBookingDate(body.getData().getStatement().getFromBookingDate());
+            statementEntity.setToBookingDate(body.getData().getStatement().getToBookingDate());
+            mStatementRepository.save(statementEntity);
 
-        final LinksStatementPost links = new LinksStatementPost();
+            final StatementResponseData data = new StatementResponseData();
+            data.setStatement(StatementConverter.toStatementResponseDataStatement(statementEntity));
 
-        links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/statements/" + accountId);
-        final Meta meta = new Meta();
-        meta.setTotalPages(1);
-        meta.setFirstAvailableDateTime(now);
-        meta.setLastAvailableDateTime(now);
+            final LinksStatementPost links = new LinksStatementPost()
+                    .self("https://api.bank.by/oapi-channel/open-banking/v1.0/statements/" + accountId);
 
-        final StatementEntity statement1 = mStatementRepository.findStatementsById(accountId);
+            final Meta meta = new Meta()
+                    .totalPages(1)
+                    .firstAvailableDateTime(now)
+                    .lastAvailableDateTime(now);
 
+            final StatementResponse statementResponse = new StatementResponse()
+                    .data(data)
+                    .links(links)
+                    .meta(meta);
 
-        if (StringUtils.isNotBlank(accountId)) {
-            final OBReadStatement2Post responseContent = new OBReadStatement2Post();
-            final OBReadDataStatement2Post obReadDataStatement2Post = new OBReadDataStatement2Post();
-            final OBStatement2Post obStatement2Post = new OBStatement2Post();
-            final List<OBStatement2Post> listStatements = new ArrayList<>();
+            final HttpHeaders headers = new HttpHeaders();
+            headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
-            obStatement2Post.setStatementId(String.valueOf(statement1.getId()));
-            obStatement2Post.setAccountId(String.valueOf(statement1.getAccount().getId()));
-            obStatement2Post.setFromBookingDate(statement1.getFromBookingDate());
-            obStatement2Post.setToBookingDate(statement1.getToBookingDate());
-            listStatements.add(obStatement2Post);
-            obReadDataStatement2Post.setStatement(listStatements);
-            responseContent.setData(obReadDataStatement2Post);
-            responseContent.setLinks(links);
-            responseContent.setMeta(meta);
-            response = new ResponseEntity<>(responseContent, headers, HttpStatus.OK);
+            return new ResponseEntity<>(statementResponse, headers, HttpStatus.OK);
         } else {
-            response = new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+            throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND, "Account not found");
         }
-        return response;
     }
 }

@@ -52,7 +52,7 @@ public class AccountController implements AccountsApi {
             final String xApiKey,
             final String xAccountConsentId
     ) {
-        return mAccountService.getAccountsAccountIdBalances(accountId, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization, xApiKey, xAccountConsentId);
+        return mAccountService.getAccountBalanceById(accountId, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization, xApiKey, xAccountConsentId);
     }
 
     @Override

@@ -15,8 +15,8 @@ import static javax.persistence.FetchType.LAZY;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true, exclude = {"consents"})
-@ToString(callSuper = true, exclude = {"consents"})
+@EqualsAndHashCode(callSuper = true, exclude = {"consents", "statements", "transactionLists"})
+@ToString(callSuper = true, exclude = {"consents", "statements", "transactionLists"})
 @Entity
 @Table(name = "OB_ACCOUNTS")
 public final class AccountEntity extends BaseEntity<Long> {
@@ -64,6 +64,12 @@ public final class AccountEntity extends BaseEntity<Long> {
             inverseJoinColumns = @JoinColumn(name = "CONSENT_ID")
     )
     private Set<ConsentEntity> consents;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
+    private Set<StatementEntity> statements;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
+    private Set<TransactionListEntity> transactionLists;
 
     public AccountEntity() {
     }

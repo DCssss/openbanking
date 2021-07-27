@@ -5,6 +5,7 @@ import by.openbanking.openbankingservice.entity.ConsentEntity;
 import by.openbanking.openbankingservice.models.*;
 import by.openbanking.openbankingservice.repository.AccountRepository;
 import by.openbanking.openbankingservice.repository.ConsentRepository;
+import by.openbanking.openbankingservice.util.OBHttpHeaders;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,16 +20,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BalancesService {
-
-    private static final String X_FAPI_AUTH_DATE = "x-fapi-auth-date";
-    private static final String X_FAPI_CUSTOMER_IP_ADDRESS = "x-fapi-customer-ip-address";
-    private static final String X_FAPI_INTERACTION_ID = "x-fapi-interaction-id";
-    private static final String AUTHORIZATION = "authorization";
-    private static final String X_API_KEY = "x-api-key";
-    private static final String X_ACCOUNT_CONSENT_ID = "x-accountConsentId";
-
-    private final ConsentRepository mConsentRepository;
-    private final AccountRepository mAccountRepository;
 
     private final ClientService mClientService;
     private final ConsentService mConsentService;
@@ -61,21 +52,21 @@ public class BalancesService {
         final BalanceResponseData balanceResponseData = new BalanceResponseData();
         balanceResponseData.setBalance(balances);
 
-        final LinksBalance links = new LinksBalance();
-        links.setSelf("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
+        final LinksBalance links = new LinksBalance()
+                .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
 
-        final Meta meta = new Meta();
-        meta.setTotalPages(1);
-        meta.setFirstAvailableDateTime(now);
-        meta.setLastAvailableDateTime(now);
+        final Meta meta = new Meta()
+                .totalPages(1)
+                .firstAvailableDateTime(now)
+                .lastAvailableDateTime(now);
 
-        final BalanceResponse respData = new BalanceResponse();
-        respData.setData(balanceResponseData);
-        respData.setLinks(links);
-        respData.setMeta(meta);
+        final BalanceResponse respData = new BalanceResponse()
+                .data(balanceResponseData)
+                .links(links)
+                .meta(meta);
 
         final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
         return new ResponseEntity<>(respData, headers, HttpStatus.OK);
 

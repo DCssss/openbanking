@@ -1,5 +1,6 @@
 package by.openbanking.openbankingservice.entity;
 
+import by.openbanking.openbankingservice.models.OBCreditDebitCode1;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 
 @Getter
@@ -25,7 +27,8 @@ public final class TransactionEntity extends BaseEntity<Long> {
     private AccountEntity account;
 
     @Column(name = "CREDIT_DEBIT_INDICATOR")
-    private Integer creditDebitIndicator;
+    @Enumerated(value = STRING)
+    private OBCreditDebitCode1 creditDebitIndicator;
 
     @Column(name = "BOOKING_TIME")
     private Date bookingTime;

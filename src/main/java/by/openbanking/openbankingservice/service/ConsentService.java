@@ -59,8 +59,8 @@ public class ConsentService {
 
         mConsentRepository.save(consent);
 
-        final ConsentResponse responseContent = new ConsentResponse();
-        responseContent.setData(ConsentConverter.toConsentResponseData(consent));
+        final ConsentResponse responseContent = new ConsentResponse()
+                .data(ConsentConverter.toConsentResponseData(consent));
 
         return new ResponseEntity<>(responseContent, headers, HttpStatus.CREATED);
     }
@@ -162,8 +162,8 @@ public class ConsentService {
         mClientService.identifyClient(xApiKey);
         final ConsentEntity consent = getConsent(Long.valueOf(accountConsentId));
 
-        final ConsentResponse consentResponse = new ConsentResponse();
-        consentResponse.setData(ConsentConverter.toConsentResponseData(consent));
+        final ConsentResponse consentResponse = new ConsentResponse()
+                .data(ConsentConverter.toConsentResponseData(consent));
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);

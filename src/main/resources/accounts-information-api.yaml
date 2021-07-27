@@ -464,7 +464,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OBSetStatement'
+              $ref: '#/components/schemas/StatementRequest'
         required: true
       responses:
         '201':
@@ -590,21 +590,21 @@ paths:
         optional: false
 components:
   schemas:
-    OBSetStatement:
+    StatementRequest:
       required:
         - Data
       type: object
       properties:
         Data:
-          $ref: '#/components/schemas/OBSetStatementData'
+          $ref: '#/components/schemas/StatementRequestData'
         Risk:
           $ref: '#/components/schemas/Risk'
-    OBSetStatementData:
+    StatementRequestData:
       type: object
       properties:
         statement:
-          $ref: '#/components/schemas/OBReadSetDataStatement'
-    OBReadSetDataStatement:
+          $ref: '#/components/schemas/StatementRequestDataStatement'
+    StatementRequestDataStatement:
       type: object
       properties:
         fromBookingDate:
@@ -669,9 +669,7 @@ components:
       type: object
       properties:
         Transaction:
-          type: array
-          items:
-            $ref: '#/components/schemas/OBReadSetDataTransaction'
+          $ref: '#/components/schemas/OBReadSetDataTransaction'
     OBReadSetDataTransaction:
       type: object
       properties:
@@ -696,9 +694,7 @@ components:
       type: object
       properties:
         transaction:
-          type: array
-          items:
-            $ref: '#/components/schemas/OBSetAccountsTransAction1'
+          $ref: '#/components/schemas/OBSetAccountsTransAction1'
     OBSetAccountsTransAction1:
       type: object
       properties:
@@ -805,13 +801,13 @@ components:
           format: uri
       additionalProperties: false
       description: 'Ссылки, относящиеся к полезной нагрузке.'
-    OBReadStatement2Post:
+    StatementResponse:
       required:
         - Data
       type: object
       properties:
         Data:
-          $ref: '#/components/schemas/OBReadDataStatement2Post'
+          $ref: '#/components/schemas/StatementResponseData'
         Links:
           $ref: '#/components/schemas/LinksStatementPost'
         Meta:
@@ -1345,13 +1341,11 @@ components:
           items:
             $ref: '#/components/schemas/OBStatement2'
       additionalProperties: false
-    OBReadDataStatement2Post:
+    StatementResponseData:
       type: object
       properties:
         Statement:
-          type: array
-          items:
-            $ref: '#/components/schemas/OBStatement2Post'
+          $ref: '#/components/schemas/StatementResponseDataStatement'
       additionalProperties: false
     StatementId:
       maxLength: 35
@@ -1652,7 +1646,7 @@ components:
       minLength: 1
       type: string
       example: Текущий расчетный  счет для оплаты услуг связи
-    OBStatement2Post:
+    StatementResponseDataStatement:
       required:
         - accountId
         - fromBookingDate
@@ -2367,7 +2361,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/OBReadStatement2Post'
+            $ref: '#/components/schemas/StatementResponse'
     200AccountAccessConsentsConsentIdRead:
       description: Account Access Consents Read
       headers:

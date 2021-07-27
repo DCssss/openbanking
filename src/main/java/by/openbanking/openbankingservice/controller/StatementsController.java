@@ -1,8 +1,8 @@
 package by.openbanking.openbankingservice.controller;
 
 import by.openbanking.openbankingservice.api.StatementsApi;
-import by.openbanking.openbankingservice.models.OBReadStatement2Post;
-import by.openbanking.openbankingservice.models.OBSetStatement;
+import by.openbanking.openbankingservice.models.StatementRequest;
+import by.openbanking.openbankingservice.models.StatementResponse;
 import by.openbanking.openbankingservice.service.StatementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,16 +23,24 @@ public class StatementsController implements StatementsApi {
 
 
     @Override
-    public ResponseEntity<OBReadStatement2Post> setStatement(
-            @Valid OBSetStatement body,
-            @Size(min = 1, max = 35) String accountId,
-            String xFapiAuthDate,
-            String xFapiCustomerIpAddress,
-            String xFapiInteractionId,
-            String authorization,
-            String xApiKey,
-            String xAccountConsentId
+    public ResponseEntity<StatementResponse> setStatement(
+            @Valid final StatementRequest body,
+            @Size(min = 1, max = 35) final String accountId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xApiKey,
+            final String xAccountConsentId
     ) {
-        return mStatementService.setStatement(body, accountId, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization, xApiKey, xAccountConsentId);
+        return mStatementService.setStatement(
+                body,
+                accountId,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xApiKey,
+                xAccountConsentId);
     }
 }
