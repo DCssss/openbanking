@@ -1,4 +1,4 @@
-package by.openbanking.openbankingservice.entity;
+package by.openbanking.openbankingservice.data.entity;
 
 import by.openbanking.openbankingservice.exception.OBErrorCode;
 import by.openbanking.openbankingservice.exception.OBException;

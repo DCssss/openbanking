@@ -1,7 +1,7 @@
 package by.openbanking.openbankingservice.service;
 
-import by.openbanking.openbankingservice.entity.AccountEntity;
-import by.openbanking.openbankingservice.entity.ConsentEntity;
+import by.openbanking.openbankingservice.data.entity.AccountEntity;
+import by.openbanking.openbankingservice.data.entity.ConsentEntity;
 import by.openbanking.openbankingservice.models.accinfo.*;
 import by.openbanking.openbankingservice.util.OBHttpHeaders;
 import lombok.RequiredArgsConstructor;

@@ -1,14 +1,14 @@
 package by.openbanking.openbankingservice.service;
 
-import by.openbanking.openbankingservice.entity.ClientEntity;
-import by.openbanking.openbankingservice.entity.ConsentEntity;
+import by.openbanking.openbankingservice.data.entity.ClientEntity;
+import by.openbanking.openbankingservice.data.entity.ConsentEntity;
 import by.openbanking.openbankingservice.exception.OBErrorCode;
 import by.openbanking.openbankingservice.exception.OBException;
 import by.openbanking.openbankingservice.models.accinfo.AccountConsentsStatus;
 import by.openbanking.openbankingservice.models.accinfo.Consent;
 import by.openbanking.openbankingservice.models.accinfo.ConsentResponse;
 import by.openbanking.openbankingservice.models.accinfo.Permission;
-import by.openbanking.openbankingservice.repository.ConsentRepository;
+import by.openbanking.openbankingservice.data.repository.ConsentRepository;
 import by.openbanking.openbankingservice.util.ConsentConverter;
 import by.openbanking.openbankingservice.util.OBHttpHeaders;
 import by.openbanking.openbankingservice.util.StubData;

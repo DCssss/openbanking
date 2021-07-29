@@ -1,10 +1,10 @@
 package by.openbanking.openbankingservice.service;
 
-import by.openbanking.openbankingservice.entity.AccountEntity;
-import by.openbanking.openbankingservice.entity.ConsentEntity;
-import by.openbanking.openbankingservice.entity.StatementEntity;
+import by.openbanking.openbankingservice.data.entity.AccountEntity;
+import by.openbanking.openbankingservice.data.entity.ConsentEntity;
+import by.openbanking.openbankingservice.data.entity.StatementEntity;
 import by.openbanking.openbankingservice.models.accinfo.*;
-import by.openbanking.openbankingservice.repository.StatementRepository;
+import by.openbanking.openbankingservice.data.repository.StatementRepository;
 import by.openbanking.openbankingservice.util.StatementConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

@@ -1,6 +1,6 @@
-package by.openbanking.openbankingservice.repository;
+package by.openbanking.openbankingservice.data.repository;
 
-import by.openbanking.openbankingservice.entity.TransactionEntity;
+import by.openbanking.openbankingservice.data.entity.TransactionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;

@@ -1,6 +1,6 @@
 package by.openbanking.openbankingservice.util;
 
-import by.openbanking.openbankingservice.entity.AccountEntity;
+import by.openbanking.openbankingservice.data.entity.AccountEntity;
 import by.openbanking.openbankingservice.models.accinfo.Account;
 import by.openbanking.openbankingservice.models.accinfo.AccountDetails;
 import by.openbanking.openbankingservice.models.accinfo.Servicer;

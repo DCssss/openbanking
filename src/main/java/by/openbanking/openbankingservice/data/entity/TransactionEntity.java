@@ -1,4 +1,4 @@
-package by.openbanking.openbankingservice.entity;
+package by.openbanking.openbankingservice.data.entity;
 
 import by.openbanking.openbankingservice.models.accinfo.OBCreditDebitCode1;
 import lombok.EqualsAndHashCode;

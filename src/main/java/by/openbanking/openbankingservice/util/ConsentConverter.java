@@ -1,6 +1,6 @@
 package by.openbanking.openbankingservice.util;
 
-import by.openbanking.openbankingservice.entity.ConsentEntity;
+import by.openbanking.openbankingservice.data.entity.ConsentEntity;
 import by.openbanking.openbankingservice.models.accinfo.ConsentData;
 import by.openbanking.openbankingservice.models.accinfo.ConsentResponseData;
 import by.openbanking.openbankingservice.models.accinfo.Permission;

@@ -1,11 +1,11 @@
 package by.openbanking.openbankingservice.service;
 
-import by.openbanking.openbankingservice.entity.*;
+import by.openbanking.openbankingservice.data.entity.*;
 import by.openbanking.openbankingservice.exception.OBErrorCode;
 import by.openbanking.openbankingservice.exception.OBException;
 import by.openbanking.openbankingservice.models.accinfo.*;
-import by.openbanking.openbankingservice.repository.TransactionListRepository;
-import by.openbanking.openbankingservice.repository.TransactionRepository;
+import by.openbanking.openbankingservice.data.repository.TransactionListRepository;
+import by.openbanking.openbankingservice.data.repository.TransactionRepository;
 import by.openbanking.openbankingservice.util.AccountConverter;
 import by.openbanking.openbankingservice.util.OBHttpHeaders;
 import by.openbanking.openbankingservice.util.TransactionConverter;
