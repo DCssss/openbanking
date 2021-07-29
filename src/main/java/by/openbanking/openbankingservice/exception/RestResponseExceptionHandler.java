@@ -1,7 +1,7 @@
 package by.openbanking.openbankingservice.exception;
 
-import by.openbanking.openbankingservice.models.OBError;
-import by.openbanking.openbankingservice.models.OBErrorResponse;
+import by.openbanking.openbankingservice.models.accinfo.OBError;
+import by.openbanking.openbankingservice.models.accinfo.OBErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;

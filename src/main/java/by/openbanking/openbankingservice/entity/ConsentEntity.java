@@ -2,8 +2,8 @@ package by.openbanking.openbankingservice.entity;
 
 import by.openbanking.openbankingservice.exception.OBErrorCode;
 import by.openbanking.openbankingservice.exception.OBException;
-import by.openbanking.openbankingservice.models.AccountConsentsStatus;
-import by.openbanking.openbankingservice.models.Permission;
+import by.openbanking.openbankingservice.models.accinfo.AccountConsentsStatus;
+import by.openbanking.openbankingservice.models.accinfo.Permission;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;

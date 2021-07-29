@@ -1,8 +1,8 @@
 package by.openbanking.openbankingservice.controller;
 
-import by.openbanking.openbankingservice.api.StatementsApi;
-import by.openbanking.openbankingservice.models.StatementRequest;
-import by.openbanking.openbankingservice.models.StatementResponse;
+import by.openbanking.openbankingservice.api.accinfo.StatementsApi;
+import by.openbanking.openbankingservice.models.accinfo.StatementRequest;
+import by.openbanking.openbankingservice.models.accinfo.StatementResponse;
 import by.openbanking.openbankingservice.service.StatementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
 package by.openbanking.openbankingservice.entity;
 
-import by.openbanking.openbankingservice.models.OBCreditDebitCode1;
+import by.openbanking.openbankingservice.models.accinfo.OBCreditDebitCode1;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;

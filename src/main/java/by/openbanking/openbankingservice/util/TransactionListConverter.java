@@ -1,7 +1,7 @@
 package by.openbanking.openbankingservice.util;
 
 import by.openbanking.openbankingservice.entity.TransactionListEntity;
-import by.openbanking.openbankingservice.models.OBSetAccountsTransAction1;
+import by.openbanking.openbankingservice.models.accinfo.OBSetAccountsTransAction1;
 
 public final class TransactionListConverter {
 

@@ -188,23 +188,47 @@
                         <version>3.0.18</version>
                         <executions>
                             <execution>
+                                <id>generate-accounts-information-api</id>
                                 <goals>
                                     <goal>generate</goal>
                                 </goals>
                                 <configuration>
-                                    <inputSpec>${project.basedir}/src/main/resources/accounts-information-api.yaml
+                                    <inputSpec>
+                                        ${project.basedir}/src/main/resources/accounts-information-api.yaml
                                     </inputSpec>
                                     <language>spring</language>
                                     <output>${project.build.directory}/generated-sources/</output>
                                     <generateSupportingFiles>false</generateSupportingFiles>
-                                    <apiPackage>by.openbanking.openbankingservice.api</apiPackage>
-                                    <modelPackage>by.openbanking.openbankingservice.models</modelPackage>
+                                    <apiPackage>by.openbanking.openbankingservice.api.accinfo</apiPackage>
+                                    <modelPackage>by.openbanking.openbankingservice.models.accinfo</modelPackage>
                                     <configOptions>
                                         <interfaceOnly>true</interfaceOnly>
                                         <dateLibrary>legacy</dateLibrary>
                                     </configOptions>
                                 </configuration>
                             </execution>
+
+                            <execution>
+                                <id>generate-payments-api</id>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                                <configuration>
+                                    <inputSpec>
+                                        ${project.basedir}/src/main/resources/payments-api.yaml
+                                    </inputSpec>
+                                    <language>spring</language>
+                                    <output>${project.build.directory}/generated-sources/</output>
+                                    <generateSupportingFiles>false</generateSupportingFiles>
+                                    <apiPackage>by.openbanking.openbankingservice.api.payments</apiPackage>
+                                    <modelPackage>by.openbanking.openbankingservice.models.payments</modelPackage>
+                                    <configOptions>
+                                        <interfaceOnly>true</interfaceOnly>
+                                        <dateLibrary>legacy</dateLibrary>
+                                    </configOptions>
+                                </configuration>
+                            </execution>
+
                         </executions>
                     </plugin>
                 </plugins>

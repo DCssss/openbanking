@@ -2,9 +2,7 @@ package by.openbanking.openbankingservice.service;
 
 import by.openbanking.openbankingservice.entity.AccountEntity;
 import by.openbanking.openbankingservice.entity.ConsentEntity;
-import by.openbanking.openbankingservice.models.*;
-import by.openbanking.openbankingservice.repository.AccountRepository;
-import by.openbanking.openbankingservice.repository.ConsentRepository;
+import by.openbanking.openbankingservice.models.accinfo.*;
 import by.openbanking.openbankingservice.util.OBHttpHeaders;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

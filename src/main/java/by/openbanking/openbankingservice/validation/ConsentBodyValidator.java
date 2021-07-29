@@ -1,7 +1,7 @@
 package by.openbanking.openbankingservice.validation;
 
-import by.openbanking.openbankingservice.models.Consent;
-import by.openbanking.openbankingservice.models.Permission;
+import by.openbanking.openbankingservice.models.accinfo.Consent;
+import by.openbanking.openbankingservice.models.accinfo.Permission;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

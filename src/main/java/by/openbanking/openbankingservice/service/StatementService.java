@@ -3,7 +3,7 @@ package by.openbanking.openbankingservice.service;
 import by.openbanking.openbankingservice.entity.AccountEntity;
 import by.openbanking.openbankingservice.entity.ConsentEntity;
 import by.openbanking.openbankingservice.entity.StatementEntity;
-import by.openbanking.openbankingservice.models.*;
+import by.openbanking.openbankingservice.models.accinfo.*;
 import by.openbanking.openbankingservice.repository.StatementRepository;
 import by.openbanking.openbankingservice.util.StatementConverter;
 import lombok.RequiredArgsConstructor;

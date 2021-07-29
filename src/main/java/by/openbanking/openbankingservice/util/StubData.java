@@ -1,6 +1,6 @@
 package by.openbanking.openbankingservice.util;
 
-import by.openbanking.openbankingservice.models.Permission;
+import by.openbanking.openbankingservice.models.accinfo.Permission;
 
 import java.util.*;
 

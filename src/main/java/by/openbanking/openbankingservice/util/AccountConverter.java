@@ -1,9 +1,9 @@
 package by.openbanking.openbankingservice.util;
 
 import by.openbanking.openbankingservice.entity.AccountEntity;
-import by.openbanking.openbankingservice.models.Account;
-import by.openbanking.openbankingservice.models.AccountDetails;
-import by.openbanking.openbankingservice.models.Servicer;
+import by.openbanking.openbankingservice.models.accinfo.Account;
+import by.openbanking.openbankingservice.models.accinfo.AccountDetails;
+import by.openbanking.openbankingservice.models.accinfo.Servicer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,11 +20,11 @@ public final class AccountConverter {
     ) {
         final Account acc = new Account();
         acc.setAccountid(String.valueOf(obAccount.getId()));
-        acc.setStatus(by.openbanking.openbankingservice.models.Account.StatusEnum.PENDING);
+        acc.setStatus(Account.StatusEnum.PENDING);
         acc.setStatusUpdateTime(obAccount.getStatusUpdateTime());
         acc.setCurrency(obAccount.getCurrency());
         acc.setAccountType(obAccount.getType());
-        acc.setAccountSubType(by.openbanking.openbankingservice.models.Account.AccountSubTypeEnum.LOAN);
+        acc.setAccountSubType(Account.AccountSubTypeEnum.LOAN);
         acc.setCreationDataTime(obAccount.getCreationTime());
         acc.setAccountDescription(obAccount.getDescription());
 

@@ -9,14 +9,6 @@ public final class OBException extends RuntimeException {
     private final String path;
     private final String url;
 
-    /*
-        private final OBError error;
-
-        public OBException(final OBError error){
-            super(error.getMessage());
-            this.error = error;
-        }
-    */
     public OBException(
             final OBErrorCode errorCode,
             final String message,

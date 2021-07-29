@@ -1,5 +1,6 @@
 package by.openbanking.openbankingservice.entity;
 
+import by.openbanking.openbankingservice.models.accinfo.Account;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +28,7 @@ public final class AccountEntity extends BaseEntity<Long> {
 
     @Column(name = "STATUS")
     @Enumerated(value = STRING)
-    private by.openbanking.openbankingservice.models.Account.StatusEnum status;
+    private Account.StatusEnum status;
 
     @Column(name = "STATUS_UPDATE_TIME")
     private Date statusUpdateTime;
@@ -52,7 +53,7 @@ public final class AccountEntity extends BaseEntity<Long> {
 
     @Column(name = "SUB_TYPE")
     @Enumerated(value = STRING)
-    private by.openbanking.openbankingservice.models.Account.AccountSubTypeEnum subType;
+    private Account.AccountSubTypeEnum subType;
 
     @Column(name = "IDENTIFICATION")
     private String identification;

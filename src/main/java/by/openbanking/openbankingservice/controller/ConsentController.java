@@ -1,8 +1,8 @@
 package by.openbanking.openbankingservice.controller;
 
-import by.openbanking.openbankingservice.api.AccountConsentsApi;
-import by.openbanking.openbankingservice.models.Consent;
-import by.openbanking.openbankingservice.models.ConsentResponse;
+import by.openbanking.openbankingservice.api.accinfo.AccountConsentsApi;
+import by.openbanking.openbankingservice.models.accinfo.Consent;
+import by.openbanking.openbankingservice.models.accinfo.ConsentResponse;
 import by.openbanking.openbankingservice.service.ConsentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

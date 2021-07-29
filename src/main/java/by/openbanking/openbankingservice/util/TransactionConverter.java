@@ -1,7 +1,7 @@
 package by.openbanking.openbankingservice.util;
 
 import by.openbanking.openbankingservice.entity.TransactionEntity;
-import by.openbanking.openbankingservice.models.*;
+import by.openbanking.openbankingservice.models.accinfo.*;
 
 import java.util.ArrayList;
 import java.util.List;

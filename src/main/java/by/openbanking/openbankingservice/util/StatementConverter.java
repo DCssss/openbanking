@@ -1,7 +1,7 @@
 package by.openbanking.openbankingservice.util;
 
 import by.openbanking.openbankingservice.entity.StatementEntity;
-import by.openbanking.openbankingservice.models.StatementResponseDataStatement;
+import by.openbanking.openbankingservice.models.accinfo.StatementResponseDataStatement;
 
 public final class StatementConverter {
 
