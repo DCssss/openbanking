@@ -3,6 +3,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>api-accounts</module>
+        <module>api-payments</module>
+        <module>open-banking</module>
+    </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -13,7 +18,7 @@
 
     <groupId>by.openbanking</groupId>
     <artifactId>openbanking-service</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <name>openbanking-service</name>
     <description>OpenApi project from Spring Boot</description>
@@ -149,96 +154,4 @@
 
     </dependencies>
 
-    <build>
-        <plugins>
-
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
-            </plugin>
-
-        </plugins>
-
-    </build>
-
-    <profiles>
-        <!-- Функциональные профили -->
-        <profile>
-            <!-- Генерация прокси оберток для вызова soap-сервисов -->
-            <id>generate-sources</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>io.swagger.codegen.v3</groupId>
-                        <artifactId>swagger-codegen-maven-plugin</artifactId>
-                        <version>3.0.18</version>
-                        <executions>
-                            <execution>
-                                <id>generate-accounts-information-api</id>
-                                <goals>
-                                    <goal>generate</goal>
-                                </goals>
-                                <configuration>
-                                    <inputSpec>
-                                        ${project.basedir}/src/main/resources/accounts-information-api.yaml
-                                    </inputSpec>
-                                    <language>spring</language>
-                                    <output>${project.build.directory}/generated-sources/</output>
-                                    <generateSupportingFiles>false</generateSupportingFiles>
-                                    <apiPackage>by.openbanking.openbankingservice.api.accinfo</apiPackage>
-                                    <modelPackage>by.openbanking.openbankingservice.models.accinfo</modelPackage>
-                                    <configOptions>
-                                        <interfaceOnly>true</interfaceOnly>
-                                        <dateLibrary>legacy</dateLibrary>
-                                    </configOptions>
-                                </configuration>
-                            </execution>
-
-                            <execution>
-                                <id>generate-payments-api</id>
-                                <goals>
-                                    <goal>generate</goal>
-                                </goals>
-                                <configuration>
-                                    <inputSpec>
-                                        ${project.basedir}/src/main/resources/payments-api.yaml
-                                    </inputSpec>
-                                    <language>spring</language>
-                                    <output>${project.build.directory}/generated-sources/</output>
-                                    <generateSupportingFiles>false</generateSupportingFiles>
-                                    <apiPackage>by.openbanking.openbankingservice.api.payments</apiPackage>
-                                    <modelPackage>by.openbanking.openbankingservice.models.payments</modelPackage>
-                                    <configOptions>
-                                        <interfaceOnly>true</interfaceOnly>
-                                        <dateLibrary>legacy</dateLibrary>
-                                    </configOptions>
-                                </configuration>
-                            </execution>
-
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <!-- Сборка релизной war-ки -->
-            <id>build-release</id>
-        </profile>
-
-    </profiles>
 </project>
