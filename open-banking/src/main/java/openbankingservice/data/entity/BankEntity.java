@@ -8,6 +8,9 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.util.Set;
 
+/**
+ * Банк.
+ */
 @Getter
 @Setter
 @Entity

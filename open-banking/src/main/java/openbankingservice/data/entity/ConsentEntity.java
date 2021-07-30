@@ -15,6 +15,9 @@ import java.util.*;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 
+/**
+ * Согласие.
+ */
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true, exclude = {"accounts"})

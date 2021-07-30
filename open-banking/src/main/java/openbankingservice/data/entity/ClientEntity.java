@@ -8,6 +8,9 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.util.Set;
 
+/**
+ * Клиент.
+ */
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true, exclude = {"accounts", "consents"})

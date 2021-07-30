@@ -8,6 +8,10 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/**
+ * Базовая сущность.
+ * @param <T> Тип данных идентификатора сущности.
+ */
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -15,6 +19,9 @@ import java.io.Serializable;
 @MappedSuperclass
 abstract class BaseEntity<T extends Serializable> {
 
+    /**
+     * Идентификатор сущности.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "ID")

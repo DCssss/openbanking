@@ -8,6 +8,9 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * Список транзакций.
+ */
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)

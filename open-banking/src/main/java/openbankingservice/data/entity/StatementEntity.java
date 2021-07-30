@@ -11,6 +11,9 @@ import java.util.Set;
 
 import static javax.persistence.FetchType.LAZY;
 
+/**
+ * Выписка по счету.
+ */
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true, exclude = {"transactions"})

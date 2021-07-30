@@ -3,11 +3,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <modules>
-        <module>api-accounts</module>
-        <module>api-payments</module>
-        <module>open-banking</module>
-    </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -55,13 +50,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.threeten/threetenbp -->
-        <dependency>
-            <groupId>org.threeten</groupId>
-            <artifactId>threetenbp</artifactId>
-            <version>1.5.1</version>
         </dependency>
 
         <dependency>
@@ -154,4 +142,20 @@
 
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>generate-sources</id>
+            <modules>
+                <module>api-accounts</module>
+                <module>api-payments</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>build-release</id>
+            <modules>
+                <module>open-banking</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>

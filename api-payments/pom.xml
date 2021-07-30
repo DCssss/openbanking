@@ -39,8 +39,8 @@
                                     <language>spring</language>
                                     <output>${project.build.directory}/generated-sources/</output>
                                     <generateSupportingFiles>false</generateSupportingFiles>
-                                    <apiPackage>openbankingservice.api.accinfo</apiPackage>
-                                    <modelPackage>openbankingservice.models.accinfo</modelPackage>
+                                    <apiPackage>openbankingservice.api.payments</apiPackage>
+                                    <modelPackage>openbankingservice.models.payments</modelPackage>
                                     <configOptions>
                                         <interfaceOnly>true</interfaceOnly>
                                         <dateLibrary>legacy</dateLibrary>
