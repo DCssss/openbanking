@@ -30,7 +30,7 @@ public final class PaymentConsentConverter {
         final PaymentConsentEntity paymentConsentEntity = new PaymentConsentEntity();
         paymentConsentEntity.setCreationTime(now);
         paymentConsentEntity.setStatus(PaymentConsentStatus.AWAITINGAUTHORISATION);
-        paymentConsentEntity.setType(PaymentConsentEntity.Type.DOMESTIC_TAX);
+        paymentConsentEntity.setType(PaymentConsentEntity.Type.DOMESTIC_TAX_CONSENT);
         paymentConsentEntity.setInitiation(initiationBlock);
         paymentConsentEntity.setAuthorizationType(data.getAuthorisation().getAuthorizationType());
         paymentConsentEntity.setStatusUpdateTime(now);

@@ -24,10 +24,37 @@ import static javax.persistence.EnumType.STRING;
 public final class PaymentConsentEntity extends BaseEntity<Long> {
 
     /**
-     * Типы платежных указаний
+     * Типы платежных указаний и платежей
      */
     public enum Type {
-        DOMESTIC, DOMESTIC_TAX, LIST_OF_ACCOUNTS, LIST_OF_PASSPORTS, REQUIREMENT, VRP
+        /**
+         * Платежное указание на инициирование платежного поручения
+         */
+        DOMESTIC_CONSENT,
+        /**
+         * Платежное указание на инициирование налогового платежа
+         */
+        DOMESTIC_TAX_CONSENT,
+        /**
+         * Платежное указание на инициирование платежного поручения со списком счетов физических лиц
+         */
+        LIST_ACCOUNTS_CONSENT,
+        /**
+         * Платежное указание на инициирование платежного поручения со списком физических лиц без открытия счета
+         */
+        LIST_PASSPORTS_CONSENT,
+        /**
+         * Платежное указание на выставление платежного требования
+         */
+        REQUIREMENT_CONSENT,
+        /**
+         * Платежное указание на выставление платежного требования на уплату налогов (других платежей в бюджет)
+         */
+        TAX_REQUIREMENT_CONSENT,
+        /**
+         * Платежное указание на инициирование рекуррентного платежа
+         */
+        VRP_CONSENT
     }
 
     /**

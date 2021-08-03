@@ -1,11 +1,8 @@
 package openbankingservice.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import openbankingservice.data.entity.PaymentConsentEntity;
 import openbankingservice.data.repository.PaymentConsentRepository;
-import openbankingservice.exception.OBException;
 import openbankingservice.models.payments.*;
 import openbankingservice.util.OBHttpHeaders;
 import openbankingservice.util.PaymentConsentConverter;
@@ -15,15 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
-import java.util.Date;
-
-import static openbankingservice.exception.OBErrorCode.BY_NBRB_UNEXPECTED_ERROR;
 
 @Service
 @RequiredArgsConstructor
 public class PaymentConsentService {
-
 
     private final PaymentConsentRepository mPaymentConsentRepository;
 
