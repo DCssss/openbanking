@@ -1,3 +1,4 @@
+
 openapi: 3.0.1
 info:
   title: Песочница открытых банковских API
@@ -14,7 +15,7 @@ tags:
     description: Платежное указание на инициирование платежного поручения
   - name: DomesticPayments
     description: Платежное поручение
-  - name : DomesticTaxConsents
+  - name: DomesticTaxConsents
     description: Платежное указание на инициирование налогового платежа
   - name: DomesticTaxes
     description: Налоговый платеж
@@ -38,8 +39,10 @@ tags:
     description: Платежное указание на инициирование рекуррентного платежа
   - name: VRP
     description: Рекуррентный платеж
+  - name: ListPayments
+    description: Список платежных указаний и список платежей Клиента
 paths:
-  /domesticConsents:
+  /paymentConsents/domestic:
     post:
       tags:
         - DomesticConsents
@@ -94,7 +97,7 @@ paths:
           - oauth2
           - api_key
         optional: false
-  /domesticConsents/{domesticConsentId}:
+  /paymentConsents/domestic/{domesticConsentId}:
     get:
       tags:
         - DomesticConsents
@@ -133,7 +136,7 @@ paths:
           - oauth2
           - api_key
         optional: false
-  /domesticPayments:
+  /payments/domestic:
     post:
       tags:
         - DomesticPayments
@@ -189,7 +192,7 @@ paths:
           - oauth2
           - api_key
         optional: false
-  /domestic/{domesticId}:
+  /payments/domestic/{domesticId}:
     get:
       tags:
         - DomesticPayments
@@ -1399,7 +1402,81 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+      x-wso2-application-security:
+        security-types:
+          - oauth2
+          - api_key
+        optional: false
+  /paymentConsents:
+    get:
+      tags:
+        - ListPayments
+      summary: "Получение информации по всем платежным указаниям клиента"
+      operationId: "getListOfPaymentsConsents"
+      parameters:
+        - $ref: "#/components/parameters/FromCreationDate"
+        - $ref: "#/components/parameters/ToCreationDate"
+        - $ref: "#/components/parameters/Type"
+        - $ref: "#/components/parameters/Status"
+      responses:
+        200:
+          $ref: "#/components/responses/200PaymentsConsentsList"
+        400:
+          $ref: "#/components/responses/400Error"
+        401:
+          $ref: "#/components/responses/401Error"
+        403:
+          $ref: "#/components/responses/403Error"
+        405:
+          $ref: "#/components/responses/405Error"
+        406:
+          $ref: "#/components/responses/406Error"
+        429:
+          $ref: "#/components/responses/429Error"
+        500:
+          $ref: "#/components/responses/500Error"
+      security:
+        - default: [ ]
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+      x-wso2-application-security:
+        security-types:
+          - oauth2
+          - api_key
+        optional: false
+  /payments:
+    get:
+      tags:
+        - ListPayments
+      summary: "Получение информации по всем платежам."
+      operationId: "getListOfPayments"
+      parameters:
+        - $ref: "#/components/parameters/FromCreationDate"
+        - $ref: "#/components/parameters/ToCreationDate"
+        - $ref: "#/components/parameters/Type"
+        - $ref: "#/components/parameters/Status"
+      responses:
+        200:
+          $ref: "#/components/responses/200PaymentsList"
+        400:
+          $ref: "#/components/responses/400Error"
+        401:
+          $ref: "#/components/responses/401Error"
+        403:
+          $ref: "#/components/responses/403Error"
+        405:
+          $ref: "#/components/responses/405Error"
+        406:
+          $ref: "#/components/responses/406Error"
+        429:
+          $ref: "#/components/responses/429Error"
+        500:
+          $ref: "#/components/responses/500Error"
+      security:
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -1617,6 +1694,16 @@ components:
           $ref: '#/components/schemas/OBDataPayment2'
         Risk:
           $ref: '#/components/schemas/OBRisk'
+    OBPaymentsConsentsList:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBDataPaymentsConsentsList'
+    OBPaymentsList:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBDataPaymentsList'
     OBVRP2:
       type: object
       properties:
@@ -1915,6 +2002,75 @@ components:
           $ref: '#/components/schemas/OBMultiAuthorisation'
         PaymentStatus:
           $ref: '#/components/schemas/OBDataPaymentStatus'
+    OBDataPaymentsConsentsList:
+      type: object
+      properties:
+        PaymentConsent:
+          $ref: '#/components/schemas/OBPaymentConsent'
+    OBDataPaymentsList:
+      type: object
+      properties:
+        Payment:
+          $ref: '#/components/schemas/OBPayment'
+    OBPaymentConsent:
+      type: array
+      items:
+        required:
+          - paymentConsentId
+          - creationDateTime
+          - status
+          - type
+      properties:
+        paymentConsentId:
+          $ref: '#/components/schemas/PaymentConsentId'
+        creationDateTime:
+          $ref: '#/components/schemas/CreationDateTime'
+        status:
+          $ref: '#/components/schemas/StatusPaymentConsent'
+        type:
+          $ref: '#/components/schemas/TypePaymentConsent'
+      example:
+        - paymentConsentId: '3cgfc598-r5gh-9758-b358-587a5479610s'
+          creationDateTime: '2021-04-19T19:43:31+03:00'
+          status: 'Authorised'
+          type: 'domesticConsent'
+        - paymentConsentId: 'fhty566874-r5gh-9654-b358-587a5479610s'
+          creationDateTime: '2021-04-21T10:06:02+03:00'
+          status: 'Rejected'
+          type: 'requirementConsent'
+    OBPayment:
+      type: array
+      items:
+        required:
+          - paymentId
+          - creationDateTime
+          - type
+          - PaymentStatus
+      properties:
+        paymentId:
+          $ref: '#/components/schemas/PaymentId'
+        creationDateTime:
+          $ref: '#/components/schemas/CreationDateTime'
+        type:
+          $ref: '#/components/schemas/TypePayment'
+        PaymentStatus:
+          $ref: '#/components/schemas/OBDataPaymentStatus'
+      example:
+        - paymentId: '3cgfc598-r5gh-9758-b358-587a5479610s'
+          creationDateTime: '2021-04-19T19:43:31+03:00'
+          type: 'domestic'
+          PaymentStatus:
+            paymentStatus: 'ACCC'
+            statusUpdateDateTime: '2021-04-20T10:11:06+03:00'
+        - paymentId: 'fhty566874-r5gh-9654-b358-587a5479610s'
+          creationDateTime: '2021-04-21T10:06:02+03:00'
+          type: 'requirement'
+          PaymentStatus:
+            paymentStatus: 'RJCT'
+            statusUpdateDateTime: '2021-04-21T12:11:06+03:00'
+            statusReasonInformation:
+              statusReasonCode: 'AM09'
+              additionalInformation: 'Сумма не является согласованной или ожидаемой'
     OBDataPayment2:
       type: object
       required:
@@ -2660,7 +2816,7 @@ components:
         VRPConsentId:
           $ref: '#/components/schemas/VRPConsentId'
         link:
-          $ref: '#/components/schemas/Link'
+          $ref: '#/components/schemas/LinkVRP'
         creationDateTime:
           $ref: '#/components/schemas/CreationDateTime'
         status:
@@ -2684,7 +2840,7 @@ components:
         requirementConsentId:
           $ref: '#/components/schemas/RequirementConsentId'
         link:
-          $ref: '#/components/schemas/Link'
+          $ref: '#/components/schemas/LinkReq'
         creationDateTime:
           $ref: '#/components/schemas/CreationDateTime'
         status:
@@ -2716,7 +2872,7 @@ components:
         listAccountsConsentId:
           $ref: '#/components/schemas/ListAccountsConsentId'
         link:
-          $ref: '#/components/schemas/Link'
+          $ref: '#/components/schemas/LinkListAccounts'
         creationDateTime:
           $ref: '#/components/schemas/CreationDateTime'
         status:
@@ -2748,7 +2904,7 @@ components:
         listPassportsConsentId:
           $ref: '#/components/schemas/ListPassportsConsentId'
         link:
-          $ref: '#/components/schemas/Link'
+          $ref: '#/components/schemas/LinkListPassports'
         creationDateTime:
           $ref: '#/components/schemas/CreationDateTime'
         status:
@@ -2813,7 +2969,7 @@ components:
         VRPConsentId:
           $ref: '#/components/schemas/VRPConsentId'
         link:
-          $ref: '#/components/schemas/Link'
+          $ref: '#/components/schemas/LinkVRP'
         creationDateTime:
           $ref: '#/components/schemas/CreationDateTime'
         status:
@@ -2837,7 +2993,7 @@ components:
         requirementConsentId:
           $ref: '#/components/schemas/RequirementConsentId'
         link:
-          $ref: '#/components/schemas/Link'
+          $ref: '#/components/schemas/LinkReq'
         creationDateTime:
           $ref: '#/components/schemas/CreationDateTime'
         status:
@@ -2869,7 +3025,7 @@ components:
         listAccountsConsentId:
           $ref: '#/components/schemas/ListAccountsConsentId'
         link:
-          $ref: '#/components/schemas/Link'
+          $ref: '#/components/schemas/LinkListAccounts'
         creationDateTime:
           $ref: '#/components/schemas/CreationDateTime'
         status:
@@ -2898,10 +3054,10 @@ components:
         - status
         - statusUpdateDateTime
       properties:
-        listAccountsConsentId:
-          $ref: '#/components/schemas/ListAccountsConsentId'
+        listPassportsConsentId:
+          $ref: '#/components/schemas/ListPassportsConsentId'
         link:
-          $ref: '#/components/schemas/Link'
+          $ref: '#/components/schemas/LinkListPassports'
         creationDateTime:
           $ref: '#/components/schemas/CreationDateTime'
         status:
@@ -2933,7 +3089,7 @@ components:
         domesticTaxConsentId:
           $ref: '#/components/schemas/DomesticTaxConsentId'
         link:
-          $ref: '#/components/schemas/Link'
+          $ref: '#/components/schemas/LinkTax'
         creationDateTime:
           $ref: '#/components/schemas/CreationDateTime'
         status:
@@ -2963,7 +3119,7 @@ components:
         taxRequirementConsentId:
           $ref: '#/components/schemas/TaxRequirementConsentId'
         link:
-          $ref: '#/components/schemas/Link'
+          $ref: '#/components/schemas/LinkReqTax'
         creationDateTime:
           $ref: '#/components/schemas/CreationDateTime'
         status:
@@ -2993,7 +3149,7 @@ components:
         domesticTaxConsentId:
           $ref: '#/components/schemas/DomesticTaxConsentId'
         link:
-          $ref: '#/components/schemas/Link'
+          $ref: '#/components/schemas/LinkTax'
         creationDateTime:
           $ref: '#/components/schemas/CreationDateTime'
         status:
@@ -3023,7 +3179,7 @@ components:
         taxRequirementConsentId:
           $ref: '#/components/schemas/TaxRequirementConsentId'
         link:
-          $ref: '#/components/schemas/Link'
+          $ref: '#/components/schemas/LinkReqTax'
         creationDateTime:
           $ref: '#/components/schemas/CreationDateTime'
         status:
@@ -3092,6 +3248,48 @@ components:
       minLength: 1
       description: 'Ссылка на платежное указание'
       example: 'https://sdbo.bank.by/domesticConsentId/3cgfc598-r5gh-9758-b358-587a5479610s/'
+    LinkTax:
+      type: string
+      format: url
+      maxLength: 140
+      minLength: 1
+      description: 'Ссылка на платежное указание'
+      example: 'https://sdbo.bank.by/domesticTaxConsentId/3cgfc598-r5gh-9758-b358-587a5479610s/'
+    LinkVRP:
+      type: string
+      format: url
+      maxLength: 140
+      minLength: 1
+      description: 'Ссылка на платежное указание'
+      example: 'https://sdbo.bank.by/VRPConsentId/3cgfc598-r5gh-9758-b358-587a5479610s/'
+    LinkReq:
+      type: string
+      format: url
+      maxLength: 140
+      minLength: 1
+      description: 'Ссылка на платежное указание'
+      example: 'https://sdbo.bank.by/requirementConsentId/3cgfc598-r5gh-9758-b358-587a5479610s/'
+    LinkReqTax:
+      type: string
+      format: url
+      maxLength: 140
+      minLength: 1
+      description: 'Ссылка на платежное указание'
+      example: 'https://sdbo.bank.by/taxRequirementConsentId/3cgfc598-r5gh-9758-b358-587a5479610s/'
+    LinkListAccounts:
+      type: string
+      format: url
+      maxLength: 140
+      minLength: 1
+      description: 'Ссылка на платежное указание'
+      example: 'https://sdbo.bank.by/listAccountsConsentId/3cgfc598-r5gh-9758-b358-587a5479610s/'
+    LinkListPassports:
+      type: string
+      format: url
+      maxLength: 140
+      minLength: 1
+      description: 'Ссылка на платежное указание'
+      example: 'https://sdbo.bank.by/listPassportsConsentId/3cgfc598-r5gh-9758-b358-587a5479610s/'
     NumberRequired:
       type: number
       minimum: 1
@@ -3273,6 +3471,11 @@ Max10MbBinary (двоичный файл, представляющий влож�
       minLength: 1
       description: 'Идентификатор платежного укзаания на инициирование платежного поручения'
       example: '3cgfc598-r5gh-9758-b358-587a5479610s'
+    PaymentConsentId:
+      type: string
+      maxLength: 35
+      minLength: 1
+      description: 'Идентификатор платежного укзаания на инициирование платежного поручения'
     VRPConsentId:
       type: string
       maxLength: 35
@@ -3309,6 +3512,11 @@ Max10MbBinary (двоичный файл, представляющий влож�
       minLength: 1
       description: 'Идентификатор платежного поручения'
       example: '9856278'
+    PaymentId:
+      type: string
+      maxLength: 35
+      minLength: 1
+      description: 'Идентификатор платежного поручения'
     VRPId:
       type: string
       maxLength: 35
@@ -3367,6 +3575,79 @@ Max10MbBinary (двоичный файл, представляющий влож�
         - Consumed
         - Rejected
       example: 'AwaitingAuthorisation'
+    StatusVRPPost:
+      type: string
+      maxLength: 35
+      minLength: 1
+      description: 'Текущий статус платежного указания на проведение платежа'
+      enum:
+        - Authorised
+        - AwaitingAuthorisation
+        - Expired
+        - Rejected
+        - Revoked
+      example: 'AwaitingAuthorisation'
+    StatusGet:
+      type: string
+      maxLength: 35
+      minLength: 1
+      description: 'Текущий статус платежного указания на проведение платежа'
+      enum:
+        - Authorised
+        - AwaitingAuthorisation
+        - Consumed
+        - Rejected
+      example: 'Authorised'
+    StatusVRPGet:
+      type: string
+      maxLength: 35
+      minLength: 1
+      description: 'Текущий статус платежного указания на проведение платежа'
+      enum:
+        - Authorised
+        - AwaitingAuthorisation
+        - Expired
+        - Rejected
+        - Revoked
+      example: 'Authorised'
+    StatusPaymentConsent:
+      type: string
+      maxLength: 35
+      minLength: 1
+      description: 'Текущий статус платежного указания на проведение платежа'
+      enum:
+        - Authorised
+        - AwaitingAuthorisation
+        - Consumed
+        - Expired
+        - Rejected
+        - Revoked
+    TypePaymentConsent:
+      type: string
+      maxLength: 35
+      minLength: 1
+      description: 'Тип платежного указания'
+      enum:
+        - domesticConsent
+        - domesticTaxConsent
+        - listAccountsConsent
+        - listPassportsConsent
+        - requirementConsent
+        - taxRequirementConsent
+        - VRPConsent
+    TypePayment:
+      type: string
+      maxLength: 35
+      minLength: 1
+      description: 'Тип платежа'
+      enum:
+        - domestic
+        - domesticTax
+        - listAccounts
+        - listPassports
+        - requirement
+        - taxRequirement
+        - VRP
     StatusUpdateDateTime:
       type: string
       format: date-time
@@ -3399,6 +3680,7 @@ Max10MbBinary (двоичный файл, представляющий влож�
       example: '2021-04-20'
     OBSupplementaryData:
       type: object
+      description: 'Дополнительная информация, которая не может быть отражена в структурированных элементах и/или других специальных блоках'
     OBListPassportData:
       minItems: 1
       type: array
@@ -3417,15 +3699,15 @@ Max10MbBinary (двоичный файл, представляющий влож�
             $ref: '#/components/schemas/Issuer'
           amount:
             $ref: '#/components/schemas/AmountList'
-        example:
-          - name: 'МИХАЛЮК ЛЮДМИЛА БОРИСОВНА'
-            identification: '06.20150901.HI0073786'
-            issuer: 'УВД БОБРУЙСКОГО ГОРИСПОЛКОМА'
-            amount: '1450.00'
-          - name: 'ХАЙДАРОВ АЗИС'
-            identification: '06.20150831.HI0073714'
-            issuer: 'ЛЕНИНСКИЙ РОВД Г. МОГИЛЕВА'
-            amount: '1348.00'
+      example:
+        - name: 'МИХАЛЮК ЛЮДМИЛА БОРИСОВНА'
+          identification: '06.20150901.HI0073786'
+          issuer: 'УВД БОБРУЙСКОГО ГОРИСПОЛКОМА'
+          amount: '1450.00'
+        - name: 'ХАЙДАРОВ АЗИС'
+          identification: '06.20150831.HI0073714'
+          issuer: 'ЛЕНИНСКИЙ РОВД Г. МОГИЛЕВА'
+          amount: '1348.00'
     Identification:
       type: string
       maxLength: 35
@@ -4141,6 +4423,7 @@ Max10MbBinary (двоичный файл, представляющий влож�
           description: >-
             Высокоуровневый текстовый код ошибки, который помогает ее
             классифицировать.
+          example: '400 BadRequest'
         Id:
           maxLength: 35
           minLength: 1
@@ -4148,11 +4431,13 @@ Max10MbBinary (двоичный файл, представляющий влож�
           description: >-
             Уникальная ссылка на ошибку для целей аудита в случае
             неизвестной/несекретной ошибки.
+          example: '2b5f0fb2-730b-11e8-adc0-fa7ae01bbebc'
         Message:
           maxLength: 500
           minLength: 1
           type: string
           description: 'Краткое сообщение об ошибке'
+          example: 'Невалидные паарметры запроса'
         Errors:
           minItems: 1
           type: array
@@ -4172,11 +4457,83 @@ Max10MbBinary (двоичный файл, представляющий влож�
         ErrorCode:
           type: string
           description: 'Низкоуровневый код ошибки'
+          example: 'BY.NBRB.Field.Missing'
         Message:
           maxLength: 500
           minLength: 1
           type: string
           description: 'Описание ошибки'
+          example: 'Пропущен обязательный элемент данных'
+        Path:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: >-
+            Рекомендуемая, но не обязательная ссылка на JSON-путь поля с
+            ошибкой.
+          example: '*должна быть указана cсылка на отсутствующее поле*'
+        Url:
+          type: string
+          description: >-
+            URL-адрес, предоставляющий дополнительную информацию для решения
+            проблемы.
+          example: 'URL-адрес онлайн-документации со ссылкой на поддерживаемые названия схем'
+      additionalProperties: false
+    OBErrorResponse403:
+      required:
+        - Code
+        - Errors
+        - Message
+      type: object
+      properties:
+        Code:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: >-
+            Высокоуровневый текстовый код ошибки, который помогает ее
+            классифицировать.
+          example: '403 Forbidden'
+        Id:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: >-
+            Уникальная ссылка на ошибку для целей аудита в случае
+            неизвестной/несекретной ошибки.
+          example: '2b5f0fb2-730b-11e8-adc0-fa7ae0sggbf'
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'Краткое сообщение об ошибке'
+          example: 'Отказано в доступе'
+        Errors:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OBError403'
+      additionalProperties: false
+      description: >-
+        Массив подробных кодов ошибок, сообщений и URL-адресов для
+        документирования.
+    OBError403:
+      minProperties: 1
+      required:
+        - ErrorCode
+        - Message
+      type: object
+      properties:
+        ErrorCode:
+          type: string
+          description: 'Низкоуровневый код ошибки'
+          example: 'BY.NBRB.Reauthenticate'
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'Описание ошибки'
+          example: 'Требуется повторная аутентификация'
         Path:
           maxLength: 500
           minLength: 1
@@ -4189,6 +4546,76 @@ Max10MbBinary (двоичный файл, представляющий влож�
           description: >-
             URL-адрес, предоставляющий дополнительную информацию для решения
             проблемы.
+          example: 'URL-адрес со ссылкой на повторную аутентификацию'
+      additionalProperties: false
+    OBErrorResponse500:
+      required:
+        - Code
+        - Errors
+        - Message
+      type: object
+      properties:
+        Code:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: >-
+            Высокоуровневый текстовый код ошибки, который помогает ее
+            классифицировать.
+          example: '500 Internal Server Error'
+        Id:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: >-
+            Уникальная ссылка на ошибку для целей аудита в случае
+            неизвестной/несекретной ошибки.
+          example: '2b5259646b2-730b-11e8-adc0-fa7ae0sggbf'
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'Краткое сообщение об ошибке'
+          example: 'Операция не удалась'
+        Errors:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OBError500'
+      additionalProperties: false
+      description: >-
+        Массив подробных кодов ошибок, сообщений и URL-адресов для
+        документирования.
+    OBError500:
+      minProperties: 1
+      required:
+        - ErrorCode
+        - Message
+      type: object
+      properties:
+        ErrorCode:
+          type: string
+          description: 'Низкоуровневый код ошибки'
+          example: 'BY.NBRB.UnexpectedError'
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'Описание ошибки'
+          example: '*сообщение от Поставщика API, не содержащее конфиденциальную информацию*'
+        Path:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: >-
+            Рекомендуемая, но не обязательная ссылка на на JSON-путь поля с
+            ошибкой.
+        Url:
+          type: string
+          description: >-
+            URL-адрес, предоставляющий дополнительную информацию для решения
+            проблемы.
+          example: 'URL-адрес со ссылкой'
       additionalProperties: false
   parameters:
     domesticConsentIdHeader:
@@ -4446,6 +4873,32 @@ Max10MbBinary (двоичный файл, представляющий влож�
       explode: false
       schema:
         type: string
+    FromCreationDate:
+      in: query
+      name: fromCreationDate
+      required: true
+      schema:
+        type: string
+        format: date-time
+    ToCreationDate:
+      in: query
+      name: toCreationDate
+      required: true
+      schema:
+        type: string
+        format: date-time
+    Type:
+      in: query
+      name: type
+      required: false
+      schema:
+        type: string
+    Status:
+      in: query
+      name: status
+      required: false
+      schema:
+        type: string
     Authorization:
       name: authorization
       in: header
@@ -4607,6 +5060,18 @@ Max10MbBinary (двоичный файл, представляющий влож�
         application/json:
           schema:
             $ref: '#/components/schemas/OBPayment2'
+    200PaymentsConsentsList:
+      description: Ответ
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OBPaymentsConsentsList'
+    200PaymentsList:
+      description: Ответ
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OBPaymentsList'
     200OBVRP2:
       description: Ответ
       content:
@@ -4692,7 +5157,7 @@ Max10MbBinary (двоичный файл, представляющий влож�
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/OBErrorResponse1'
+            $ref: '#/components/schemas/OBErrorResponse403'
     404Error:
       description: Not found
       headers:
@@ -4756,7 +5221,7 @@ Max10MbBinary (двоичный файл, представляющий влож�
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/OBErrorResponse1'
+            $ref: '#/components/schemas/OBErrorResponse500'
   securitySchemes:
     default:
       type: oauth2

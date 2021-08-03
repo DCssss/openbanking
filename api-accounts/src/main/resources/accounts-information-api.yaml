@@ -400,6 +400,100 @@ paths:
           - oauth2
           - api_key
         optional: false
+  '/statements/{accountId}':
+    post:
+      tags:
+        - Statements
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      summary: Set Statements
+      description: Создание выписки по счету
+      operationId: SetStatement
+      parameters:
+        - $ref: '#/components/parameters/accountId'
+        - $ref: '#/components/parameters/x-fapi-auth-date'
+        - $ref: '#/components/parameters/x-fapi-customer-ip-address'
+        - $ref: '#/components/parameters/x-fapi-interaction-id'
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/x-api-key'
+        - $ref: '#/components/parameters/x-accountConsentId'
+      requestBody:
+        description: Default
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatementRequest'
+        required: true
+      responses:
+        '201':
+          $ref: '#/components/responses/201AccountsAccountIdStatementsStatementIdRead'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '401':
+          $ref: '#/components/responses/401Error'
+        '403':
+          $ref: '#/components/responses/403Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+        '405':
+          $ref: '#/components/responses/405Error'
+        '406':
+          $ref: '#/components/responses/406Error'
+        '429':
+          $ref: '#/components/responses/429Error'
+        '500':
+          $ref: '#/components/responses/500Error'
+      security:
+        - default: [ ]
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+      x-wso2-application-security:
+        security-types:
+          - oauth2
+          - api_key
+        optional: false
   '/accounts/{accountId}/statements/{statementId}':
     get:
       tags:
@@ -444,13 +538,57 @@ paths:
           - oauth2
           - api_key
         optional: false
-  '/statements/{accountId}':
+  '/accounts/{accountId}/transactions':
     post:
       tags:
-        - Statements
-      summary: Set Statements
-      description: Создание выписки по счету
-      operationId: SetStatement
+        - Transactions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      summary: Set Transactions
+      description: Создание перечня транзакций по счету
+      operationId: SetTransaction
       parameters:
         - $ref: '#/components/parameters/accountId'
         - $ref: '#/components/parameters/x-fapi-auth-date'
@@ -464,11 +602,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StatementRequest'
+              $ref: '#/components/schemas/OBSetTransaction'
         required: true
       responses:
         '201':
-          $ref: '#/components/responses/201AccountsAccountIdStatementsStatementIdRead'
+          $ref: '#/components/responses/200SetAccountsTransaction'
         '400':
           $ref: '#/components/responses/400Error'
         '401':
@@ -521,56 +659,6 @@ paths:
           $ref: '#/components/responses/401Error'
         '403':
           $ref: '#/components/responses/403Error'
-        '405':
-          $ref: '#/components/responses/405Error'
-        '406':
-          $ref: '#/components/responses/406Error'
-        '429':
-          $ref: '#/components/responses/429Error'
-        '500':
-          $ref: '#/components/responses/500Error'
-      security:
-        - default: [ ]
-      x-auth-type: Application & Application User
-      x-throttling-tier: Unlimited
-      x-wso2-application-security:
-        security-types:
-          - oauth2
-          - api_key
-        optional: false
-  '/accounts/{accountId}/transactions':
-    post:
-      tags:
-        - Transactions
-      summary: Set Transactions
-      description: Создание перечня транзакций по счету
-      operationId: SetTransaction
-      parameters:
-        - $ref: '#/components/parameters/accountId'
-        - $ref: '#/components/parameters/x-fapi-auth-date'
-        - $ref: '#/components/parameters/x-fapi-customer-ip-address'
-        - $ref: '#/components/parameters/x-fapi-interaction-id'
-        - $ref: '#/components/parameters/Authorization'
-        - $ref: '#/components/parameters/x-api-key'
-        - $ref: '#/components/parameters/x-accountConsentId'
-      requestBody:
-        description: Default
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/OBSetTransaction'
-        required: true
-      responses:
-        '201':
-          $ref: '#/components/responses/200SetAccountsTransaction'
-        '400':
-          $ref: '#/components/responses/400Error'
-        '401':
-          $ref: '#/components/responses/401Error'
-        '403':
-          $ref: '#/components/responses/403Error'
-        '404':
-          $ref: '#/components/responses/404Error'
         '405':
           $ref: '#/components/responses/405Error'
         '406':
@@ -697,6 +785,11 @@ components:
           $ref: '#/components/schemas/OBSetAccountsTransAction1'
     OBSetAccountsTransAction1:
       type: object
+      required:
+        - transactionListId
+        - accountId
+        - fromBookingDateTime
+        - toBookingDateTime
       properties:
         transactionListId:
           $ref: '#/components/schemas/transactionListId'
@@ -846,6 +939,14 @@ components:
       properties:
         transactionListId:
           $ref: '#/components/schemas/transactionListId'
+        accountId:
+          $ref: '#/components/schemas/AccountId'
+        fromBookingDateTime:
+          $ref: '#/components/schemas/fromBookingDateTime'
+        toBookingDateTime:
+          $ref: '#/components/schemas/toBookingDateTime'
+        creationDateTime:
+          $ref: '#/components/schemas/CreationDateTime'
         transaction:
           type: array
           items:
@@ -853,7 +954,7 @@ components:
       additionalProperties: false
     OBTransaction6:
       required:
-        - accountId
+        - transactionId
         - amount
         - bookingDateTime
         - creditDebitIndicator
@@ -861,8 +962,8 @@ components:
         - status
       type: object
       properties:
-        accountId:
-          $ref: '#/components/schemas/AccountId'
+
+
         transactionId:
           $ref: '#/components/schemas/TransactionId'
         transactionReference:
@@ -1124,7 +1225,7 @@ components:
           pattern: '^[0-9]{1,13}$|^[0-9]{1,13}.d{1,5}$'
           type: string
           description: Итоговая сумма по балансу для всех дебетовых и кредитовых записей
-          example: '300.00000'
+          example: '300.00'
         currency:
           pattern: '^[A-Z]{3,3}$'
           type: string
@@ -1247,7 +1348,7 @@ components:
           pattern: '^[0-9]{1,13}$|^[0-9]{1,13}.[0-9]{1,5}$'
           type: string
           description: Сумма комиссионного вознаграждения за проведение транзакции
-          example: '0.50000'
+          example: '0.50'
         currency:
           pattern: '^[A-Z]{3,3}$'
           type: string
@@ -1258,7 +1359,7 @@ components:
       pattern: '^[0-9]{1,13}$|^[0-9]{1,13}.[0-9]{1,5}$'
       type: string
       description: Сумма транзакции
-      example: '5.00000'
+      example: '5.00'
     currency:
       pattern: '^[A-Z]{3,3}$'
       type: string
@@ -1403,7 +1504,7 @@ components:
       pattern: '^[0-9]{1,13}$|^[0-9]{1,13}.[0-9]{1,5}$'
       type: string
       description: Сумма входящего остатка по счету
-      example: '10.00000'
+      example: '10.00'
     equivalentAmountOpav:
       pattern: '^[0-9]{1,13}$|^[0-9]{1,13}.[0-9]{1,2}$'
       type: string
@@ -1432,7 +1533,7 @@ components:
       pattern: '^[0-9]{1,13}$|^[0-9]{1,13}.[0-9]{1,5}$'
       type: string
       description: Сумма входящего остатка по счету
-      example: '5.00000'
+      example: '5.00'
     equivalentAmountClav:
       pattern: '^[0-9]{1,13}$|^[0-9]{1,13}.[0-9]{1,2}$'
       type: string
@@ -1773,14 +1874,22 @@ components:
           example: '2021-04-18T10:43:07+03:00'
         balanceAmount:
           pattern: '^[0-9]{1,18}$|^[0-9]{1,18}.[0-9]{1,5}$'
+
+
+
+
+
+
+
+
           type: string
-          example: '100.00000'
+          example: '100.00'
         currency:
           pattern: '[A-Z]{3}'
           type: string
           example: BYN
         balanceEquivalentAmount:
-          pattern: '^[0-9]{1,18}$|^[0-9]{1,18}.[0-9]{1,2}$'
+          pattern: '^d{1,18}$|^d{1,18}.d{1,2}$'
           type: string
           example: '100.00'
         creditLine:
@@ -1807,10 +1916,10 @@ components:
                   - Revolving
                   - Non-revolving
               creditLineamount:
-                pattern: '^[0-9]{1,13}$|^[0-9]{1,13}.[0-9]{1,5}$'
+                pattern: '^d{1,13}$|^d{1,13}.d{1,5}$ || ^\d{1,13}$|^\d{1,13}\.\d{1,2}$'
                 type: string
                 description: Сумма кредитной линии.
-                example: '50.00000'
+                example: '50.00'
               currency:
                 pattern: '[A-Z]{3}'
                 type: string
@@ -1909,12 +2018,14 @@ components:
       properties:
         ErrorCode:
           type: string
-          description: Низкоуровневый код ошибки
+          description: 'Низкоуровневый код ошибки'
+          example: 'BY.NBRB.Field.Missing'
         Message:
           maxLength: 500
           minLength: 1
           type: string
-          description: Описание ошибки
+          description: 'Описание ошибки'
+          example: '*указывается обязательный элемент данных, который отсутствует в запросе*'
         Path:
           maxLength: 500
           minLength: 1
@@ -1922,11 +2033,45 @@ components:
           description: >-
             Рекомендуемая, но не обязательная ссылка на на JSON-путь поля с
             ошибкой.
+          example: '*указывается путь к элементу данных с ошибкой в JSON объекте*'
         Url:
           type: string
           description: >-
             URL-адрес, предоставляющий дополнительную информацию для решения
             проблемы.
+          example: '*указывается URL для помощи в устранении проблемы*'
+      additionalProperties: false
+    OBError403:
+      minProperties: 1
+      required:
+        - ErrorCode
+        - Message
+      type: object
+      properties:
+        ErrorCode:
+          type: string
+          description: 'Низкоуровневый код ошибки'
+          example: 'BY.NBRB.Reauthenticate'
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'Описание ошибки'
+          example: 'Требуется повторная аутентификация '
+        Path:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: >-
+            Рекомендуемая, но не обязательная ссылка на на JSON-путь поля с
+            ошибкой.
+          example: '*указывается путь к элементу с ошибкой в JSON объекте*'
+        Url:
+          type: string
+          description: >-
+            URL-адрес, предоставляющий дополнительную информацию для решения
+            проблемы.
+          example: '*указывается URL для помощи в устранении проблемы*'
       additionalProperties: false
     OBErrorResponse:
       required:
@@ -1942,6 +2087,7 @@ components:
           description: >-
             Высокоуровневый текстовый код ошибки, который помогает ее
             классифицировать.
+          example: '400 BadRequest'
         Id:
           maxLength: 35
           minLength: 1
@@ -1949,16 +2095,126 @@ components:
           description: >-
             Уникальная ссылка на ошибку для целей аудита в случае
             неизвестной/несекретной ошибки.
+          example: '2b5f0fb2-730b-11e8-adc0-fa7ae01bbebc'
         Message:
           maxLength: 500
           minLength: 1
           type: string
           description: Краткое сообщение об ошибке
+          example: 'Невалидные параметры запроса'
         Errors:
           minItems: 1
           type: array
           items:
             $ref: '#/components/schemas/OBError'
+      additionalProperties: false
+      description: >-
+        Массив подробных кодов ошибок, сообщений и URL-адресов для
+        документирования.
+    OBError500:
+      minProperties: 1
+      required:
+        - ErrorCode
+        - Message
+      type: object
+      properties:
+        ErrorCode:
+          type: string
+          description: 'Низкоуровневый код ошибки'
+          example: 'BY.NBRB.UnexpectedError'
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'Описание ошибки'
+          example: '*сообщение от Поставщика API, не содержащее конфиденциальную информацию*'
+        Path:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: >-
+            Рекомендуемая, но не обязательная ссылка на на JSON-путь поля с
+            ошибкой.
+          example: '*указывается путь к элементу с ошибкой в JSON объекте*'
+        Url:
+          type: string
+          description: >-
+            URL-адрес, предоставляющий дополнительную информацию для решения
+            проблемы.
+          example: '*указывается URL для помощи в устранении проблемы*'
+      additionalProperties: false
+    OBErrorResponse500:
+      required:
+        - Code
+        - Errors
+        - Message
+      type: object
+      properties:
+        Code:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: >-
+            Высокоуровневый текстовый код ошибки, который помогает ее
+            классифицировать.
+          example: '500 Internal Server Error'
+        Id:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: >-
+            Уникальная ссылка на ошибку для целей аудита в случае
+            неизвестной/несекретной ошибки.
+          example: '2b5f0fb2-730b-11e8-adc0-fa7ae01bbebc'
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: Краткое сообщение об ошибке
+          example: 'Операция не удалась'
+        Errors:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OBError500'
+      additionalProperties: false
+      description: >-
+        Массив подробных кодов ошибок, сообщений и URL-адресов для
+        документирования.
+    OBErrorResponse403:
+      required:
+        - Code
+        - Errors
+        - Message
+      type: object
+      properties:
+        Code:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: >-
+            Высокоуровневый текстовый код ошибки, который помогает ее
+            классифицировать.
+          example: '403 Forbidden'
+        Id:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: >-
+            Уникальная ссылка на ошибку для целей аудита в случае
+            неизвестной/несекретной ошибки.
+          example: '2b5f0fb2-730b-11e8-adc0-fa7ae01bbebc'
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: Краткое сообщение об ошибке
+          example: 'Отказано в доступе'
+        Errors:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OBError403'
       additionalProperties: false
       description: >-
         Массив подробных кодов ошибок, сообщений и URL-адресов для
@@ -1996,7 +2252,7 @@ components:
             - Deleted
             - Pending
         statusUpdateTime:
-          pattern: '^[0-9]{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$'
+          pattern: '^d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$'
           type: string
           format: date-time
           nullable: true
@@ -2184,10 +2440,12 @@ components:
               type: string
               description: Идентификатор согласия
               example: 3cgfc598-r5gh-9758-b358-587a5479610s
-            status:
-              $ref: '#/components/schemas/AccountConsentsStatus'
+
+
             link:
               $ref: '#/components/schemas/LinkConsents'
+            status:
+              $ref: '#/components/schemas/AccountConsentsStatus'
             statusUpdateDateTime:
               $ref: '#/components/schemas/StatusUpdateDateTimeConsent'
             creationDateTime:
@@ -2233,6 +2491,7 @@ components:
     LinkConsents:
       type: string
       format: url
+      example: 'https://sdbo.bank.by/accountConsentId/3cgfc598-r5gh-9758-b358-587a5479610s/'
     LinksConsentPost:
       required:
         - Self
@@ -2488,7 +2747,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/OBErrorResponse'
+            $ref: '#/components/schemas/OBErrorResponse403'
     404Error:
       description: Not found
       headers:
@@ -2552,7 +2811,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/OBErrorResponse'
+            $ref: '#/components/schemas/OBErrorResponse500'
   parameters:
     permissions:
       name: Permissions
@@ -2770,11 +3029,7 @@ components:
       name: x-accountConsentId
       in: header
       description: >-
-        Идентификатор, сгенерированный СДБО и переданный программному
-        обеспечению (приложению) Пользователя API первого типа, при успешной
-        идентификации и аутентификации Пользователя API первого типа, а также
-        авторизации им своего программного обеспечения (приложения) на
-        выполнение действий в СДБО от своего имени.
+        Идентификатор согласия,  в рамках которого отправляется запрос. Предназначен для идентификации и авторизации запросов на получение информации по счету(ам) Пользователя API первого типа.
       required: false
       style: simple
       explode: false
@@ -2784,11 +3039,7 @@ components:
       name: x-api-key
       in: header
       description: >-
-        Идентификатор, сгенерированный СДБО и переданный программному
-        обеспечению (приложению) Пользователя API первого типа, при успешной
-        идентификации и аутентификации Пользователя API первого типа, а также
-        авторизации им своего программного обеспечения (приложения) на
-        выполнение действий в СДБО от своего имени.
+        Идентификатор Apikey, сгенерированный в СДБО Поставщика API, и предназначенный для идентификации и авторизации запросов Пользователя API первого типа.
       required: false
       style: simple
       explode: false
