@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import openbankingservice.models.payments.Status;
+import openbankingservice.models.payments.PaymentConsentStatus;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -24,6 +24,13 @@ import static javax.persistence.EnumType.STRING;
 public final class PaymentConsentEntity extends BaseEntity<Long> {
 
     /**
+     * Типы платежных указаний
+     */
+    public enum Type {
+        DOMESTIC, DOMESTIC_TAX, LIST_OF_ACCOUNTS, LIST_OF_PASSPORTS, REQUIREMENT, VRP
+    }
+
+    /**
      * Дата и время создания платежного указания
      */
     @Column(name = "CREATION_TIME")
@@ -34,18 +41,19 @@ public final class PaymentConsentEntity extends BaseEntity<Long> {
      */
     @Column(name = "STATUS")
     @Enumerated(value = STRING)
-    private Status status;
+    private PaymentConsentStatus status;
 
     /**
      * Тип платежного указания
      */
     @Column(name = "TYPE")
-    private String type;
+    @Enumerated(value = STRING)
+    private Type type;
 
     /**
      * Блок Initiation
      */
-    @Column(name = "INITIATION")
+    @Column(name = "INITIATION", length = 8192)
     private String initiation;
 
     /**

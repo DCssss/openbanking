@@ -4,10 +4,12 @@ package openbankingservice.data.repository;
 import openbankingservice.data.entity.StatementEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 
+@Repository
 public interface StatementRepository extends JpaRepository<StatementEntity, Long> {
 
     @Query(value = "SELECT * FROM OB_STATEMENTS l WHERE l.ACCOUNT_ID = ?1 AND l.STATEMENT_ID = ?2", nativeQuery = true)
