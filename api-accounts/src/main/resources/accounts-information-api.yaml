@@ -404,50 +404,6 @@ paths:
     post:
       tags:
         - Statements
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       summary: Set Statements
       description: Создание выписки по счету
       operationId: SetStatement
@@ -542,50 +498,6 @@ paths:
     post:
       tags:
         - Transactions
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       summary: Set Transactions
       description: Создание перечня транзакций по счету
       operationId: SetTransaction

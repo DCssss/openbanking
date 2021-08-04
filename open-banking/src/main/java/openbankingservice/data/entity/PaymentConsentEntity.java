@@ -4,7 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import openbankingservice.models.payments.PaymentConsentStatus;
+import openbankingservice.models.payments.StatusPaymentConsent;
+import openbankingservice.models.payments.TypePaymentConsent;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -24,40 +25,6 @@ import static javax.persistence.EnumType.STRING;
 public final class PaymentConsentEntity extends BaseEntity<Long> {
 
     /**
-     * Типы платежных указаний и платежей
-     */
-    public enum Type {
-        /**
-         * Платежное указание на инициирование платежного поручения
-         */
-        DOMESTIC_CONSENT,
-        /**
-         * Платежное указание на инициирование налогового платежа
-         */
-        DOMESTIC_TAX_CONSENT,
-        /**
-         * Платежное указание на инициирование платежного поручения со списком счетов физических лиц
-         */
-        LIST_ACCOUNTS_CONSENT,
-        /**
-         * Платежное указание на инициирование платежного поручения со списком физических лиц без открытия счета
-         */
-        LIST_PASSPORTS_CONSENT,
-        /**
-         * Платежное указание на выставление платежного требования
-         */
-        REQUIREMENT_CONSENT,
-        /**
-         * Платежное указание на выставление платежного требования на уплату налогов (других платежей в бюджет)
-         */
-        TAX_REQUIREMENT_CONSENT,
-        /**
-         * Платежное указание на инициирование рекуррентного платежа
-         */
-        VRP_CONSENT
-    }
-
-    /**
      * Дата и время создания платежного указания
      */
     @Column(name = "CREATION_TIME")
@@ -68,14 +35,14 @@ public final class PaymentConsentEntity extends BaseEntity<Long> {
      */
     @Column(name = "STATUS")
     @Enumerated(value = STRING)
-    private PaymentConsentStatus status;
+    private StatusPaymentConsent status;
 
     /**
      * Тип платежного указания
      */
     @Column(name = "TYPE")
     @Enumerated(value = STRING)
-    private Type type;
+    private TypePaymentConsent type;
 
     /**
      * Блок Initiation

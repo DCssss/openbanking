@@ -38,7 +38,7 @@ public class PaymentService {
         final Date now = new Date();
         final PaymentEntity payment = new PaymentEntity();
         payment.setPaymentConsent(paymentConsentEntity);
-        payment.setType(PaymentEntity.Type.DOMESTIC_TAX);
+        payment.setType(TypePayment.DOMESTICTAX);
         payment.setStatus(PaymentEntity.Status.PDNG);
         payment.setCreateTime(now);
         payment.setStatusUpdateTime(now);

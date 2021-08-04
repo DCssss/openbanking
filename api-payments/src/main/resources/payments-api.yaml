@@ -1,4 +1,3 @@
-
 openapi: 3.0.1
 info:
   title: Песочница открытых банковских API
@@ -89,7 +88,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -128,7 +127,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -184,7 +183,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -224,7 +223,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -279,7 +278,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -318,7 +317,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -374,7 +373,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -414,7 +413,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -469,7 +468,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -508,7 +507,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -564,7 +563,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -604,7 +603,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -659,7 +658,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -698,7 +697,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -754,7 +753,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -794,7 +793,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -849,7 +848,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -888,7 +887,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -944,7 +943,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -984,7 +983,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -1039,7 +1038,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -1078,7 +1077,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -1134,7 +1133,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -1174,7 +1173,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -1229,7 +1228,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -1268,7 +1267,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -1306,7 +1305,7 @@ paths:
         '500':
           $ref: '#/components/responses/500Error'
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -1362,7 +1361,7 @@ paths:
         500:
           $ref: "#/components/responses/500Error"
       security:
-        - default: []
+        - default: [ ]
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
       x-wso2-application-security:
@@ -5228,7 +5227,7 @@ Max10MbBinary (двоичный файл, представляющий влож�
       flows:
         implicit:
           authorizationUrl: ''
-          scopes: {}
+          scopes: { }
 x-wso2-auth-header: Authorization
 x-wso2-cors:
   corsConfigurationEnabled: false

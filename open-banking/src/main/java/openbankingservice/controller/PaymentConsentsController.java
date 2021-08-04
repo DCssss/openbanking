@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,7 +32,22 @@ public class PaymentConsentsController implements PaymentConsentsApi {
     }
 
     @Override
+    public ResponseEntity<OBPaymentConsent1> createPaymentConsents(@Valid final OBDomesticConsent body, final String xIdempotencyKey, final String xJwsSignature, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
+        return null;
+    }
+
+    @Override
     public ResponseEntity<Void> deletePaymentConsentsVPRByVPRConsentId(final String vrPConsentId, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<OBPaymentsConsentsList> getListOfPaymentsConsents(@NotNull @Valid final Date fromCreationDate, @NotNull @Valid final Date toCreationDate, @Valid final String type, @Valid final String status) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<OBPaymentConsent2> getPaymentConsentsByPaymentConsentId(final String domesticConsentId, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
         return null;
     }
 

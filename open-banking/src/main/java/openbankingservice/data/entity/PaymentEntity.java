@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import openbankingservice.models.payments.TypePayment;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -69,40 +70,6 @@ public final class PaymentEntity extends BaseEntity<Long> {
     }
 
     /**
-     * Типы платежней
-     */
-    public enum Type {
-        /**
-         * Платежное поручение
-         */
-        DOMESTIC,
-        /**
-         * Налоговый платеж
-         */
-        DOMESTIC_TAX,
-        /**
-         * Платежное поручение со списком счетов физических лиц
-         */
-        LIST_ACCOUNTS,
-        /**
-         * Платежное поручение со списком физических лиц без открытия счета
-         */
-        LIST_PASSPORTS,
-        /**
-         * Платежное требование
-         */
-        REQUIREMENT,
-        /**
-         * Платежное требование на уплату налогов (других платежей в бюджет)
-         */
-        TAX_REQUIREMENT,
-        /**
-         * Рекуррентный платеж
-         */
-        VRP
-    }
-
-    /**
      * Платежное указание
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -114,7 +81,7 @@ public final class PaymentEntity extends BaseEntity<Long> {
      */
     @Column(name = "TYPE")
     @Enumerated(value = STRING)
-    private Type type;
+    private TypePayment type;
 
     /**
      * Дата и время создания платежа

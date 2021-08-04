@@ -29,8 +29,8 @@ public final class PaymentConsentConverter {
         }
         final PaymentConsentEntity paymentConsentEntity = new PaymentConsentEntity();
         paymentConsentEntity.setCreationTime(now);
-        paymentConsentEntity.setStatus(PaymentConsentStatus.AWAITINGAUTHORISATION);
-        paymentConsentEntity.setType(PaymentConsentEntity.Type.DOMESTIC_TAX_CONSENT);
+        paymentConsentEntity.setStatus(StatusPaymentConsent.AWAITINGAUTHORISATION);
+        paymentConsentEntity.setType(TypePaymentConsent.DOMESTICTAXCONSENT);
         paymentConsentEntity.setInitiation(initiationBlock);
         paymentConsentEntity.setAuthorizationType(data.getAuthorisation().getAuthorizationType());
         paymentConsentEntity.setStatusUpdateTime(now);
@@ -57,7 +57,7 @@ public final class PaymentConsentConverter {
         return paymentConsentEntity;
     }
 
-    public static OBDataTax toOBDataTax(final PaymentConsentEntity paymentConsentEntity){
+    public static OBDataTax toOBDataTax(final PaymentConsentEntity paymentConsentEntity) {
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationTaxDomestic initiation;
         try {
@@ -69,7 +69,7 @@ public final class PaymentConsentConverter {
         return new OBDataTax()
                 .domesticTaxConsentId(paymentConsentEntity.getId().toString())
                 .link(String.format(LINK_PATTERN, paymentConsentEntity.getId()))
-                .status(paymentConsentEntity.getStatus())
+                .status(PaymentConsentStatus.valueOf(paymentConsentEntity.getStatus().toString()))
                 .statusUpdateDateTime(paymentConsentEntity.getStatusUpdateTime())
                 .creationDateTime(paymentConsentEntity.getCreationTime())
                 .cutOffDateTime(new Date())
@@ -78,7 +78,7 @@ public final class PaymentConsentConverter {
                 .initiation(initiation);
     }
 
-    public static OBDataTax1 toOBDataTax1(final PaymentConsentEntity paymentConsentEntity){
+    public static OBDataTax1 toOBDataTax1(final PaymentConsentEntity paymentConsentEntity) {
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationTaxDomestic initiation;
         try {
@@ -90,7 +90,7 @@ public final class PaymentConsentConverter {
         return new OBDataTax1()
                 .domesticTaxConsentId(paymentConsentEntity.getId().toString())
                 .link(String.format(LINK_PATTERN, paymentConsentEntity.getId()))
-                .status(paymentConsentEntity.getStatus())
+                .status(PaymentConsentStatus.valueOf(paymentConsentEntity.getStatus().toString()))
                 .statusUpdateDateTime(paymentConsentEntity.getStatusUpdateTime())
                 .creationDateTime(paymentConsentEntity.getCreationTime())
                 .cutOffDateTime(new Date())
