@@ -111,8 +111,21 @@ public class PaymentConsentsController implements PaymentConsentsApi {
     }
 
     @Override
-    public ResponseEntity<OBPaymentConsentListPassports2> getPaymentConsentsOfListPassportsByListPassportsConsentId(final String listPassportsConsentId, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBPaymentConsentListPassports2> getPaymentConsentsOfListPassportsByListPassportsConsentId(
+            final String listPassportsConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentConsentService.getPaymentConsentsOfListPassportsByListPassportsConsentId(
+                listPassportsConsentId,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent);
     }
 
     @Override
@@ -150,8 +163,26 @@ public class PaymentConsentsController implements PaymentConsentsApi {
     }
 
     @Override
-    public ResponseEntity<OBPaymentConsentListPassports1> setPaymentConsentsByListPassports(@Valid final OBListPassportsConsent body, final String xIdempotencyKey, final String xJwsSignature, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBPaymentConsentListPassports1> setPaymentConsentsByListPassports(
+            @Valid final OBListPassportsConsent body,
+            final String xIdempotencyKey,
+            final String xJwsSignature,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentConsentService.setPaymentConsentsByListPassports(
+                body,
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override
