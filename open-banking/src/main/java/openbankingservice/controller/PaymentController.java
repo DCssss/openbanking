@@ -18,8 +18,28 @@ public class PaymentController implements PaymentsApi {
     private final PaymentService mPaymentService;
 
     @Override
-    public ResponseEntity<OBPayment1> createDomesticPayment(@Valid final OBDomesticPayment body, final String domesticConsentId, final String xIdempotencyKey, final String xJwsSignature, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBPayment1> createDomesticPayment(
+            @Valid final OBDomesticPayment body,
+            final String domesticConsentId,
+            final String xIdempotencyKey,
+            final String xJwsSignature,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentService.createDomesticPayment(
+                body,
+                domesticConsentId,
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override
@@ -34,12 +54,38 @@ public class PaymentController implements PaymentsApi {
             final String authorization,
             final String xCustomerUserAgent
     ) {
-        return mPaymentService.createDomesticTaxPayment(body, domesticTaxConsentId, xIdempotencyKey, xJwsSignature, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization, xCustomerUserAgent);
+        return mPaymentService.createDomesticTaxPayment(
+                body,
+                domesticTaxConsentId,
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override
-    public ResponseEntity<OBPayment2> getDomesticPaymentByDomesticId(final String domesticId, final String domesticConsentId, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBPayment2> getDomesticPaymentByDomesticId(
+            final String domesticId,
+            final String domesticConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentService.getDomesticByDomesticId(
+                domesticId,
+                domesticConsentId,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override
@@ -52,7 +98,15 @@ public class PaymentController implements PaymentsApi {
             final String authorization,
             final String xCustomerUserAgent
     ) {
-        return mPaymentService.getDomesticTaxByDomesticTaxId(domesticTaxId, domesticTaxConsentId, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization, xCustomerUserAgent);
+        return mPaymentService.getDomesticTaxByDomesticTaxId(
+                domesticTaxId,
+                domesticTaxConsentId,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override

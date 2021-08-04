@@ -50,7 +50,7 @@ public final class RestResponseExceptionHandler {
         error.setMessage(ex.getMessage());
 
         response.getErrors().add(error);
-        
+
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 

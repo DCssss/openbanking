@@ -32,8 +32,17 @@ public class PaymentConsentsController implements PaymentConsentsApi {
     }
 
     @Override
-    public ResponseEntity<OBPaymentConsent1> createPaymentConsents(@Valid final OBDomesticConsent body, final String xIdempotencyKey, final String xJwsSignature, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBPaymentConsent1> createPaymentConsents(
+            @Valid final OBDomesticConsent body,
+            final String xIdempotencyKey,
+            final String xJwsSignature,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentConsentService.createDomesticConsents(body, xIdempotencyKey, xJwsSignature, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization, xCustomerUserAgent);
     }
 
     @Override
@@ -47,8 +56,15 @@ public class PaymentConsentsController implements PaymentConsentsApi {
     }
 
     @Override
-    public ResponseEntity<OBPaymentConsent2> getPaymentConsentsByPaymentConsentId(final String domesticConsentId, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBPaymentConsent2> getPaymentConsentsByPaymentConsentId(
+            final String domesticConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentConsentService.getPaymentConsentsByPaymentConsentId(domesticConsentId, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization, xCustomerUserAgent);
     }
 
     @Override
