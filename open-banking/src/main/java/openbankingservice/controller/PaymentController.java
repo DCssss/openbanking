@@ -157,8 +157,24 @@ public class PaymentController implements PaymentsApi {
     }
 
     @Override
-    public ResponseEntity<OBPaymentReq2> getPaymentsRequirimentsByRequirementId(final String requirementId, final String requirementConsentId, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBPaymentReq2> getPaymentsRequirimentsByRequirementId(
+            final String requirementId,
+            final String requirementConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentService.getPaymentsRequirimentsByRequirementId(
+                requirementId,
+                requirementConsentId,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override
@@ -222,8 +238,28 @@ public class PaymentController implements PaymentsApi {
     }
 
     @Override
-    public ResponseEntity<OBPaymentReq1> setPaymentsRequirements(@Valid final OBReqPayment body, final String requirementConsentId, final String xIdempotencyKey, final String xJwsSignature, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBPaymentReq1> setPaymentsRequirements(
+            @Valid final OBReqPayment body,
+            final String requirementConsentId,
+            final String xIdempotencyKey,
+            final String xJwsSignature,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentService.createRequirementPayment(
+                body,
+                requirementConsentId,
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override

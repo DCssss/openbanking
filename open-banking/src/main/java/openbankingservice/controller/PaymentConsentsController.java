@@ -139,8 +139,22 @@ public class PaymentConsentsController implements PaymentConsentsApi {
     }
 
     @Override
-    public ResponseEntity<OBReqConsent2> getPaymentsByRequirementId(final String requirementConsentId, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBReqConsent2> getPaymentsByRequirementId(
+            final String requirementConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentConsentService.getPaymentsByRequirementId(
+                requirementConsentId,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override
@@ -186,8 +200,26 @@ public class PaymentConsentsController implements PaymentConsentsApi {
     }
 
     @Override
-    public ResponseEntity<OBReqConsent1> setPaymentConsentsRequrement(@Valid final OBReqConsent body, final String xIdempotencyKey, final String xJwsSignature, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBReqConsent1> setPaymentConsentsRequrement(
+            @Valid final OBReqConsent body,
+            final String xIdempotencyKey,
+            final String xJwsSignature,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentConsentService.setPaymentConsentsByListPassports(
+                body,
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override

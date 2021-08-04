@@ -1890,7 +1890,7 @@ components:
         expectedSettlementDate:
           $ref: '#/components/schemas/ExpectedSettlementDate'
         Initiation:
-          $ref: '#/components/schemas/OBInitiationDomestic'
+          $ref: '#/components/schemas/OBInitiationReq'
         Multiauthorisation:
           $ref: '#/components/schemas/OBMultiAuthorisation'
         Charge:

@@ -212,4 +212,54 @@ public class PaymentConsentService {
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
+
+
+
+    public ResponseEntity<OBReqConsent1> setPaymentConsentsByListPassports(
+            @Valid final OBReqConsent body,
+            final String xIdempotencyKey,
+            final String xJwsSignature,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        final PaymentConsentEntity paymentConsentEntity = PaymentConsentConverter.toPaymentConsentEntity(body.getData());
+        paymentConsentEntity.setFintech(mFintechService.identifyFintech(authorization));
+
+        mPaymentConsentRepository.save(paymentConsentEntity);
+
+        final OBDataReqResp data = PaymentConsentConverter.toOBDataReqResp(paymentConsentEntity)
+                .authorisation(body.getData().getAuthorisation());
+
+        final OBReqConsent1 response = new OBReqConsent1()
+                .data(data);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    public ResponseEntity<OBReqConsent2> getPaymentsByRequirementId(
+            final String paymentConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
+
+        final OBDataReqResp1 data = PaymentConsentConverter.toOBDataReqResp1(paymentConsentEntity);
+
+        final OBReqConsent2 response = new OBReqConsent2()
+                .data(data);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
 }
