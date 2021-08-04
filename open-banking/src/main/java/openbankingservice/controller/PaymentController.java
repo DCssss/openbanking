@@ -120,8 +120,24 @@ public class PaymentController implements PaymentsApi {
     }
 
     @Override
-    public ResponseEntity<OBPaymentListAccounts2> getPaymentsListAccountsByListAccountsId(final String listAccountsId, final String listAccountsConsentId, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBPaymentListAccounts2> getPaymentsListAccountsByListAccountsId(
+            final String listAccountsId,
+            final String listAccountsConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentService.getPaymentsListAccountsByListAccountsId(
+                listAccountsId,
+                listAccountsConsentId,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override
@@ -145,8 +161,28 @@ public class PaymentController implements PaymentsApi {
     }
 
     @Override
-    public ResponseEntity<OBPaymentListAccounts1> setPaymentsListAccounts(@Valid final OBListAccountsPayment body, final String listAccountsConsentId, final String xIdempotencyKey, final String xJwsSignature, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBPaymentListAccounts1> setPaymentsListAccounts(
+            @Valid final OBListAccountsPayment body,
+            final String listAccountsConsentId,
+            final String xIdempotencyKey,
+            final String xJwsSignature,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentService.createListAccountsPayment(
+                body,
+                listAccountsConsentId,
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override

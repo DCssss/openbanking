@@ -28,7 +28,16 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String authorization,
             final String xCustomerUserAgent
     ) {
-        return mPaymentConsentService.createDomesticTaxConsents(body, xIdempotencyKey, xJwsSignature, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization, xCustomerUserAgent);
+        return mPaymentConsentService.createDomesticTaxConsents(
+                body,
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override
@@ -42,7 +51,16 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String authorization,
             final String xCustomerUserAgent
     ) {
-        return mPaymentConsentService.createDomesticConsents(body, xIdempotencyKey, xJwsSignature, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization, xCustomerUserAgent);
+        return mPaymentConsentService.createDomesticConsents(
+                body,
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override
@@ -64,7 +82,14 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String authorization,
             final String xCustomerUserAgent
     ) {
-        return mPaymentConsentService.getPaymentConsentsByPaymentConsentId(domesticConsentId, xFapiAuthDate, xFapiCustomerIpAddress, xFapiInteractionId, authorization, xCustomerUserAgent);
+        return mPaymentConsentService.getPaymentConsentsByPaymentConsentId(
+                domesticConsentId,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override
@@ -106,8 +131,22 @@ public class PaymentConsentsController implements PaymentConsentsApi {
     }
 
     @Override
-    public ResponseEntity<OBPaymentConsentListAccounts2> getPaymentsConsentsOfListAccountsByListAccountsConsentId(final String listAccountsConsentId, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBPaymentConsentListAccounts2> getPaymentsConsentsOfListAccountsByListAccountsConsentId(
+            final String listAccountsConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentConsentService.getPaymentsConsentsOfListAccountsByListAccountsConsentId(
+                listAccountsConsentId,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override
@@ -131,7 +170,25 @@ public class PaymentConsentsController implements PaymentConsentsApi {
     }
 
     @Override
-    public ResponseEntity<OBPaymentConsentListAccounts1> setPaymentsConsentsOfListAccounts(@Valid final OBListAccountsConsent body, final String xIdempotencyKey, final String xJwsSignature, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBPaymentConsentListAccounts1> setPaymentsConsentsOfListAccounts(
+            @Valid final OBListAccountsConsent body,
+            final String xIdempotencyKey,
+            final String xJwsSignature,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentConsentService.setPaymentsConsentsOfListAccounts(
+                body,
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 }

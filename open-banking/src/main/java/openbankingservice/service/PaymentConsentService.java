@@ -117,4 +117,51 @@ public class PaymentConsentService {
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
+    public ResponseEntity<OBPaymentConsentListAccounts1> setPaymentsConsentsOfListAccounts(
+            @Valid final OBListAccountsConsent body,
+            final String xIdempotencyKey,
+            final String xJwsSignature,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        final PaymentConsentEntity paymentConsentEntity = PaymentConsentConverter.toPaymentConsentEntity(body.getData());
+        paymentConsentEntity.setFintech(mFintechService.identifyFintech(authorization));
+
+        mPaymentConsentRepository.save(paymentConsentEntity);
+
+        final OBDataListAccountsResp data = PaymentConsentConverter.toOBDataListAccountsResp(paymentConsentEntity)
+                .authorisation(body.getData().getAuthorisation());
+
+        final OBPaymentConsentListAccounts1 response = new OBPaymentConsentListAccounts1()
+                .data(data);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    public ResponseEntity<OBPaymentConsentListAccounts2> getPaymentsConsentsOfListAccountsByListAccountsConsentId(
+            final String listAccountsConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
+
+        final OBDataListAccountsResp1 data = PaymentConsentConverter.toOBDataListAccountsResp1(paymentConsentEntity);
+
+        final OBPaymentConsentListAccounts2 response = new OBPaymentConsentListAccounts2()
+                .data(data);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
 }

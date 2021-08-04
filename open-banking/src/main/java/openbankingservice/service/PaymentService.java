@@ -126,6 +126,55 @@ public class PaymentService {
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
+    public ResponseEntity<OBPaymentListAccounts1> createListAccountsPayment(
+            @Valid final OBListAccountsPayment body,
+            final String listAccountsConsentId,
+            final String xIdempotencyKey,
+            final String xJwsSignature,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
+        final Date now = new Date();
+        final PaymentEntity payment = new PaymentEntity();
+        payment.setPaymentConsent(paymentConsentEntity);
+        payment.setType(TypePayment.LISTACCOUNTS);
+        payment.setStatus(PaymentEntity.Status.PDNG);
+        payment.setCreateTime(now);
+        payment.setStatusUpdateTime(now);
+
+        mPaymentRepository.save(payment);
+
+        final ObjectMapper objectMapper = new ObjectMapper();
+        OBInitiationListAccounts initiation;
+        try {
+            initiation = objectMapper.readValue(paymentConsentEntity.getInitiation(), OBInitiationListAccounts.class);
+        } catch (JsonProcessingException e) {
+            throw new OBException(BY_NBRB_UNEXPECTED_ERROR, "");
+        }
+
+        final OBDataPaymentListAccounts1 data = new OBDataPaymentListAccounts1()
+                .listAccountsId(payment.getId().toString())
+                .listAccountsConsentId(paymentConsentEntity.getId().toString())
+                .creationDateTime(payment.getCreateTime())
+                .initiation(initiation)
+                .paymentStatus(
+                        new OBDataPaymentStatus()
+                                .statusUpdateDateTime(payment.getStatusUpdateTime())
+                                .paymentStatus(payment.getStatus().toString()));
+
+        final OBPaymentListAccounts1 response = new OBPaymentListAccounts1()
+                .data(data);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
     public ResponseEntity<OBTaxPayment2> getDomesticTaxByDomesticTaxId(
             final String domesticTaxId,
             final String domesticTaxConsentId,
@@ -196,6 +245,45 @@ public class PaymentService {
                                 .paymentStatus(payment.getStatus().toString()));
 
         final OBPayment2 response = new OBPayment2()
+                .data(data);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    public ResponseEntity<OBPaymentListAccounts2> getPaymentsListAccountsByListAccountsId(
+            final String paymentId,
+            final String paymentConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
+        final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
+
+        final ObjectMapper objectMapper = new ObjectMapper();
+        OBInitiationListAccounts initiation;
+        try {
+            initiation = objectMapper.readValue(paymentConsentEntity.getInitiation(), OBInitiationListAccounts.class);
+        } catch (JsonProcessingException e) {
+            throw new OBException(BY_NBRB_UNEXPECTED_ERROR, "");
+        }
+
+        final OBDataPaymentListAccounts2 data = new OBDataPaymentListAccounts2()
+                .listAccountsId(payment.getId().toString())
+                .listAccountsConsentId(paymentConsentEntity.getId().toString())
+                .creationDateTime(payment.getCreateTime())
+                .initiation(initiation)
+                .paymentStatus(
+                        new OBDataPaymentStatusGet()
+                                .statusUpdateDateTime(payment.getStatusUpdateTime())
+                                .paymentStatus(payment.getStatus().toString()));
+
+        final OBPaymentListAccounts2 response = new OBPaymentListAccounts2()
                 .data(data);
 
         final HttpHeaders headers = new HttpHeaders();
