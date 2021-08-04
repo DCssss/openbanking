@@ -41,13 +41,16 @@ public final class RestResponseExceptionHandler {
     protected ResponseEntity<OBErrorResponse> handle(
             final ConstraintViolationException ex
     ) {
-        OBErrorResponse response = new OBErrorResponse();
+        final OBErrorResponse response = new OBErrorResponse();
         response.setCode(String.format("%d %s", HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase()));
         response.setId(UUID.randomUUID().toString());
+
         final OBError error = new OBError();
         error.setErrorCode("BY.NBRB.Field.Invalid");
         error.setMessage(ex.getMessage());
+
         response.getErrors().add(error);
+        
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -60,6 +63,7 @@ public final class RestResponseExceptionHandler {
         final OBErrorResponse response = new OBErrorResponse();
         response.setCode(createHighLevelCode(httpStatus));
         response.setId(UUID.randomUUID().toString());
+        response.setMessage("Невалидные параметры запроса");
 
         final OBError error = new OBError();
         error.setErrorCode(ex.getErrorCode().getValue());
@@ -81,6 +85,7 @@ public final class RestResponseExceptionHandler {
         final OBErrorResponse response = new OBErrorResponse();
         response.setCode(createHighLevelCode(httpStatus));
         response.setId(UUID.randomUUID().toString());
+        response.setMessage("Невалидные параметры запроса");
 
         final OBError error = new OBError();
         error.setErrorCode(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND.getValue());
@@ -100,6 +105,7 @@ public final class RestResponseExceptionHandler {
         final OBErrorResponse response = new OBErrorResponse();
         response.setCode(createHighLevelCode(httpStatus));
         response.setId(UUID.randomUUID().toString());
+        response.setMessage("Невалидные параметры запроса");
 
         final OBError error = new OBError();
         error.setErrorCode(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND.getValue());
