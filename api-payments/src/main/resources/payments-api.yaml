@@ -801,7 +801,7 @@ paths:
           - oauth2
           - api_key
         optional: false
-  /paymentConsents/Requirement:
+  /paymentConsents/requirement:
     post:
       tags:
         - RequirementConsents
@@ -856,7 +856,7 @@ paths:
           - oauth2
           - api_key
         optional: false
-  /paymentConsents/Requirement/{requirementConsentId}:
+  /paymentConsents/requirement/{requirementConsentId}:
     get:
       tags:
         - RequirementConsents
@@ -895,7 +895,7 @@ paths:
           - oauth2
           - api_key
         optional: false
-  /payments/Requirements:
+  /payments/requirement:
     post:
       tags:
         - Requirements
@@ -951,7 +951,7 @@ paths:
           - oauth2
           - api_key
         optional: false
-  /payments/Requirements/{requirementId}:
+  /payments/requirement/{requirementId}:
     get:
       tags:
         - Requirements
@@ -991,7 +991,7 @@ paths:
           - oauth2
           - api_key
         optional: false
-  /paymentConsents/TaxRequirement:
+  /paymentConsents/taxRequirement:
     post:
       tags:
         - TaxRequirementConsents
@@ -1046,7 +1046,7 @@ paths:
           - oauth2
           - api_key
         optional: false
-  /paymentConsents/TaxRequirement/{taxRequirementConsentId}:
+  /paymentConsents/taxRequirement/{taxRequirementConsentId}:
     get:
       tags:
         - TaxRequirementConsents
@@ -1085,7 +1085,7 @@ paths:
           - oauth2
           - api_key
         optional: false
-  /payments/TaxRequirements:
+  /payments/taxRequirement:
     post:
       tags:
         - TaxRequirements
@@ -1141,7 +1141,7 @@ paths:
           - oauth2
           - api_key
         optional: false
-  /payments/TaxRequirements/{taxRequirementId}:
+  /payments/taxRequirement/{taxRequirementId}:
     get:
       tags:
         - TaxRequirements
