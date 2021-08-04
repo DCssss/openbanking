@@ -178,8 +178,24 @@ public class PaymentController implements PaymentsApi {
     }
 
     @Override
-    public ResponseEntity<OBTaxPaymentReq2> getPaymentsTaxRequirementsByTaxRequirementId(final String taxRequirementId, final String taxRequirementConsentId, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBTaxPaymentReq2> getPaymentsTaxRequirementsByTaxRequirementId(
+            final String taxRequirementId,
+            final String taxRequirementConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentService.getPaymentsTaxRequirementsByTaxRequirementId(
+                taxRequirementId,
+                taxRequirementConsentId,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override
@@ -263,8 +279,28 @@ public class PaymentController implements PaymentsApi {
     }
 
     @Override
-    public ResponseEntity<OBTaxPaymentReq1> setPaymentsTaxRequirements(@Valid final OBReqTaxPayment body, final String taxRequirementConsentId, final String xIdempotencyKey, final String xJwsSignature, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBTaxPaymentReq1> setPaymentsTaxRequirements(
+            @Valid final OBReqTaxPayment body,
+            final String taxRequirementConsentId,
+            final String xIdempotencyKey,
+            final String xJwsSignature,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentService.createTaxRequirementPayment(
+                body,
+                taxRequirementConsentId,
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override

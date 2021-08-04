@@ -129,8 +129,21 @@ public class PaymentConsentsController implements PaymentConsentsApi {
     }
 
     @Override
-    public ResponseEntity<OBPaymentConsentTaxReq2> getPaymentConsentsTaxRequirementByTaxRequirementConsentId(final String taxRequirementConsentId, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBPaymentConsentTaxReq2> getPaymentConsentsTaxRequirementByTaxRequirementConsentId(
+            final String taxRequirementConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentConsentService.getPaymentConsentsTaxRequirementByTaxRequirementConsentId(
+                taxRequirementConsentId,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent);
     }
 
     @Override
@@ -223,8 +236,26 @@ public class PaymentConsentsController implements PaymentConsentsApi {
     }
 
     @Override
-    public ResponseEntity<OBPaymentConsentTaxReq1> setPaymentConsentsTaxRequirement(@Valid final OBPaymentConsentTaxReq body, final String xIdempotencyKey, final String xJwsSignature, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBPaymentConsentTaxReq1> setPaymentConsentsTaxRequirement(
+            @Valid final OBPaymentConsentTaxReq body,
+            final String xIdempotencyKey,
+            final String xJwsSignature,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentConsentService.setPaymentConsentsTaxRequirement(
+                body,
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override

@@ -213,8 +213,6 @@ public class PaymentConsentService {
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
-
-
     public ResponseEntity<OBReqConsent1> setPaymentConsentsByListPassports(
             @Valid final OBReqConsent body,
             final String xIdempotencyKey,
@@ -255,6 +253,54 @@ public class PaymentConsentService {
         final OBDataReqResp1 data = PaymentConsentConverter.toOBDataReqResp1(paymentConsentEntity);
 
         final OBReqConsent2 response = new OBReqConsent2()
+                .data(data);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    public ResponseEntity<OBPaymentConsentTaxReq1> setPaymentConsentsTaxRequirement(
+            @Valid final OBPaymentConsentTaxReq body,
+            final String xIdempotencyKey,
+            final String xJwsSignature,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        final PaymentConsentEntity paymentConsentEntity = PaymentConsentConverter.toPaymentConsentEntity(body.getData());
+        paymentConsentEntity.setFintech(mFintechService.identifyFintech(authorization));
+
+        mPaymentConsentRepository.save(paymentConsentEntity);
+
+        final OBDataTaxReq1 data = PaymentConsentConverter.toOBDataTaxReq1(paymentConsentEntity)
+                .authorisation(body.getData().getAuthorisation());
+
+        final OBPaymentConsentTaxReq1 response = new OBPaymentConsentTaxReq1()
+                .data(data);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    public ResponseEntity<OBPaymentConsentTaxReq2> getPaymentConsentsTaxRequirementByTaxRequirementConsentId(
+            final String paymentConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
+
+        final OBDataTaxReq2 data = PaymentConsentConverter.toOBDataTaxReq2(paymentConsentEntity);
+
+        final OBPaymentConsentTaxReq2 response = new OBPaymentConsentTaxReq2()
                 .data(data);
 
         final HttpHeaders headers = new HttpHeaders();
