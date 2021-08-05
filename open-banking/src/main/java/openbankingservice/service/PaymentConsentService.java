@@ -261,6 +261,27 @@ public class PaymentConsentService {
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
+    public ResponseEntity<OBVRPConsent2> getPaymentConsentsVPRByVRPConsentId(
+            final String paymentConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
+
+        final OBDataVRPResp1 data = PaymentConsentConverter.toOBDataVRPResp1(paymentConsentEntity);
+
+        final OBVRPConsent2 response = new OBVRPConsent2()
+                .data(data);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
     public ResponseEntity<OBPaymentConsentTaxReq1> setPaymentConsentsTaxRequirement(
             @Valid final OBPaymentConsentTaxReq body,
             final String xIdempotencyKey,
@@ -280,6 +301,32 @@ public class PaymentConsentService {
                 .authorisation(body.getData().getAuthorisation());
 
         final OBPaymentConsentTaxReq1 response = new OBPaymentConsentTaxReq1()
+                .data(data);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    public ResponseEntity<OBVRPConsent1> setPaymentConsentsVRP(
+            @Valid final OBVRPConsent body,
+            final String xIdempotencyKey,
+            final String xJwsSignature,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        final PaymentConsentEntity paymentConsentEntity = PaymentConsentConverter.toPaymentConsentEntity(body.getData());
+        paymentConsentEntity.setFintech(mFintechService.identifyFintech(authorization));
+
+        mPaymentConsentRepository.save(paymentConsentEntity);
+
+        final OBDataVRPResp data = PaymentConsentConverter.toOBDataVRPResp(paymentConsentEntity);
+
+        final OBVRPConsent1 response = new OBVRPConsent1()
                 .data(data);
 
         final HttpHeaders headers = new HttpHeaders();

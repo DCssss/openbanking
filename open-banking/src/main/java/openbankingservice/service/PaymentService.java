@@ -555,4 +555,92 @@ public class PaymentService {
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
+
+    public ResponseEntity<OBVRP1> setPaymentsVRP(
+            @Valid final OBVRPPayment body,
+            final String listAccountsConsentId,
+            final String xIdempotencyKey,
+            final String xJwsSignature,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
+        final Date now = new Date();
+        final PaymentEntity payment = new PaymentEntity();
+        payment.setPaymentConsent(paymentConsentEntity);
+        payment.setType(TypePayment.VRP);
+        payment.setStatus(PaymentEntity.Status.PDNG);
+        payment.setCreateTime(now);
+        payment.setStatusUpdateTime(now);
+
+        mPaymentRepository.save(payment);
+
+        final ObjectMapper objectMapper = new ObjectMapper();
+        OBInitiationVRP initiation;
+        try {
+            initiation = objectMapper.readValue(paymentConsentEntity.getInitiation(), OBInitiationVRP.class);
+        } catch (JsonProcessingException e) {
+            throw new OBException(BY_NBRB_UNEXPECTED_ERROR, e.getMessage());
+        }
+
+        final OBDataVRP1 data = new OBDataVRP1()
+                .vrPId(payment.getId().toString())
+                .vrPConsentId(paymentConsentEntity.getId().toString())
+                .creationDateTime(payment.getCreateTime())
+                .initiation(initiation)
+                .paymentStatus(
+                        new OBDataPaymentStatus()
+                                .statusUpdateDateTime(payment.getStatusUpdateTime())
+                                .paymentStatus(payment.getStatus().toString()));
+
+        final OBVRP1 response = new OBVRP1()
+                .data(data);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    public ResponseEntity<OBVRP2> getPaymentsVRPbyVRPid(
+            final String paymentId,
+            final String paymentConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
+        final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
+
+        final ObjectMapper objectMapper = new ObjectMapper();
+        OBInitiationVRP initiation;
+        try {
+            initiation = objectMapper.readValue(paymentConsentEntity.getInitiation(), OBInitiationVRP.class);
+        } catch (JsonProcessingException e) {
+            throw new OBException(BY_NBRB_UNEXPECTED_ERROR, e.getMessage());
+        }
+
+        final OBDataVRP2 data = new OBDataVRP2()
+                .vrPId(payment.getId().toString())
+                .vrPConsentId(paymentConsentEntity.getId().toString())
+                .creationDateTime(payment.getCreateTime())
+                .initiation(initiation)
+                .paymentStatus(
+                        new OBDataPaymentStatusGet()
+                                .statusUpdateDateTime(payment.getStatusUpdateTime())
+                                .paymentStatus(payment.getStatus().toString()));
+
+        final OBVRP2 response = new OBVRP2()
+                .data(data);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
 }

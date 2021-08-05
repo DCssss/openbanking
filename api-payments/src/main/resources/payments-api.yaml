@@ -2567,8 +2567,6 @@ components:
       example: '28000.00'
     PeriodType:
       type: string
-      maxLength: 10
-      minLength: 1
       description: 'Тип периода'
       enum:
         - Day
@@ -2978,7 +2976,7 @@ components:
         ControlParameters:
           $ref: '#/components/schemas/OBControlParameters'
         Initiation:
-          $ref: '#/components/schemas/OBInitiationDomestic'
+          $ref: '#/components/schemas/OBInitiationVRP'
     OBDataReqResp1:
       type: object
       required:

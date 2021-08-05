@@ -199,8 +199,24 @@ public class PaymentController implements PaymentsApi {
     }
 
     @Override
-    public ResponseEntity<OBVRP2> getPaymentsVRPbyVRPid(final String vrPId, final String vrPConsentId, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBVRP2> getPaymentsVRPbyVRPid(
+            final String vrPId,
+            final String vrPConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentService.getPaymentsVRPbyVRPid(
+                vrPId,
+                vrPConsentId,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override
@@ -304,7 +320,27 @@ public class PaymentController implements PaymentsApi {
     }
 
     @Override
-    public ResponseEntity<OBVRP1> setPaymentsVRP(@Valid final OBVRPPayment body, final String vrPConsentId, final String xIdempotencyKey, final String xJwsSignature, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<OBVRP1> setPaymentsVRP(
+            @Valid final OBVRPPayment body,
+            final String vrPConsentId,
+            final String xIdempotencyKey,
+            final String xJwsSignature,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentService.setPaymentsVRP(
+                body,
+                vrPConsentId,
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 }
