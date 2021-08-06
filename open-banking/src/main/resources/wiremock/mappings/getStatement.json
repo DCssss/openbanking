@@ -1,14 +1,13 @@
 {
-	"request": {
-		"method": "GET",
-		"urlPathPattern": "/accounts/([a-z0-9-]*)/statements/([a-z0-9-]*)"
-
-	},
-	"response" : {
-	"status" : 200,
-	"bodyFileName" : "Accounts/getStatement.json",
-	"headers": {
-            "Content-Type": "application/json"
-        }
-		}
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/accounts/([a-z0-9-]*)/statements/([a-z0-9-]*)"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "Accounts/getStatement.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
 }

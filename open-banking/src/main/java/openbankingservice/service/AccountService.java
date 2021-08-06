@@ -1,5 +1,6 @@
 package openbankingservice.service;
 
+import lombok.RequiredArgsConstructor;
 import openbankingservice.data.entity.*;
 import openbankingservice.data.repository.TransactionListRepository;
 import openbankingservice.data.repository.TransactionRepository;
@@ -10,7 +11,6 @@ import openbankingservice.util.AccountConverter;
 import openbankingservice.util.OBHttpHeaders;
 import openbankingservice.util.TransactionConverter;
 import openbankingservice.util.TransactionListConverter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

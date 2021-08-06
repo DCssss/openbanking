@@ -1,5 +1,6 @@
 package openbankingservice.service;
 
+import lombok.RequiredArgsConstructor;
 import openbankingservice.data.entity.ClientEntity;
 import openbankingservice.data.entity.ConsentEntity;
 import openbankingservice.data.repository.ConsentRepository;
@@ -13,7 +14,6 @@ import openbankingservice.util.ConsentConverter;
 import openbankingservice.util.OBHttpHeaders;
 import openbankingservice.util.StubData;
 import openbankingservice.validation.ConsentBody;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -180,7 +180,7 @@ public class ConsentService {
         if (isHavePermission(consent, api)) {
             return consent;
         } else {
-            throw new RuntimeException("Forbidden");
+            throw new OBException(OBErrorCode.BY_NBRB_REAUTHENTICATE, "Forbidden");
         }
     }
 

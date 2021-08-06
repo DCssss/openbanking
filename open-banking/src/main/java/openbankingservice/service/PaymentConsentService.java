@@ -3,6 +3,7 @@ package openbankingservice.service;
 import lombok.RequiredArgsConstructor;
 import openbankingservice.data.entity.PaymentConsentEntity;
 import openbankingservice.data.repository.PaymentConsentRepository;
+import openbankingservice.exception.OBException;
 import openbankingservice.models.payments.*;
 import openbankingservice.util.OBHttpHeaders;
 import openbankingservice.util.PaymentConsentConverter;
@@ -15,6 +16,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
+
+import static openbankingservice.exception.OBErrorCode.BY_NBRB_FIELD_INVALID_DATE;
 
 @Service
 @RequiredArgsConstructor
@@ -386,6 +389,10 @@ public class PaymentConsentService {
             @Valid final String type,
             @Valid final String status
     ) {
+        if (fromCreationDate.after(toCreationDate)) {
+            throw new OBException(BY_NBRB_FIELD_INVALID_DATE, "fromCreationDate must be before toCreationDate", "fromCreationDate");
+        }
+
         final List<PaymentConsentEntity> paymentConsents = mPaymentConsentRepository.findAllByCreationTimeBetweenAndTypeAndStatus(fromCreationDate, toCreationDate, TypePaymentConsent.fromValue(type), StatusPaymentConsent.fromValue(status));
 
         final OBPaymentConsent obPaymentConsent = new OBPaymentConsent();

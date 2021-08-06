@@ -10,7 +10,6 @@ import openbankingservice.data.repository.PaymentRepository;
 import openbankingservice.exception.OBException;
 import openbankingservice.models.payments.*;
 import openbankingservice.util.OBHttpHeaders;
-import openbankingservice.util.PaymentConverter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +20,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
+import static openbankingservice.exception.OBErrorCode.BY_NBRB_FIELD_INVALID_DATE;
 import static openbankingservice.exception.OBErrorCode.BY_NBRB_UNEXPECTED_ERROR;
 
 @Service
@@ -652,6 +652,10 @@ public class PaymentService {
             @Valid final String type,
             @Valid final String status
     ) {
+        if (fromCreationDate.after(toCreationDate)) {
+            throw new OBException(BY_NBRB_FIELD_INVALID_DATE, "fromCreationDate must be before toCreationDate", "fromCreationDate");
+        }
+
         final List<PaymentEntity> payments = mPaymentRepository.findAllByCreateTimeBetweenAndTypeAndStatus(fromCreationDate, toCreationDate, TypePayment.fromValue(type), PaymentEntity.Status.valueOf(status));
 
         final OBPayment obPayment = new OBPayment();

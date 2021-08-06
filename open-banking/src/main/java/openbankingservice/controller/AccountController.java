@@ -1,9 +1,9 @@
 package openbankingservice.controller;
 
+import lombok.RequiredArgsConstructor;
 import openbankingservice.api.accinfo.AccountsApi;
 import openbankingservice.models.accinfo.*;
 import openbankingservice.service.AccountService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 

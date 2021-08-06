@@ -1,13 +1,13 @@
 package openbankingservice.data.entity;
 
-import openbankingservice.exception.OBErrorCode;
-import openbankingservice.exception.OBException;
-import openbankingservice.models.accinfo.AccountConsentsStatus;
-import openbankingservice.models.accinfo.Permission;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import openbankingservice.exception.OBErrorCode;
+import openbankingservice.exception.OBException;
+import openbankingservice.models.accinfo.AccountConsentsStatus;
+import openbankingservice.models.accinfo.Permission;
 
 import javax.persistence.*;
 import java.util.*;

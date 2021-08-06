@@ -10,6 +10,7 @@ import java.io.Serializable;
 
 /**
  * Базовая сущность.
+ *
  * @param <T> Тип данных идентификатора сущности.
  */
 @Getter
