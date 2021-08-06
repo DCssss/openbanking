@@ -1,139 +1,139 @@
 {
-   "Data":{
-      "transactionListID":"987654321",
-      "transaction":[
-         {
-            "accountId":"33365",
-            "transactionId":"111",
-            "transactionReference":"Ref 1",
-            "creditDebitIndicator":"Credit",
-            "status":"Book",
-            "bookingDateTime":"2021-04-16T10:43:07+03:00",
-            "valueDate":"2021-04-16",
-            "transactionDetails":"Денежный перевод от Иванова Ивана Ивановича",
-            "addressLine":"Шлюзовая",
-            "amount":"4000.00",
-            "currency":"BYN",
-            "bankTransactionCode":{
-               "code":"ReceivedCreditTransfer",
-               "subCode":"DomesticCreditTransfer"
-            },
-            "proprietaryBankTransactionCode":{
-               "code":"Transfer",
-               "issuer":"Bank"
-            },
-            "balance":{
-               "creditDebitIndicator":"Credit",
-               "type":"OpeningAvailable",
-               "amount":"4000.00",
-               "currency":"BYN"
-            },
-            "debtor":{
-               "taxIdentification":"INP511111111",
-               "name":"Иванов Иван Иванович",
-               "debtorAccount":[
-                  {
-                     "schemeName":"BY.NBRB.IBAN",
-                     "identification":"BY28BAPB30141111100110000000",
-                     "name":"Текущий расчетный счет физического лица"
-                  }
-               ],
-               "debtorAgent":[
-                  {
-                     "name":"ОАО Белагропромбанк",
-                     "identification":"BAPBBY2X"
-                  }
-               ]
-            },
-            "creditor":{
-               "taxIdentification":"INP511111111",
-               "name":"Петров Петр Петрович",
-               "creditorAccount":[
-                  {
-                     "schemeName":"BY.NBRB.IBAN",
-                     "identification":"BY22BAPB30143164200100000000",
-                     "name":"Карт-счет физического лица"
-                  }
-               ],
-               "creditorAgent":[
-                  {
-                     "name":"ОАО Белагропромбанк",
-                     "identification":"BAPBBY2X"
-                  }
-               ]
+  "Data": {
+    "transactionListID": "987654321",
+    "transaction": [
+      {
+        "accountId": "33365",
+        "transactionId": "111",
+        "transactionReference": "Ref 1",
+        "creditDebitIndicator": "Credit",
+        "status": "Book",
+        "bookingDateTime": "2021-04-16T10:43:07+03:00",
+        "valueDate": "2021-04-16",
+        "transactionDetails": "Денежный перевод от Иванова Ивана Ивановича",
+        "addressLine": "Шлюзовая",
+        "amount": "4000.00",
+        "currency": "BYN",
+        "bankTransactionCode": {
+          "code": "ReceivedCreditTransfer",
+          "subCode": "DomesticCreditTransfer"
+        },
+        "proprietaryBankTransactionCode": {
+          "code": "Transfer",
+          "issuer": "Bank"
+        },
+        "balance": {
+          "creditDebitIndicator": "Credit",
+          "type": "OpeningAvailable",
+          "amount": "4000.00",
+          "currency": "BYN"
+        },
+        "debtor": {
+          "taxIdentification": "INP511111111",
+          "name": "Иванов Иван Иванович",
+          "debtorAccount": [
+            {
+              "schemeName": "BY.NBRB.IBAN",
+              "identification": "BY28BAPB30141111100110000000",
+              "name": "Текущий расчетный счет физического лица"
             }
-         },
-         {
-            "accountId":"33365",
-            "transactionId":"456",
-            "transactionReference":"Ref 2",
-            "creditDebitIndicator":"Debit",
-            "status":"Book",
-            "bookingDateTime":"2021-04-16T12:43:07+03:00",
-            "valueDate":"2021-04-16",
-            "transactionDetails":"Оплата услуг мобильной связи",
-            "addressLine":"Шлюзовая",
-            "amount":"30.00",
-            "currency":"BYN",
-            "bankTransactionCode":{
-               "code":"IssuedCreditTransfer",
-               "subCode":"AutomaticTransfer"
-            },
-            "proprietaryBankTransactionCode":{
-               "code":"DirectDebit",
-               "issuer":"Bank"
-            },
-            "balance":{
-               "creditDebitIndicator":"Credit",
-               "type":"OpeningAvailable",
-               "amount":"3970.00",
-               "currency":"BYN"
-            },
-            "debtor":{
-               "taxIdentification":"INP511111111",
-               "name":"Петров Петр Петрович",
-               "debtorAccount":[
-                  {
-                     "schemeName":"BY.NBRB.IBAN",
-                     "identification":"BY22BAPB30143164200100000000",
-                     "name":"Карт-счет физического лица"
-                  }
-               ],
-               "debtorAgent":[
-                  {
-                     "name":"ОАО Белагропромбанк",
-                     "identification":"BAPBBY2X"
-                  }
-               ]
-            },
-            "creditor":{
-               "taxIdentification":"INN800013732",
-               "name":"COOO Мобильные ТелеСистемы",
-               "creditorAccount":[
-                  {
-                     "schemeName":"BY.NBRB.IBAN",
-                     "identification":"BY10MMBN30123164200100000000",
-                     "name":"Текущий расчетный  счет для оплаты услуг связи"
-                  }
-               ],
-               "creditorAgent":[
-                  {
-                     "name":"ОАО Банк Дабрабыт",
-                     "identification":"MMBNBY22"
-                  }
-               ]
+          ],
+          "debtorAgent": [
+            {
+              "name": "ОАО Белагропромбанк",
+              "identification": "BAPBBY2X"
             }
-         }
-      ]
-   },
-   "Links":{
-      "self":"https://api.bank.by/oapi-channel/open-banking/v1.0/transactions?pg=9",
-      "last":"https://api.bank.by/oapi-channel/open-banking/v1.0/transactions?pg=9",
-      "first":"https://api.bank.by/oapi-channel/open-banking/v1.0/transactions/"
-   },
-   "Meta":{
-      "TotalPages":9,
-      "FirstAvailableDateTime":"2021-04-16T00:00:00+00:00",
-      "LastAvailableDateTime":"2021-04-16T22:00:00+00:00"
-   }
+          ]
+        },
+        "creditor": {
+          "taxIdentification": "INP511111111",
+          "name": "Петров Петр Петрович",
+          "creditorAccount": [
+            {
+              "schemeName": "BY.NBRB.IBAN",
+              "identification": "BY22BAPB30143164200100000000",
+              "name": "Карт-счет физического лица"
+            }
+          ],
+          "creditorAgent": [
+            {
+              "name": "ОАО Белагропромбанк",
+              "identification": "BAPBBY2X"
+            }
+          ]
+        }
+      },
+      {
+        "accountId": "33365",
+        "transactionId": "456",
+        "transactionReference": "Ref 2",
+        "creditDebitIndicator": "Debit",
+        "status": "Book",
+        "bookingDateTime": "2021-04-16T12:43:07+03:00",
+        "valueDate": "2021-04-16",
+        "transactionDetails": "Оплата услуг мобильной связи",
+        "addressLine": "Шлюзовая",
+        "amount": "30.00",
+        "currency": "BYN",
+        "bankTransactionCode": {
+          "code": "IssuedCreditTransfer",
+          "subCode": "AutomaticTransfer"
+        },
+        "proprietaryBankTransactionCode": {
+          "code": "DirectDebit",
+          "issuer": "Bank"
+        },
+        "balance": {
+          "creditDebitIndicator": "Credit",
+          "type": "OpeningAvailable",
+          "amount": "3970.00",
+          "currency": "BYN"
+        },
+        "debtor": {
+          "taxIdentification": "INP511111111",
+          "name": "Петров Петр Петрович",
+          "debtorAccount": [
+            {
+              "schemeName": "BY.NBRB.IBAN",
+              "identification": "BY22BAPB30143164200100000000",
+              "name": "Карт-счет физического лица"
+            }
+          ],
+          "debtorAgent": [
+            {
+              "name": "ОАО Белагропромбанк",
+              "identification": "BAPBBY2X"
+            }
+          ]
+        },
+        "creditor": {
+          "taxIdentification": "INN800013732",
+          "name": "COOO Мобильные ТелеСистемы",
+          "creditorAccount": [
+            {
+              "schemeName": "BY.NBRB.IBAN",
+              "identification": "BY10MMBN30123164200100000000",
+              "name": "Текущий расчетный  счет для оплаты услуг связи"
+            }
+          ],
+          "creditorAgent": [
+            {
+              "name": "ОАО Банк Дабрабыт",
+              "identification": "MMBNBY22"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "Links": {
+    "self": "https://api.bank.by/oapi-channel/open-banking/v1.0/transactions?pg=9",
+    "last": "https://api.bank.by/oapi-channel/open-banking/v1.0/transactions?pg=9",
+    "first": "https://api.bank.by/oapi-channel/open-banking/v1.0/transactions/"
+  },
+  "Meta": {
+    "TotalPages": 9,
+    "FirstAvailableDateTime": "2021-04-16T00:00:00+00:00",
+    "LastAvailableDateTime": "2021-04-16T22:00:00+00:00"
+  }
 }

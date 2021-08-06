@@ -1,11 +1,11 @@
 package openbankingservice.service;
 
+import lombok.RequiredArgsConstructor;
 import openbankingservice.data.entity.FintechEntity;
 import openbankingservice.data.repository.FintechRepository;
 import openbankingservice.exception.OBErrorCode;
 import openbankingservice.exception.OBException;
 import openbankingservice.util.StubData;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service

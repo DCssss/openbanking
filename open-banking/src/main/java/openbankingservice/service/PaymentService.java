@@ -10,15 +10,17 @@ import openbankingservice.data.repository.PaymentRepository;
 import openbankingservice.exception.OBException;
 import openbankingservice.models.payments.*;
 import openbankingservice.util.OBHttpHeaders;
-import openbankingservice.util.PaymentConverter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
+import static openbankingservice.exception.OBErrorCode.BY_NBRB_FIELD_INVALID_DATE;
 import static openbankingservice.exception.OBErrorCode.BY_NBRB_UNEXPECTED_ERROR;
 
 @Service
@@ -640,6 +642,32 @@ public class PaymentService {
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    public ResponseEntity<OBPaymentsList> getListOfPayments(
+            @NotNull @Valid final Date fromCreationDate,
+            @NotNull @Valid final Date toCreationDate,
+            @Valid final String type,
+            @Valid final String status
+    ) {
+        if (fromCreationDate.after(toCreationDate)) {
+            throw new OBException(BY_NBRB_FIELD_INVALID_DATE, "fromCreationDate must be before toCreationDate", "fromCreationDate");
+        }
+
+        final List<PaymentEntity> payments = mPaymentRepository.findAllByCreateTimeBetweenAndTypeAndStatus(fromCreationDate, toCreationDate, TypePayment.fromValue(type), PaymentEntity.Status.valueOf(status));
+
+        final OBPayment obPayment = new OBPayment();
+        obPayment.addAll(payments);
+
+        final OBDataPaymentsList data = new OBDataPaymentsList()
+                .payment(obPayment);
+
+        final OBPaymentsList response = new OBPaymentsList()
+                .data(data);
+
+        final HttpHeaders headers = new HttpHeaders();
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }

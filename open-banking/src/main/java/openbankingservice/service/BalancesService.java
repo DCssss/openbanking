@@ -1,10 +1,10 @@
 package openbankingservice.service;
 
+import lombok.RequiredArgsConstructor;
 import openbankingservice.data.entity.AccountEntity;
 import openbankingservice.data.entity.ConsentEntity;
 import openbankingservice.models.accinfo.*;
 import openbankingservice.util.OBHttpHeaders;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

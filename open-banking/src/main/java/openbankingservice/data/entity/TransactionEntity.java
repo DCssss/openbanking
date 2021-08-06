@@ -1,10 +1,10 @@
 package openbankingservice.data.entity;
 
-import openbankingservice.models.accinfo.OBCreditDebitCode1;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import openbankingservice.models.accinfo.OBCreditDebitCode1;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

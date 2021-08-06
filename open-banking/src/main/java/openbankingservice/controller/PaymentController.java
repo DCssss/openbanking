@@ -110,8 +110,18 @@ public class PaymentController implements PaymentsApi {
     }
 
     @Override
-    public ResponseEntity<OBPaymentsList> getListOfPayments(@NotNull @Valid final Date fromCreationDate, @NotNull @Valid final Date toCreationDate, @Valid final String type, @Valid final String status) {
-        return null;
+    public ResponseEntity<OBPaymentsList> getListOfPayments(
+            @NotNull @Valid final Date fromCreationDate,
+            @NotNull @Valid final Date toCreationDate,
+            @Valid final String type,
+            @Valid final String status
+    ) {
+        return mPaymentService.getListOfPayments(
+                fromCreationDate,
+                toCreationDate,
+                type,
+                status
+        );
     }
 
     @Override
