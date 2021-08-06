@@ -1,6 +1,7 @@
 package openbankingservice.util;
 
 import openbankingservice.data.entity.ConsentEntity;
+import openbankingservice.models.accinfo.AccountConsentsStatus;
 import openbankingservice.models.accinfo.ConsentData;
 import openbankingservice.models.accinfo.ConsentResponseData;
 import openbankingservice.models.accinfo.Permission;
@@ -12,8 +13,21 @@ public final class ConsentConverter {
 
     private ConsentConverter() {
     }
+    //Заглушка для сценария когда после создания согласия, мы должны отобразить статус AwaitingAuthorization, но в базу сохраняем рандомный сценарий.
+    public static ConsentResponseData toConsentResponseDataForPost(final ConsentEntity consentEntity) {
+        return new ConsentResponseData()
+                .link("https://sdbo_business.bank.by/accountConsentsId/" + consentEntity.getId() + "/")
+                .accountConsentId(String.valueOf(consentEntity.getId()))
+                .status(AccountConsentsStatus.AWAITINGAUTHORISATION)
+                .creationDateTime(consentEntity.getCreationTime())
+                .statusUpdateDateTime(consentEntity.getStatusUpdateTime())
+                .expirationDate(consentEntity.getExpirationDate())
+                .transactionFromDate(consentEntity.getTransactionFromDate())
+                .transactionToDate(consentEntity.getTransactionToDate())
+                .permissions(new ArrayList<>(consentEntity.getPermission()));
+    }
 
-    public static ConsentResponseData toConsentResponseData(final ConsentEntity consentEntity) {
+    public static ConsentResponseData toConsentResponseDataForGet(final ConsentEntity consentEntity) {
         return new ConsentResponseData()
                 .link("https://sdbo_business.bank.by/accountConsentsId/" + consentEntity.getId() + "/")
                 .accountConsentId(String.valueOf(consentEntity.getId()))
