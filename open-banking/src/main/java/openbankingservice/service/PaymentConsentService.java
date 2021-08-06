@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -352,6 +355,49 @@ public class PaymentConsentService {
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Void> deletePaymentConsentsVPRByVPRConsentId(
+            final String vrPConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(vrPConsentId));
+
+        paymentConsentEntity.setStatus(StatusPaymentConsent.REVOKED);
+        paymentConsentEntity.setStatusUpdateTime(new Date());
+
+        mPaymentConsentRepository.save(paymentConsentEntity);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+
+    public ResponseEntity<OBPaymentsConsentsList> getListOfPaymentsConsents(
+            @NotNull @Valid final Date fromCreationDate,
+            @NotNull @Valid final Date toCreationDate,
+            @Valid final String type,
+            @Valid final String status
+    ) {
+        final List<PaymentConsentEntity> paymentConsents = mPaymentConsentRepository.findAllByCreationTimeBetweenAndTypeAndStatus(fromCreationDate, toCreationDate, TypePaymentConsent.fromValue(type), StatusPaymentConsent.fromValue(status));
+
+        final OBPaymentConsent obPaymentConsent = new OBPaymentConsent();
+        obPaymentConsent.addAll(paymentConsents);
+
+        final OBDataPaymentsConsentsList data = new OBDataPaymentsConsentsList()
+                .paymentConsent(obPaymentConsent);
+
+        final OBPaymentsConsentsList response = new OBPaymentsConsentsList()
+                .data(data);
+
+        final HttpHeaders headers = new HttpHeaders();
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }

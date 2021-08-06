@@ -64,13 +64,37 @@ public class PaymentConsentsController implements PaymentConsentsApi {
     }
 
     @Override
-    public ResponseEntity<Void> deletePaymentConsentsVPRByVPRConsentId(final String vrPConsentId, final String xFapiAuthDate, final String xFapiCustomerIpAddress, final String xFapiInteractionId, final String authorization, final String xCustomerUserAgent) {
-        return null;
+    public ResponseEntity<Void> deletePaymentConsentsVPRByVPRConsentId(
+            final String vrPConsentId,
+            final String xFapiAuthDate,
+            final String xFapiCustomerIpAddress,
+            final String xFapiInteractionId,
+            final String authorization,
+            final String xCustomerUserAgent
+    ) {
+        return mPaymentConsentService.deletePaymentConsentsVPRByVPRConsentId(
+                vrPConsentId,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xFapiInteractionId,
+                authorization,
+                xCustomerUserAgent
+        );
     }
 
     @Override
-    public ResponseEntity<OBPaymentsConsentsList> getListOfPaymentsConsents(@NotNull @Valid final Date fromCreationDate, @NotNull @Valid final Date toCreationDate, @Valid final String type, @Valid final String status) {
-        return null;
+    public ResponseEntity<OBPaymentsConsentsList> getListOfPaymentsConsents(
+            @NotNull @Valid final Date fromCreationDate,
+            @NotNull @Valid final Date toCreationDate,
+            @Valid final String type,
+            @Valid final String status
+    ) {
+        return mPaymentConsentService.getListOfPaymentsConsents(
+                fromCreationDate,
+                toCreationDate,
+                type,
+                status
+        );
     }
 
     @Override
@@ -107,7 +131,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent);
+                xCustomerUserAgent
+        );
     }
 
     @Override
@@ -143,7 +168,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent);
+                xCustomerUserAgent
+        );
     }
 
     @Override
