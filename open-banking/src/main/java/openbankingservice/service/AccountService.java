@@ -2,6 +2,7 @@ package openbankingservice.service;
 
 import lombok.RequiredArgsConstructor;
 import openbankingservice.data.entity.*;
+import openbankingservice.data.repository.AccountRepository;
 import openbankingservice.data.repository.TransactionListRepository;
 import openbankingservice.data.repository.TransactionRepository;
 import openbankingservice.exception.OBErrorCode;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 import java.util.*;
 
 import static openbankingservice.util.OBHttpHeaders.X_FAPI_INTERACTION_ID;
@@ -29,7 +31,7 @@ public class AccountService {
 
     private final TransactionListRepository mListTransactionRepository;
     private final TransactionRepository mTransactionRepository;
-
+    private final AccountRepository mAccountRepository;
     private final ClientService mClientService;
     private final ConsentService mConsentService;
 
@@ -43,6 +45,7 @@ public class AccountService {
             final String xApiKey,
             final String xAccountConsentId
     ) {
+        checkFunds(accountId,null);
         mClientService.identifyClient(xApiKey);
         final ConsentEntity consent = mConsentService.checkPermissionAndGetConsent(Long.valueOf(xAccountConsentId), "/accounts/{accountId}");
         final AccountEntity account = consent.getAccount(Long.valueOf(accountId));
@@ -326,6 +329,31 @@ public class AccountService {
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    //проверка средств на счету. Если меньше 1000, то добавляем 100.000
+    @Transactional
+    public void checkFunds(String accountId, String currency) {
+
+        final AccountEntity account = mAccountRepository.getById(Long.valueOf(accountId));
+
+        if (account.getBalanceAmount().doubleValue() < 1000) {
+            account.setBalanceAmount(account.getBalanceAmount().add(new BigDecimal(100000.00)));
+            mAccountRepository.save(account);
+            TransactionEntity transaction = new TransactionEntity();
+            Date now = new Date();
+            transaction.setAmount(account.getBalanceAmount());
+            transaction.setCreditAccIdentification("BY01NBRB81990000000000000933");
+            transaction.setCreditBankIdentification("NBRBBY2X");
+            transaction.setCreditBankName("Национальный банк");
+            transaction.setDebitAccIdentification(account.getIdentification());
+            transaction.setDebitBankIdentification("UNBSBY2X");
+            transaction.setDebitBankName("BSB BANK");
+            transaction.setDetails("Пополнение счета");
+            transaction.setBookingTime(now);
+            mTransactionRepository.save(transaction);
+
+        }
     }
 }
 
