@@ -24,6 +24,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -79,7 +80,15 @@ public class ConsentService {
             consent.setClient(client);
             consent.setStatus(AccountConsentsStatus.AUTHORISED);
             consent.setStatusUpdateTime(new Date());
-            consent.getAccounts().addAll(client.getAccounts().stream().filter(account -> new Random().nextBoolean()).collect(Collectors.toList()));
+            if (consent.getAccounts() == null){
+                consent.setAccounts(new HashSet<>());
+            }
+            consent.getAccounts().addAll(
+                    client.getAccounts()
+                            .stream()
+                            .filter(account -> new Random().nextBoolean())
+                            .collect(Collectors.toList())
+            );
 
             mConsentRepository.save(consent);
 
