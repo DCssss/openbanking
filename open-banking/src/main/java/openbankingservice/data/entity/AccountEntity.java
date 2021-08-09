@@ -58,7 +58,7 @@ public final class AccountEntity extends BaseEntity<Long> {
     @Enumerated(value = STRING)
     private Account.AccountSubTypeEnum subType;
 
-    @Column(name = "IDENTIFICATION")
+    @Column(name = "IDENTIFICATION", unique = true)
     private String identification;
 
     @ManyToMany(fetch = LAZY)

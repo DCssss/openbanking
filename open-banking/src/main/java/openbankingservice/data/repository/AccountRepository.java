@@ -10,6 +10,7 @@ import java.util.Collection;
 @Repository
 public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
 
-    Collection<AccountEntity> findByClient(ClientEntity client);
+    Collection<AccountEntity> findByClient(final ClientEntity client);
 
+    AccountEntity getByIdentification(final String identification);
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class PaymentController implements PaymentsApi {
             final String authorization,
             final String xCustomerUserAgent
     ) {
-        return mPaymentService.createDomesticPayment(
+        final ResponseEntity<OBPayment1> response = mPaymentService.createDomesticPayment(
                 body,
                 domesticConsentId,
                 xIdempotencyKey,
@@ -40,6 +41,8 @@ public class PaymentController implements PaymentsApi {
                 authorization,
                 xCustomerUserAgent
         );
+        mPaymentService.makePayment(Objects.requireNonNull(response.getBody()).getData().getDomesticId());
+        return response;
     }
 
     @Override
