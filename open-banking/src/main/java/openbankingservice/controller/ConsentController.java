@@ -5,11 +5,14 @@ import openbankingservice.api.accinfo.AccountConsentsApi;
 import openbankingservice.models.accinfo.Consent;
 import openbankingservice.models.accinfo.ConsentResponse;
 import openbankingservice.service.ConsentService;
+import openbankingservice.util.StubData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
+import java.util.Objects;
+import java.util.Random;
 
 
 @RestController
@@ -27,7 +30,7 @@ public class ConsentController implements AccountConsentsApi {
             final String authorization,
             final String xApiKey
     ) {
-        return mConsentService.createConsent(
+        final ResponseEntity<ConsentResponse> response = mConsentService.createConsent(
                 body,
                 xFapiAuthDate,
                 xFapiAuthDate,
@@ -35,44 +38,18 @@ public class ConsentController implements AccountConsentsApi {
                 xFapiInteractionId,
                 xApiKey
         );
-    }
 
-    @Override
-    public ResponseEntity<Void> authorizeConsent(
-            final String xFapiAuthDate,
-            final String xFapiCustomerIpAddress,
-            final String xFapiInteractionId,
-            final String authorization,
-            final String xApiKey,
-            final String xAccountConsentId
-    ) {
-        return mConsentService.authorizeConsent(
-                xFapiAuthDate,
-                xFapiAuthDate,
-                xFapiCustomerIpAddress,
-                xFapiInteractionId,
-                xApiKey,
-                xAccountConsentId
-        );
-    }
+        final Random rand = new Random();
+        //Получить случайный apiKey
+        final String randApiKey = (String) StubData.CLIENTS.keySet().toArray()[rand.nextInt(StubData.CLIENTS.keySet().size())];
+        //Случайно авторизовать либо отвергнуть
+        if (rand.nextBoolean()) {
+            mConsentService.authorizeConsent(randApiKey, Objects.requireNonNull(response.getBody()).getData().getAccountConsentId());
+        } else {
+            mConsentService.rejectConsent(randApiKey, Objects.requireNonNull(response.getBody()).getData().getAccountConsentId());
+        }
 
-    @Override
-    public ResponseEntity<Void> rejectConsent(
-            final String xFapiAuthDate,
-            final String xFapiCustomerIpAddress,
-            final String xFapiInteractionId,
-            final String authorization,
-            final String xApiKey,
-            final String xAccountConsentId
-    ) {
-        return mConsentService.rejectConsent(
-                xFapiAuthDate,
-                xFapiAuthDate,
-                xFapiCustomerIpAddress,
-                xFapiInteractionId,
-                xApiKey,
-                xAccountConsentId
-        );
+        return response;
     }
 
     @Override

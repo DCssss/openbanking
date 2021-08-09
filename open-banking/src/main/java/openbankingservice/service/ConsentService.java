@@ -1,7 +1,6 @@
 package openbankingservice.service;
 
 import lombok.RequiredArgsConstructor;
-import openbankingservice.data.entity.AccountEntity;
 import openbankingservice.data.entity.ClientEntity;
 import openbankingservice.data.entity.ConsentEntity;
 import openbankingservice.data.repository.ConsentRepository;
@@ -15,28 +14,16 @@ import openbankingservice.util.ConsentConverter;
 import openbankingservice.util.OBHttpHeaders;
 import openbankingservice.util.StubData;
 import openbankingservice.validation.ConsentBody;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.junit.Before;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.hibernate.Transaction;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -48,77 +35,59 @@ public class ConsentService {
     private final FintechService mFintechService;
     private final ClientService mClientService;
 
-        @Transactional
+    @Transactional
     public ResponseEntity<ConsentResponse> createConsent(
             @Valid @ConsentBody final Consent body,
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
-            @RequestHeader(value = "authorization", required = false)  String authorization,
-            @RequestHeader(value = "x-api-key", required = false)  String xApiKey
+            final String authorization,
+            final String xApiKey
     ) {
-
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(OBHttpHeaders.AUTHORIZATION,authorization);
-
 
         final Date now = new Date();
 
         final ConsentEntity consent = ConsentConverter.toConsentEntity(body.getData());
-        //рандомное авторизация или отклонение согласия для демо
-        List<AccountConsentsStatus> accountConsentsStatusList = new ArrayList<>();
-        accountConsentsStatusList.add(AccountConsentsStatus.AUTHORISED);
-        accountConsentsStatusList.add(AccountConsentsStatus.REJECTED);
-        consent.setStatus(accountConsentsStatusList.get(new Random().nextInt(accountConsentsStatusList.size())));
-
-        //получаем рандомного клиента для привязки согласия
-        Object[] values = StubData.CLIENTS.keySet().toArray();
-        String randomValue =(String) values[new Random().nextInt(values.length)];
-        final ClientEntity client = mClientService.identifyClient(randomValue);
-        consent.setClient(client);
-
+        consent.setStatus(AccountConsentsStatus.AWAITINGAUTHORISATION);
         consent.setStatusUpdateTime(now);
         consent.setCreationTime(now);
-        consent.setFintech(mFintechService.identifyFintech(authorization));
-        mConsentRepository.save(consent);
-        //нужен коммитт транзакции где мы сохраняем согласие, чтобы привязались счета к согласию. красивого решения нету, кроме костылей.
-        consent.getAccounts().addAll(client.getAccounts().stream().filter(account -> new Random().nextBoolean()).collect(Collectors.toList()));
+        consent.setFintech(mFintechService.identifyFintech(xApiKey));
 
-            final ConsentResponse responseContent = new ConsentResponse()
-                .data(ConsentConverter.toConsentResponseDataForPost(consent));
+        mConsentRepository.save(consent);
+
+        final ConsentResponse responseContent = new ConsentResponse()
+                .data(ConsentConverter.toConsentResponseData(consent));
 
         return new ResponseEntity<>(responseContent, headers, HttpStatus.CREATED);
 
-        }
+    }
 
     @Transactional
-    public ResponseEntity<Void> authorizeConsent(
-            final String xFapiAuthDate,
-            final String xFapiCustomerIpAddress,
-            final String xFapiInteractionId,
-            final String authorization,
+    public void authorizeConsent(
             final String xApiKey,
             final String xAccountConsentId
     ) {
         final ClientEntity client = mClientService.identifyClient(xApiKey);
         final ConsentEntity consent = getConsent(Long.valueOf(xAccountConsentId));
 
+        if (consent.getStatus() == AccountConsentsStatus.AWAITINGAUTHORISATION) {
+
             consent.setClient(client);
+            consent.setStatus(AccountConsentsStatus.AUTHORISED);
             consent.setStatusUpdateTime(new Date());
-            consent.getAccounts().addAll(client.getAccounts().stream().filter(account -> new Random().nextBoolean()).collect(Collectors.toList()));
+
             mConsentRepository.save(consent);
 
-            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_INVALID_CONSENT_STATUS, "Invalid consent status");
         }
+    }
 
 
     @Transactional
-    public ResponseEntity<Void> rejectConsent(
-            final String xFapiAuthDate,
-            final String xFapiCustomerIpAddress,
-            final String xFapiInteractionId,
-            final String authorization,
+    public void rejectConsent(
             final String xApiKey,
             final String xAccountConsentId
     ) {
@@ -132,11 +101,6 @@ public class ConsentService {
             consent.setStatusUpdateTime(new Date());
 
             mConsentRepository.save(consent);
-
-            final HttpHeaders headers = new HttpHeaders();
-            headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
-
-            return new ResponseEntity<>(headers, HttpStatus.OK);
 
         } else {
             throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_INVALID_CONSENT_STATUS, "Invalid consent status");
@@ -182,7 +146,7 @@ public class ConsentService {
         final ConsentEntity consent = getConsent(Long.valueOf(accountConsentId));
 
         final ConsentResponse consentResponse = new ConsentResponse();
-                consentResponse.data(ConsentConverter.toConsentResponseDataForGet(consent));
+        consentResponse.data(ConsentConverter.toConsentResponseData(consent));
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
@@ -196,7 +160,7 @@ public class ConsentService {
             final String api
     ) {
         final ConsentEntity consent = getConsent(consentId);
-        if (isHavePermission(consent, api) ) {
+        if (isHavePermission(consent, api)) {
             return consent;
         } else {
             throw new RuntimeException("Forbidden");
