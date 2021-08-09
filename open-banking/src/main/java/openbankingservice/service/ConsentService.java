@@ -24,6 +24,8 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +55,7 @@ public class ConsentService {
         consent.setStatus(AccountConsentsStatus.AWAITINGAUTHORISATION);
         consent.setStatusUpdateTime(now);
         consent.setCreationTime(now);
-        consent.setFintech(mFintechService.identifyFintech(xApiKey));
+        consent.setFintech(mFintechService.identifyFintech(authorization));
 
         mConsentRepository.save(consent);
 
@@ -77,6 +79,7 @@ public class ConsentService {
             consent.setClient(client);
             consent.setStatus(AccountConsentsStatus.AUTHORISED);
             consent.setStatusUpdateTime(new Date());
+            consent.getAccounts().addAll(client.getAccounts().stream().filter(account -> new Random().nextBoolean()).collect(Collectors.toList()));
 
             mConsentRepository.save(consent);
 

@@ -33,9 +33,9 @@ public class ConsentController implements AccountConsentsApi {
         final ResponseEntity<ConsentResponse> response = mConsentService.createConsent(
                 body,
                 xFapiAuthDate,
-                xFapiAuthDate,
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
+                authorization,
                 xApiKey
         );
 
