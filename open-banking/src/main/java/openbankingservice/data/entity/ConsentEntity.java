@@ -80,12 +80,7 @@ public final class ConsentEntity extends BaseEntity<Long> {
     @Column(name = "READ_TRANSACTION_DEBITS")
     private int readTransactionsDebits;
 
-    @ManyToMany(fetch = LAZY)
-    @JoinTable(
-            name = "OB_CONSENTS_2_ACCOUNTS",
-            joinColumns = @JoinColumn(name = "CONSENT_ID"),
-            inverseJoinColumns = @JoinColumn(name = "ACCOUNT_ID")
-    )
+    @ManyToMany(fetch = LAZY, mappedBy = "consents")
     private Set<AccountEntity> accounts;
 
     public Collection<Permission> getPermission() {
@@ -127,7 +122,7 @@ public final class ConsentEntity extends BaseEntity<Long> {
                         .filter(accountEntity -> accountEntity.getId().equals(accountId))
                         .findFirst();
 
-        if (!optionalAccount.isPresent()) {
+        if (optionalAccount.isEmpty()) {
             throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND, "Account not found");
         }
 

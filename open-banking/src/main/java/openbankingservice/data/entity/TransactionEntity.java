@@ -78,12 +78,7 @@ public final class TransactionEntity extends BaseEntity<Long> {
     @Column(name = "CREDIT_BANK_IDENTIFICATION")
     private String creditBankIdentification;
 
-    @ManyToMany(fetch = LAZY)
-    @JoinTable(
-            name = "OB_STATEMENTS_2_TRANSACTIONS",
-            joinColumns = @JoinColumn(name = "TRANSACTION_ID"),
-            inverseJoinColumns = @JoinColumn(name = "STATEMENT_ID")
-    )
+    @ManyToMany(fetch = LAZY, mappedBy = "transactions")
     private Set<StatementEntity> statements;
 
     public TransactionEntity() {
