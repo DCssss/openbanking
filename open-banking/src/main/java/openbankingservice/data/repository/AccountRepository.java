@@ -14,4 +14,6 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
     Collection<AccountEntity> findByClient(final ClientEntity client);
 
     Optional<AccountEntity> findByIdentification(final String identification);
+
+    AccountEntity getByIdentification(final String identification);
 }

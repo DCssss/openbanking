@@ -689,13 +689,11 @@ public class PaymentService {
 
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
         final Optional<AccountEntity> debtorAccountOptional = mAccountRepository.findByIdentification(payment.getPaymentConsent().getDebtorAccId());
-        final Optional<AccountEntity> creditorAccountOptional = mAccountRepository.findByIdentification(payment.getPaymentConsent().getCreditorAccId());
-        //Проверка на существование счетов
-        if (debtorAccountOptional.isPresent()
-                && creditorAccountOptional.isPresent()) {
+        final AccountEntity creditorAccount = mAccountRepository.getByIdentification(payment.getPaymentConsent().getCreditorAccId());
+        //Проверка на существование дебетового счета
+        if (debtorAccountOptional.isPresent()) {
 
             final AccountEntity debtorAccount = debtorAccountOptional.get();
-            final AccountEntity creditorAccount = creditorAccountOptional.get();
 
             //автоувеличение средств на счете
             mAccountService.checkFunds(String.valueOf(debtorAccount.getId()), payment.getPaymentConsent().getCurrency());
