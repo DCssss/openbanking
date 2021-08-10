@@ -22,6 +22,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static openbankingservice.data.entity.PaymentEntity.Status.ACCC;
 import static openbankingservice.data.entity.PaymentEntity.Status.RJCT;
@@ -684,30 +685,35 @@ public class PaymentService {
     @Transactional
     public void makePayment(final String paymentId) {
 
-
         final Date now = new Date();
 
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
-        final AccountEntity debtorAccount = mAccountRepository.getByIdentification(payment.getPaymentConsent().getDebtorAccId());
-        final AccountEntity creditorAccount = mAccountRepository.getByIdentification(payment.getPaymentConsent().getCreditorAccId());
-        //автоувеличение средств на счете
-        mAccountService.checkFunds(String.valueOf(debtorAccount.getId()),payment.getPaymentConsent().getCurrency());
-        //Проверка на наличие средств на счете
-        if (debtorAccount.getBalanceAmount().compareTo(payment.getPaymentConsent().getAmount()) >= 0) {
-            transferAmount(debtorAccount, creditorAccount, payment);
-            createTransactions(debtorAccount, creditorAccount, payment);
+        final Optional<AccountEntity> debtorAccountOptional = mAccountRepository.findByIdentification(payment.getPaymentConsent().getDebtorAccId());
+        final Optional<AccountEntity> creditorAccountOptional = mAccountRepository.findByIdentification(payment.getPaymentConsent().getCreditorAccId());
+        //Проверка на существование счетов
+        if (debtorAccountOptional.isPresent()
+                && creditorAccountOptional.isPresent()) {
 
-            payment.setStatus(ACCC);
+            final AccountEntity debtorAccount = debtorAccountOptional.get();
+            final AccountEntity creditorAccount = creditorAccountOptional.get();
+
+            //автоувеличение средств на счете
+            mAccountService.checkFunds(String.valueOf(debtorAccount.getId()), payment.getPaymentConsent().getCurrency());
+
+            if (debtorAccount.getBalanceAmount().compareTo(payment.getPaymentConsent().getAmount()) >= 0
+                    //Проверка на то, что счет по дебету, не равен счету по кредиту.
+                    && !debtorAccount.getIdentification().equals(creditorAccount.getIdentification())
+                    //Проверка на то, что совпадают валюты перевода по счетам.
+                    && !debtorAccount.getCurrency().equals(creditorAccount.getCurrency())) {
+
+                transferAmount(debtorAccount, creditorAccount, payment);
+                createTransactions(debtorAccount, creditorAccount, payment);
+
+                payment.setStatus(ACCC);
+            } else {
+                payment.setStatus(RJCT);
+            }
         } else {
-            payment.setStatus(RJCT);
-        }
-
-        //Проверка на то что счет по дебету, не равен счету по кредиту.
-        if (debtorAccount.getIdentification().equals(creditorAccount.getIdentification())) {
-            payment.setStatus(RJCT);
-        }
-        //Проверка на то что совпадают валюты переода по счетам.
-        if (!debtorAccount.getCurrency().equals(creditorAccount.getCurrency())) {
             payment.setStatus(RJCT);
         }
 
