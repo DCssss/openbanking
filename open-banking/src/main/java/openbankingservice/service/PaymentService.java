@@ -693,7 +693,7 @@ public class PaymentService {
         final AccountEntity debtorAccount = mAccountRepository.getByIdentification(payment.getPaymentConsent().getDebtorAccId());
         final AccountEntity creditorAccount = mAccountRepository.getByIdentification(payment.getPaymentConsent().getCreditorAccId());
         //автоувеличение средств на счете
-        mAccountService.checkFunds(payment.getPaymentConsent().getDebtorAccId(),payment.getPaymentConsent().getCurrency());
+        mAccountService.checkFunds(String.valueOf(debtorAccount.getId()),payment.getPaymentConsent().getCurrency());
         //Проверка на наличие средств на счете
         if (debtorAccount.getBalanceAmount().compareTo(payment.getPaymentConsent().getAmount()) >= 0) {
             transferAmount(debtorAccount, creditorAccount, payment);
@@ -709,7 +709,7 @@ public class PaymentService {
             payment.setStatus(RJCT);
         }
         //Проверка на то что совпадают валюты переода по счетам.
-        if (debtorAccount.getCurrency().equals(creditorAccount.getCurrency())) {
+        if (!debtorAccount.getCurrency().equals(creditorAccount.getCurrency())) {
             payment.setStatus(RJCT);
         }
 
