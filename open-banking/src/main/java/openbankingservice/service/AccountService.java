@@ -45,7 +45,6 @@ public class AccountService {
             final String xApiKey,
             final String xAccountConsentId
     ) {
-        checkFunds(accountId,null);
         mClientService.identifyClient(xApiKey);
         final ConsentEntity consent = mConsentService.checkPermissionAndGetConsent(Long.valueOf(xAccountConsentId), "/accounts/{accountId}");
         final AccountEntity account = consent.getAccount(Long.valueOf(accountId));
@@ -69,7 +68,12 @@ public class AccountService {
                 .meta(meta);
 
         final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
+        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID,xAccountConsentId);
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -107,7 +111,12 @@ public class AccountService {
                 .meta(meta);
 
         final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
+        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID,xAccountConsentId);
 
         return new ResponseEntity<>(respData, headers, HttpStatus.OK);
     }
@@ -151,7 +160,12 @@ public class AccountService {
                 .meta(meta);
 
         final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
+        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID,xAccountConsentId);
 
         return new ResponseEntity<>(respData, headers, HttpStatus.OK);
     }
@@ -198,6 +212,11 @@ public class AccountService {
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
+        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID,xAccountConsentId);;
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -252,6 +271,11 @@ public class AccountService {
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
+        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID,xAccountConsentId);
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -327,6 +351,11 @@ public class AccountService {
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
+        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID,xAccountConsentId);
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -350,9 +379,9 @@ public class AccountService {
             transaction.setDebitBankIdentification("UNBSBY2X");
             transaction.setDebitBankName("BSB BANK");
             transaction.setDetails("Пополнение счета");
+            transaction.setCurrency(currency);
             transaction.setBookingTime(now);
             mTransactionRepository.save(transaction);
-
         }
     }
 }

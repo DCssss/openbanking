@@ -39,6 +39,7 @@ public class PaymentService {
     private final PaymentConsentRepository mPaymentConsentRepository;
     private final AccountRepository mAccountRepository;
     private final TransactionRepository mTransactionRepository;
+    private final AccountService mAccountService;
 
     public ResponseEntity<OBPayment1> createDomesticPayment(
             @Valid final OBDomesticPayment body,
@@ -684,19 +685,31 @@ public class PaymentService {
 
     @Transactional
     public void makePayment(final String paymentId) {
+
+
         final Date now = new Date();
 
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
-
         final AccountEntity debtorAccount = mAccountRepository.getByIdentification(payment.getPaymentConsent().getDebtorAccId());
-
+        final AccountEntity creditorAccount = mAccountRepository.getByIdentification(payment.getPaymentConsent().getCreditorAccId());
+        //автоувеличение средств на счете
+        mAccountService.checkFunds(payment.getPaymentConsent().getDebtorAccId(),payment.getPaymentConsent().getCurrency());
+        //Проверка на наличие средств на счете
         if (debtorAccount.getBalanceAmount().compareTo(payment.getPaymentConsent().getAmount()) >= 0) {
-            final AccountEntity creditorAccount = mAccountRepository.getByIdentification(payment.getPaymentConsent().getCreditorAccId());
             transferAmount(debtorAccount, creditorAccount, payment);
             createTransactions(debtorAccount, creditorAccount, payment);
 
             payment.setStatus(ACCC);
         } else {
+            payment.setStatus(RJCT);
+        }
+
+        //Проверка на то что счет по дебету, не равен счету по кредиту.
+        if (debtorAccount.getIdentification().equals(creditorAccount.getIdentification())) {
+            payment.setStatus(RJCT);
+        }
+        //Проверка на то что совпадают валюты переода по счетам.
+        if (debtorAccount.getCurrency().equals(creditorAccount.getCurrency())) {
             payment.setStatus(RJCT);
         }
 

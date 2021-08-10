@@ -14,18 +14,21 @@ import openbankingservice.util.ConsentConverter;
 import openbankingservice.util.OBHttpHeaders;
 import openbankingservice.util.StubData;
 import openbankingservice.validation.ConsentBody;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,11 +47,15 @@ public class ConsentService {
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
-            final String authorization,
+            @RequestHeader(value = "authorization", required = true)  String authorization,
             final String xApiKey
     ) {
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
 
         final Date now = new Date();
 
@@ -56,6 +63,11 @@ public class ConsentService {
         consent.setStatus(AccountConsentsStatus.AWAITINGAUTHORISATION);
         consent.setStatusUpdateTime(now);
         consent.setCreationTime(now);
+        //Почему-то иногда не приходит заголовок с авторизацией от ВСО, либо он его обрезает. На всякий случай привяжем первый финтех.
+        if (StringUtils.isBlank(authorization) || authorization.equals("Bearer null") || authorization.equals("Bearer ") ) {
+            authorization = StubData.FINTECHS.keySet().stream().findFirst().get();
+        }
+
         consent.setFintech(mFintechService.identifyFintech(authorization));
 
         mConsentRepository.save(consent);
@@ -111,7 +123,6 @@ public class ConsentService {
             consent.setClient(client);
             consent.setStatus(AccountConsentsStatus.REJECTED);
             consent.setStatusUpdateTime(new Date());
-
             mConsentRepository.save(consent);
 
         } else {
@@ -139,6 +150,10 @@ public class ConsentService {
 
             final HttpHeaders headers = new HttpHeaders();
             headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+            headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
+            headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+            headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+            headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
 
             return new ResponseEntity<>(headers, HttpStatus.OK);
         } else {
@@ -162,6 +177,10 @@ public class ConsentService {
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
 
         return new ResponseEntity<>(consentResponse, headers, HttpStatus.OK);
 

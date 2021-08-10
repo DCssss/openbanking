@@ -1,16 +1,22 @@
 package openbankingservice.service;
 
 import lombok.RequiredArgsConstructor;
+import openbankingservice.data.entity.ClientEntity;
 import openbankingservice.data.entity.PaymentConsentEntity;
 import openbankingservice.data.repository.PaymentConsentRepository;
+import openbankingservice.exception.OBErrorCode;
 import openbankingservice.exception.OBException;
 import openbankingservice.models.payments.*;
 import openbankingservice.util.OBHttpHeaders;
 import openbankingservice.util.PaymentConsentConverter;
+import openbankingservice.util.StubData;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -26,24 +32,33 @@ public class PaymentConsentService {
     private final PaymentConsentRepository mPaymentConsentRepository;
 
     private final FintechService mFintechService;
+    private final ClientService mClientService;
 
     public ResponseEntity<OBPaymentConsentTax1> createDomesticTaxConsents(
-            @Valid final OBPaymentConsentTax body,
+             final OBPaymentConsentTax body,
             final String xIdempotencyKey,
             final String xJwsSignature,
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
-            final String authorization,
+             @RequestHeader(value = "authorization", required = true)  String authorization,
             final String xCustomerUserAgent
     ) {
         final PaymentConsentEntity paymentConsentEntity = PaymentConsentConverter.toPaymentConsentEntity(body.getData());
+
         paymentConsentEntity.setFintech(mFintechService.identifyFintech(authorization));
 
         mPaymentConsentRepository.save(paymentConsentEntity);
 
         final OBDataTax data = PaymentConsentConverter.toOBDataTax(paymentConsentEntity)
                 .authorisation(body.getData().getAuthorisation());
+
+
+        //Почему-то иногда не приходит заголовок с авторизацией от ВСО, либо он его обрезает. На всякий случай привяжем первый финтех.
+        if (StringUtils.isBlank(authorization) || authorization.equals("Bearer null") || authorization.equals("Bearer ") ) {
+            authorization = StubData.FINTECHS.keySet().stream().findFirst().get();
+        }
+
 
         final OBPaymentConsentTax1 response = new OBPaymentConsentTax1()
                 .data(data);
@@ -407,5 +422,45 @@ public class PaymentConsentService {
         final HttpHeaders headers = new HttpHeaders();
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    @Transactional
+    public void authorizePaymentConsent(
+            final String xApiKey,
+            final String xPaymentConsentId
+    ) {
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
+        final PaymentConsentEntity consent = mPaymentConsentRepository.getById(Long.valueOf(xPaymentConsentId));
+
+        if (consent.getStatus() == StatusPaymentConsent.AWAITINGAUTHORISATION) {
+
+            consent.setClient(client);
+            consent.setStatus(StatusPaymentConsent.AUTHORISED);
+            consent.setStatusUpdateTime(new Date());
+            mPaymentConsentRepository.save(consent);
+
+        } else {
+            throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_INVALID_CONSENT_STATUS, "Invalid payment consent status");
+        }
+    }
+
+    @Transactional
+    public void rejectConsent(
+            final String xApiKey,
+            final String xPaymentConsentId
+    ) {
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
+        final PaymentConsentEntity consent = mPaymentConsentRepository.getById(Long.valueOf(xPaymentConsentId));
+
+        if (consent.getStatus() == StatusPaymentConsent.AWAITINGAUTHORISATION) {
+
+            consent.setClient(client);
+            consent.setStatus(StatusPaymentConsent.REJECTED);
+            consent.setStatusUpdateTime(new Date());
+            mPaymentConsentRepository.save(consent);
+
+        } else {
+            throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_INVALID_CONSENT_STATUS, "Invalid payment consent status");
+        }
     }
 }

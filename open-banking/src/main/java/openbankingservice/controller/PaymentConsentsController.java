@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import openbankingservice.api.payments.PaymentConsentsApi;
 import openbankingservice.models.payments.*;
 import openbankingservice.service.PaymentConsentService;
+import openbankingservice.util.StubData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.Objects;
+import java.util.Random;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +22,7 @@ public class PaymentConsentsController implements PaymentConsentsApi {
 
     @Override
     public ResponseEntity<OBPaymentConsentTax1> createDomesticTaxConsents(
-            @Valid final OBPaymentConsentTax body,
+            final OBPaymentConsentTax body,
             final String xIdempotencyKey,
             final String xJwsSignature,
             final String xFapiAuthDate,
@@ -28,7 +31,7 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String authorization,
             final String xCustomerUserAgent
     ) {
-        return mPaymentConsentService.createDomesticTaxConsents(
+        final ResponseEntity<OBPaymentConsentTax1> response =  mPaymentConsentService.createDomesticTaxConsents(
                 body,
                 xIdempotencyKey,
                 xJwsSignature,
@@ -38,6 +41,17 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 authorization,
                 xCustomerUserAgent
         );
+
+        final Random rand = new Random();
+        //Получить случайный apiKey
+        final String randApiKey = (String) StubData.CLIENTS.keySet().toArray()[rand.nextInt(StubData.CLIENTS.keySet().size())];
+        //Случайно авторизовать либо отвергнуть
+        if (rand.nextBoolean()) {
+            mPaymentConsentService.authorizePaymentConsent(randApiKey, Objects.requireNonNull(response.getBody()).getData().getDomesticTaxConsentId());
+        } else {
+            mPaymentConsentService.rejectConsent(randApiKey, Objects.requireNonNull(response.getBody()).getData().getDomesticTaxConsentId());
+        }
+        return response;
     }
 
     @Override
@@ -51,7 +65,7 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String authorization,
             final String xCustomerUserAgent
     ) {
-        return mPaymentConsentService.createDomesticConsents(
+        final ResponseEntity<OBPaymentConsent1> response =  mPaymentConsentService.createDomesticConsents(
                 body,
                 xIdempotencyKey,
                 xJwsSignature,
@@ -61,6 +75,17 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 authorization,
                 xCustomerUserAgent
         );
+
+        final Random rand = new Random();
+        //Получить случайный apiKey
+        final String randApiKey = (String) StubData.CLIENTS.keySet().toArray()[rand.nextInt(StubData.CLIENTS.keySet().size())];
+        //Случайно авторизовать либо отвергнуть
+        if (rand.nextBoolean()) {
+            mPaymentConsentService.authorizePaymentConsent(randApiKey, Objects.requireNonNull(response.getBody()).getData().getDomesticConsentId());
+        } else {
+            mPaymentConsentService.rejectConsent(randApiKey, Objects.requireNonNull(response.getBody()).getData().getDomesticConsentId());
+        }
+        return response;
     }
 
     @Override
