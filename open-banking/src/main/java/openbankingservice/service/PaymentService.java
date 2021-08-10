@@ -7,10 +7,7 @@ import openbankingservice.data.entity.AccountEntity;
 import openbankingservice.data.entity.PaymentConsentEntity;
 import openbankingservice.data.entity.PaymentEntity;
 import openbankingservice.data.entity.TransactionEntity;
-import openbankingservice.data.repository.AccountRepository;
-import openbankingservice.data.repository.PaymentConsentRepository;
-import openbankingservice.data.repository.PaymentRepository;
-import openbankingservice.data.repository.TransactionRepository;
+import openbankingservice.data.repository.*;
 import openbankingservice.exception.OBException;
 import openbankingservice.models.accinfo.OBCreditDebitCode1;
 import openbankingservice.models.payments.*;
@@ -40,6 +37,7 @@ public class PaymentService {
     private final AccountRepository mAccountRepository;
     private final TransactionRepository mTransactionRepository;
     private final AccountService mAccountService;
+    private final BankRepository mBankRepository;
 
     public ResponseEntity<OBPayment1> createDomesticPayment(
             @Valid final OBDomesticPayment body,
@@ -735,7 +733,9 @@ public class PaymentService {
             final PaymentEntity payment
     ) {
         createDebtorTransaction(debtorAccount, payment);
-        createCreditorTransaction(creditorAccount, payment);
+        if (mBankRepository.existsByIdentifier(payment.getPaymentConsent().getCreditorAgentId())) {
+            createCreditorTransaction(creditorAccount, payment);
+        }
     }
 
     private void createDebtorTransaction(
@@ -756,23 +756,24 @@ public class PaymentService {
             final OBCreditDebitCode1 creditDebitCode,
             final AccountEntity account,
             final PaymentEntity payment
-    ){
-            final TransactionEntity debtorTransaction = new TransactionEntity();
-            debtorTransaction.setAccount(account);
-            debtorTransaction.setCreditDebitIndicator(creditDebitCode);
-            debtorTransaction.setAmount(payment.getPaymentConsent().getAmount());
-            debtorTransaction.setCurrency(payment.getPaymentConsent().getCurrency());
-            debtorTransaction.setDebitAccIdentification(payment.getPaymentConsent().getDebtorAccId());
-            debtorTransaction.setDebitBankIdentification(payment.getPaymentConsent().getDebtorAgentId());
-            debtorTransaction.setDebitBankName(payment.getPaymentConsent().getDebtorAgentName());
-            debtorTransaction.setDebitName(payment.getPaymentConsent().getDebtorName());
-            debtorTransaction.setDebitTaxIdentification(payment.getPaymentConsent().getDebtorTaxId());
-            debtorTransaction.setCreditAccIdentification(payment.getPaymentConsent().getCreditorAccId());
-            debtorTransaction.setCreditBankIdentification(payment.getPaymentConsent().getCreditorAgentId());
-            debtorTransaction.setCreditBankName(payment.getPaymentConsent().getCreditorAgentName());
-            debtorTransaction.setCreditName(payment.getPaymentConsent().getCreditorName());
-            debtorTransaction.setCreditTaxIdentification(payment.getPaymentConsent().getCreditorTaxId());
-            debtorTransaction.setNumber(payment.getPaymentConsent().getId().toString());
-            debtorTransaction.setBookingTime(new Date());
-            mTransactionRepository.save(debtorTransaction);}
+    ) {
+        final TransactionEntity debtorTransaction = new TransactionEntity();
+        debtorTransaction.setAccount(account);
+        debtorTransaction.setCreditDebitIndicator(creditDebitCode);
+        debtorTransaction.setAmount(payment.getPaymentConsent().getAmount());
+        debtorTransaction.setCurrency(payment.getPaymentConsent().getCurrency());
+        debtorTransaction.setDebitAccIdentification(payment.getPaymentConsent().getDebtorAccId());
+        debtorTransaction.setDebitBankIdentification(payment.getPaymentConsent().getDebtorAgentId());
+        debtorTransaction.setDebitBankName(payment.getPaymentConsent().getDebtorAgentName());
+        debtorTransaction.setDebitName(payment.getPaymentConsent().getDebtorName());
+        debtorTransaction.setDebitTaxIdentification(payment.getPaymentConsent().getDebtorTaxId());
+        debtorTransaction.setCreditAccIdentification(payment.getPaymentConsent().getCreditorAccId());
+        debtorTransaction.setCreditBankIdentification(payment.getPaymentConsent().getCreditorAgentId());
+        debtorTransaction.setCreditBankName(payment.getPaymentConsent().getCreditorAgentName());
+        debtorTransaction.setCreditName(payment.getPaymentConsent().getCreditorName());
+        debtorTransaction.setCreditTaxIdentification(payment.getPaymentConsent().getCreditorTaxId());
+        debtorTransaction.setNumber(payment.getPaymentConsent().getId().toString());
+        debtorTransaction.setBookingTime(new Date());
+        mTransactionRepository.save(debtorTransaction);
+    }
 }

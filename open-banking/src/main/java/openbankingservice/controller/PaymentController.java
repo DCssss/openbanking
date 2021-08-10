@@ -57,7 +57,7 @@ public class PaymentController implements PaymentsApi {
             final String authorization,
             final String xCustomerUserAgent
     ) {
-        return mPaymentService.createDomesticTaxPayment(
+        final ResponseEntity<OBTaxPayment1> response = mPaymentService.createDomesticTaxPayment(
                 body,
                 domesticTaxConsentId,
                 xIdempotencyKey,
@@ -68,6 +68,8 @@ public class PaymentController implements PaymentsApi {
                 authorization,
                 xCustomerUserAgent
         );
+        mPaymentService.makePayment(Objects.requireNonNull(response.getBody()).getData().getDomesticTaxId());
+        return response;
     }
 
     @Override
@@ -244,7 +246,7 @@ public class PaymentController implements PaymentsApi {
             final String authorization,
             final String xCustomerUserAgent
     ) {
-        return mPaymentService.createListPassportsPayment(
+        final ResponseEntity<OBPaymentListPassports1> response = mPaymentService.createListPassportsPayment(
                 body,
                 listPassportsConsentId,
                 xIdempotencyKey,
@@ -255,6 +257,8 @@ public class PaymentController implements PaymentsApi {
                 authorization,
                 xCustomerUserAgent
         );
+        mPaymentService.makePayment(Objects.requireNonNull(response.getBody()).getData().getListPassportsId());
+        return response;
     }
 
     @Override
@@ -269,7 +273,7 @@ public class PaymentController implements PaymentsApi {
             final String authorization,
             final String xCustomerUserAgent
     ) {
-        return mPaymentService.createListAccountsPayment(
+        final ResponseEntity<OBPaymentListAccounts1> response = mPaymentService.createListAccountsPayment(
                 body,
                 listAccountsConsentId,
                 xIdempotencyKey,
@@ -280,6 +284,8 @@ public class PaymentController implements PaymentsApi {
                 authorization,
                 xCustomerUserAgent
         );
+        mPaymentService.makePayment(Objects.requireNonNull(response.getBody()).getData().getListAccountsId());
+        return response;
     }
 
     @Override
@@ -294,7 +300,7 @@ public class PaymentController implements PaymentsApi {
             final String authorization,
             final String xCustomerUserAgent
     ) {
-        return mPaymentService.createRequirementPayment(
+        final ResponseEntity<OBPaymentReq1> response = mPaymentService.createRequirementPayment(
                 body,
                 requirementConsentId,
                 xIdempotencyKey,
@@ -305,6 +311,8 @@ public class PaymentController implements PaymentsApi {
                 authorization,
                 xCustomerUserAgent
         );
+        mPaymentService.makePayment(Objects.requireNonNull(response.getBody()).getData().getRequirementId());
+        return response;
     }
 
     @Override
@@ -319,7 +327,7 @@ public class PaymentController implements PaymentsApi {
             final String authorization,
             final String xCustomerUserAgent
     ) {
-        return mPaymentService.createTaxRequirementPayment(
+        final ResponseEntity<OBTaxPaymentReq1> response = mPaymentService.createTaxRequirementPayment(
                 body,
                 taxRequirementConsentId,
                 xIdempotencyKey,
@@ -330,6 +338,8 @@ public class PaymentController implements PaymentsApi {
                 authorization,
                 xCustomerUserAgent
         );
+        mPaymentService.makePayment(Objects.requireNonNull(response.getBody()).getData().getTaxRequirementId());
+        return response;
     }
 
     @Override
@@ -344,7 +354,7 @@ public class PaymentController implements PaymentsApi {
             final String authorization,
             final String xCustomerUserAgent
     ) {
-        return mPaymentService.setPaymentsVRP(
+        final ResponseEntity<OBVRP1> response = mPaymentService.setPaymentsVRP(
                 body,
                 vrPConsentId,
                 xIdempotencyKey,
@@ -355,5 +365,7 @@ public class PaymentController implements PaymentsApi {
                 authorization,
                 xCustomerUserAgent
         );
+        mPaymentService.makePayment(Objects.requireNonNull(response.getBody()).getData().getVrPId());
+        return response;
     }
 }

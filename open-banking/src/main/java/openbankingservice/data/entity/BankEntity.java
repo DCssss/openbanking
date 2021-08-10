@@ -22,7 +22,7 @@ public final class BankEntity extends BaseEntity<Long> {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "IDENTIFIER")
+    @Column(name = "IDENTIFIER", unique = true)
     private String identifier;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "bank")
