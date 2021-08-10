@@ -61,12 +61,7 @@ public final class AccountEntity extends BaseEntity<Long> {
     @Column(name = "IDENTIFICATION", unique = true)
     private String identification;
 
-    @ManyToMany(fetch = LAZY)
-    @JoinTable(
-            name = "OB_CONSENTS_2_ACCOUNTS",
-            joinColumns = @JoinColumn(name = "ACCOUNT_ID"),
-            inverseJoinColumns = @JoinColumn(name = "CONSENT_ID")
-    )
+    @ManyToMany(fetch = LAZY, mappedBy = "accounts")
     private Set<ConsentEntity> consents;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")

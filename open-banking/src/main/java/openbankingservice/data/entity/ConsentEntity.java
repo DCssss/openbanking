@@ -80,7 +80,12 @@ public final class ConsentEntity extends BaseEntity<Long> {
     @Column(name = "READ_TRANSACTION_DEBITS")
     private int readTransactionsDebits;
 
-    @ManyToMany(fetch = LAZY, mappedBy = "consents")
+    @ManyToMany(fetch = LAZY)
+    @JoinTable(
+            name = "OB_CONSENTS_2_ACCOUNTS",
+            joinColumns = @JoinColumn(name = "CONSENT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "ACCOUNT_ID")
+    )
     private Set<AccountEntity> accounts;
 
     public Collection<Permission> getPermission() {
