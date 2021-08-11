@@ -8,10 +8,15 @@ import openbankingservice.data.entity.PaymentConsentEntity;
 import openbankingservice.data.entity.PaymentEntity;
 import openbankingservice.data.entity.TransactionEntity;
 import openbankingservice.data.repository.*;
+import openbankingservice.exception.OBErrorCode;
 import openbankingservice.exception.OBException;
 import openbankingservice.models.accinfo.OBCreditDebitCode1;
 import openbankingservice.models.payments.*;
 import openbankingservice.util.OBHttpHeaders;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +25,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.*;
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 import static openbankingservice.data.entity.PaymentEntity.Status.ACCC;
 import static openbankingservice.data.entity.PaymentEntity.Status.RJCT;
@@ -32,6 +36,18 @@ import static openbankingservice.exception.OBErrorCode.BY_NBRB_UNEXPECTED_ERROR;
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
+
+    private static final Map<TypePaymentConsent, TypePayment> PAYMENT_CONSENT_TO_PAYMENT_TYPES = new HashMap<>();
+
+    static {
+        PAYMENT_CONSENT_TO_PAYMENT_TYPES.put(TypePaymentConsent.DOMESTICCONSENT, TypePayment.DOMESTIC);
+        PAYMENT_CONSENT_TO_PAYMENT_TYPES.put(TypePaymentConsent.DOMESTICTAXCONSENT, TypePayment.DOMESTICTAX);
+        PAYMENT_CONSENT_TO_PAYMENT_TYPES.put(TypePaymentConsent.REQUIREMENTCONSENT, TypePayment.REQUIREMENT);
+        PAYMENT_CONSENT_TO_PAYMENT_TYPES.put(TypePaymentConsent.TAXREQUIREMENTCONSENT, TypePayment.TAXREQUIREMENT);
+        PAYMENT_CONSENT_TO_PAYMENT_TYPES.put(TypePaymentConsent.LISTACCOUNTSCONSENT, TypePayment.LISTACCOUNTS);
+        PAYMENT_CONSENT_TO_PAYMENT_TYPES.put(TypePaymentConsent.LISTPASSPORTSCONSENT, TypePayment.LISTPASSPORTS);
+        PAYMENT_CONSENT_TO_PAYMENT_TYPES.put(TypePaymentConsent.VRPCONSENT, TypePayment.VRP);
+    }
 
     private final PaymentRepository mPaymentRepository;
     private final PaymentConsentRepository mPaymentConsentRepository;
@@ -52,15 +68,7 @@ public class PaymentService {
             final String xCustomerUserAgent
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(domesticConsentId));
-        final Date now = new Date();
-        final PaymentEntity payment = new PaymentEntity();
-        payment.setPaymentConsent(paymentConsentEntity);
-        payment.setType(TypePayment.DOMESTIC);
-        payment.setStatus(PaymentEntity.Status.PDNG);
-        payment.setCreateTime(now);
-        payment.setStatusUpdateTime(now);
-
-        mPaymentRepository.save(payment);
+        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.DOMESTICCONSENT);
 
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationDomestic initiation;
@@ -101,15 +109,7 @@ public class PaymentService {
             final String xCustomerUserAgent
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(domesticTaxConsentId));
-        final Date now = new Date();
-        final PaymentEntity payment = new PaymentEntity();
-        payment.setPaymentConsent(paymentConsentEntity);
-        payment.setType(TypePayment.DOMESTICTAX);
-        payment.setStatus(PaymentEntity.Status.PDNG);
-        payment.setCreateTime(now);
-        payment.setStatusUpdateTime(now);
-
-        mPaymentRepository.save(payment);
+        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.DOMESTICTAXCONSENT);
 
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationTaxDomestic initiation;
@@ -150,15 +150,7 @@ public class PaymentService {
             final String xCustomerUserAgent
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
-        final Date now = new Date();
-        final PaymentEntity payment = new PaymentEntity();
-        payment.setPaymentConsent(paymentConsentEntity);
-        payment.setType(TypePayment.LISTACCOUNTS);
-        payment.setStatus(PaymentEntity.Status.PDNG);
-        payment.setCreateTime(now);
-        payment.setStatusUpdateTime(now);
-
-        mPaymentRepository.save(payment);
+        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.LISTACCOUNTSCONSENT);
 
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationListAccounts initiation;
@@ -199,15 +191,7 @@ public class PaymentService {
             final String xCustomerUserAgent
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
-        final Date now = new Date();
-        final PaymentEntity payment = new PaymentEntity();
-        payment.setPaymentConsent(paymentConsentEntity);
-        payment.setType(TypePayment.LISTPASSPORTS);
-        payment.setStatus(PaymentEntity.Status.PDNG);
-        payment.setCreateTime(now);
-        payment.setStatusUpdateTime(now);
-
-        mPaymentRepository.save(payment);
+        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.LISTPASSPORTSCONSENT);
 
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationListPassports initiation;
@@ -404,15 +388,7 @@ public class PaymentService {
             final String xCustomerUserAgent
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
-        final Date now = new Date();
-        final PaymentEntity payment = new PaymentEntity();
-        payment.setPaymentConsent(paymentConsentEntity);
-        payment.setType(TypePayment.REQUIREMENT);
-        payment.setStatus(PaymentEntity.Status.PDNG);
-        payment.setCreateTime(now);
-        payment.setStatusUpdateTime(now);
-
-        mPaymentRepository.save(payment);
+        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.REQUIREMENTCONSENT);
 
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationReq initiation;
@@ -492,15 +468,7 @@ public class PaymentService {
             final String xCustomerUserAgent
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
-        final Date now = new Date();
-        final PaymentEntity payment = new PaymentEntity();
-        payment.setPaymentConsent(paymentConsentEntity);
-        payment.setType(TypePayment.REQUIREMENT);
-        payment.setStatus(PaymentEntity.Status.PDNG);
-        payment.setCreateTime(now);
-        payment.setStatusUpdateTime(now);
-
-        mPaymentRepository.save(payment);
+        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.TAXREQUIREMENTCONSENT);
 
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationTaxReq initiation;
@@ -580,15 +548,7 @@ public class PaymentService {
             final String xCustomerUserAgent
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
-        final Date now = new Date();
-        final PaymentEntity payment = new PaymentEntity();
-        payment.setPaymentConsent(paymentConsentEntity);
-        payment.setType(TypePayment.VRP);
-        payment.setStatus(PaymentEntity.Status.PDNG);
-        payment.setCreateTime(now);
-        payment.setStatusUpdateTime(now);
-
-        mPaymentRepository.save(payment);
+        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.VRPCONSENT);
 
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationVRP initiation;
@@ -780,4 +740,53 @@ public class PaymentService {
         debtorTransaction.setBookingTime(new Date());
         mTransactionRepository.save(debtorTransaction);
     }
+
+    private void checkPaymentConsent(
+            final PaymentConsentEntity paymentConsentEntity,
+            final TypePaymentConsent type
+    ) {
+        checkPaymentConsentStatus(paymentConsentEntity);
+        checkPaymentConsentType(paymentConsentEntity, type);
+    }
+
+    private void checkPaymentConsentStatus(            final PaymentConsentEntity paymentConsentEntity) {
+        if (paymentConsentEntity.getStatus() != StatusPaymentConsent.AUTHORISED) {
+            throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_CONSENT_MISMATCH, "Invalid payment consent status");
+        }
+    }
+
+    private void checkPaymentConsentType(
+            final PaymentConsentEntity paymentConsentEntity,
+            final TypePaymentConsent type
+    ) {
+        if (paymentConsentEntity.getType() != type) {
+            throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_CONSENT_MISMATCH, "Invalid payment type");
+        }
+    }
+
+    private PaymentEntity createAndGetPayment(
+            final PaymentConsentEntity paymentConsent
+    ){
+        final Date now = new Date();
+
+        final PaymentEntity payment = new PaymentEntity();
+        payment.setPaymentConsent(paymentConsent);
+        payment.setType(PAYMENT_CONSENT_TO_PAYMENT_TYPES.get(paymentConsent.getType()));
+        payment.setStatus(PaymentEntity.Status.PDNG);
+        payment.setCreateTime(now);
+        payment.setStatusUpdateTime(now);
+
+        mPaymentRepository.save(payment);
+
+        return payment;
+    }
+
+    private PaymentEntity checkConsentAndGetPayment(
+            final PaymentConsentEntity paymentConsentEntity,
+            final TypePaymentConsent type
+    ){
+        checkPaymentConsent(paymentConsentEntity, type);
+        return createAndGetPayment(paymentConsentEntity);
+    }
+
 }
