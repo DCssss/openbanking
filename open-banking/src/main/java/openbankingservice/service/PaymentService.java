@@ -13,10 +13,6 @@ import openbankingservice.exception.OBException;
 import openbankingservice.models.accinfo.OBCreditDebitCode1;
 import openbankingservice.models.payments.*;
 import openbankingservice.util.OBHttpHeaders;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +21,12 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.*;
 import java.util.Date;
+import java.util.*;
 
 import static openbankingservice.data.entity.PaymentEntity.Status.ACCC;
 import static openbankingservice.data.entity.PaymentEntity.Status.RJCT;
-import static openbankingservice.exception.OBErrorCode.BY_NBRB_FIELD_INVALID_DATE;
-import static openbankingservice.exception.OBErrorCode.BY_NBRB_UNEXPECTED_ERROR;
+import static openbankingservice.exception.OBErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -78,6 +73,10 @@ public class PaymentService {
             throw new OBException(BY_NBRB_UNEXPECTED_ERROR, e.getMessage());
         }
 
+        if (!body.getData().getInitiation().equals(initiation)) {
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Consent and payment initiation block does not match", "Data.Initiation");
+        }
+
         final OBDataPayment1 data = new OBDataPayment1()
                 .domesticId(payment.getId().toString())
                 .domesticConsentId(paymentConsentEntity.getId().toString())
@@ -117,6 +116,10 @@ public class PaymentService {
             initiation = objectMapper.readValue(paymentConsentEntity.getInitiation(), OBInitiationTaxDomestic.class);
         } catch (JsonProcessingException e) {
             throw new OBException(BY_NBRB_UNEXPECTED_ERROR, e.getMessage());
+        }
+
+        if (!body.getData().getInitiation().equals(initiation)) {
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Consent and payment initiation block does not match", "Data.Initiation");
         }
 
         final OBDataTaxPayment1 data = new OBDataTaxPayment1()
@@ -160,6 +163,10 @@ public class PaymentService {
             throw new OBException(BY_NBRB_UNEXPECTED_ERROR, e.getMessage());
         }
 
+        if (!body.getData().getInitiation().equals(initiation)) {
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Consent and payment initiation block does not match", "Data.Initiation");
+        }
+
         final OBDataPaymentListAccounts1 data = new OBDataPaymentListAccounts1()
                 .listAccountsId(payment.getId().toString())
                 .listAccountsConsentId(paymentConsentEntity.getId().toString())
@@ -199,6 +206,10 @@ public class PaymentService {
             initiation = objectMapper.readValue(paymentConsentEntity.getInitiation(), OBInitiationListPassports.class);
         } catch (JsonProcessingException e) {
             throw new OBException(BY_NBRB_UNEXPECTED_ERROR, e.getMessage());
+        }
+
+        if (!body.getData().getInitiation().equals(initiation)) {
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Consent and payment initiation block does not match", "Data.Initiation");
         }
 
         final OBDataPaymentListPassports1 data = new OBDataPaymentListPassports1()
@@ -398,6 +409,10 @@ public class PaymentService {
             throw new OBException(BY_NBRB_UNEXPECTED_ERROR, e.getMessage());
         }
 
+        if (!body.getData().getInitiation().equals(initiation)) {
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Consent and payment initiation block does not match", "Data.Initiation");
+        }
+
         final OBDataPaymentReq1 data = new OBDataPaymentReq1()
                 .requirementId(payment.getId().toString())
                 .requirementConsentId(paymentConsentEntity.getId().toString())
@@ -478,6 +493,10 @@ public class PaymentService {
             throw new OBException(BY_NBRB_UNEXPECTED_ERROR, e.getMessage());
         }
 
+        if (!body.getData().getInitiation().equals(initiation)) {
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Consent and payment initiation block does not match", "Data.Initiation");
+        }
+
         final OBDataTaxPaymentReq1 data = new OBDataTaxPaymentReq1()
                 .taxRequirementId(payment.getId().toString())
                 .taxRequirementConsentId(paymentConsentEntity.getId().toString())
@@ -556,6 +575,10 @@ public class PaymentService {
             initiation = objectMapper.readValue(paymentConsentEntity.getInitiation(), OBInitiationVRP.class);
         } catch (JsonProcessingException e) {
             throw new OBException(BY_NBRB_UNEXPECTED_ERROR, e.getMessage());
+        }
+
+        if (!body.getData().getInitiation().equals(initiation)) {
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Consent and payment initiation block does not match", "Data.Initiation");
         }
 
         final OBDataVRP1 data = new OBDataVRP1()
@@ -749,7 +772,7 @@ public class PaymentService {
         checkPaymentConsentType(paymentConsentEntity, type);
     }
 
-    private void checkPaymentConsentStatus(            final PaymentConsentEntity paymentConsentEntity) {
+    private void checkPaymentConsentStatus(final PaymentConsentEntity paymentConsentEntity) {
         if (paymentConsentEntity.getStatus() != StatusPaymentConsent.AUTHORISED) {
             throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_CONSENT_MISMATCH, "Invalid payment consent status");
         }
@@ -766,7 +789,7 @@ public class PaymentService {
 
     private PaymentEntity createAndGetPayment(
             final PaymentConsentEntity paymentConsent
-    ){
+    ) {
         final Date now = new Date();
 
         final PaymentEntity payment = new PaymentEntity();
@@ -784,7 +807,7 @@ public class PaymentService {
     private PaymentEntity checkConsentAndGetPayment(
             final PaymentConsentEntity paymentConsentEntity,
             final TypePaymentConsent type
-    ){
+    ) {
         checkPaymentConsent(paymentConsentEntity, type);
         return createAndGetPayment(paymentConsentEntity);
     }
