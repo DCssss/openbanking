@@ -5,6 +5,7 @@ import openbankingservice.data.entity.AccountEntity;
 import openbankingservice.data.entity.ConsentEntity;
 import openbankingservice.data.entity.StatementEntity;
 import openbankingservice.data.repository.StatementRepository;
+import openbankingservice.data.repository.TransactionRepository;
 import openbankingservice.models.accinfo.*;
 import openbankingservice.util.StatementConverter;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.HashSet;
 
 import static openbankingservice.util.OBHttpHeaders.X_FAPI_INTERACTION_ID;
 
@@ -23,6 +25,7 @@ import static openbankingservice.util.OBHttpHeaders.X_FAPI_INTERACTION_ID;
 public class StatementService {
 
     private final StatementRepository mStatementRepository;
+    private final TransactionRepository mTransactionRepository;
 
     private final ClientService mClientService;
     private final ConsentService mConsentService;
@@ -48,6 +51,7 @@ public class StatementService {
         statementEntity.setCreateTime(now);
         statementEntity.setFromBookingDate(body.getData().getStatement().getFromBookingDate());
         statementEntity.setToBookingDate(body.getData().getStatement().getToBookingDate());
+        statementEntity.setTransactions(new HashSet<>(mTransactionRepository.findAllByAccountAndBookingTimeBetween(account, statementEntity.getFromBookingDate(), statementEntity.getToBookingDate())));
         mStatementRepository.save(statementEntity);
 
         final StatementResponseData data = new StatementResponseData();

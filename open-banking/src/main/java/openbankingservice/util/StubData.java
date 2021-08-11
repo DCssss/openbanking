@@ -26,8 +26,8 @@ public final class StubData {
         PERMISSIONS_API.put(Permission.READACCOUNTSBASIC, Arrays.asList("/accounts", "/accounts/{accountId}"));
         PERMISSIONS_API.put(Permission.READACCOUNTSDETAIL, Arrays.asList("/accounts", "/accounts/{accountId}"));
         PERMISSIONS_API.put(Permission.READBALANCES, Arrays.asList("/balances", "/accounts/{accountId}/balances"));
-        PERMISSIONS_API.put(Permission.READSTATEMENTSBASIC, Arrays.asList("/statements/{accountId}", "/statements/accounts/{accountId}/statements/{statementId}"));
-        PERMISSIONS_API.put(Permission.READSTATEMENTSDETAIL, Arrays.asList("/statements/{accountId}", "/statements/accounts/{accountId}/statements/{statementId}"));
+        PERMISSIONS_API.put(Permission.READSTATEMENTSBASIC, Arrays.asList("/statements/{accountId}", "/accounts/{accountId}/statements/{statementId}"));
+        PERMISSIONS_API.put(Permission.READSTATEMENTSDETAIL, Arrays.asList("/statements/{accountId}", "/accounts/{accountId}/statements/{statementId}"));
         PERMISSIONS_API.put(Permission.READTRANSACTIONSBASIC, Collections.singletonList("/accounts/{accountId}/transactions/{transactionListId}"));
         PERMISSIONS_API.put(Permission.READTRANSACTIONSDETAIL, Collections.singletonList("/accounts/{accountId}/transactions/{transactionListId}"));
         PERMISSIONS_API.put(Permission.READTRANSACTIONSCREDITS, Collections.singletonList("/accounts/{accountId}/transactions/{transactionListId}"));

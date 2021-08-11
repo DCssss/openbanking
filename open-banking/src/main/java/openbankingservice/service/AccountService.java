@@ -301,7 +301,7 @@ public class AccountService {
                         .filter(statementEntity -> statementEntity.getId().equals(Long.valueOf(statementId)))
                         .findFirst();
 
-        if (!optionalStatement.isPresent()) {
+        if (optionalStatement.isEmpty()) {
             throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND, "Statement not found");
         }
 
