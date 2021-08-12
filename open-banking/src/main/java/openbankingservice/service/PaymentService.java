@@ -790,6 +790,22 @@ public class PaymentService {
     private PaymentEntity createAndGetPayment(
             final PaymentConsentEntity paymentConsent
     ) {
+        final PaymentEntity payment = createPayment(paymentConsent);
+        consumePaymentConsent(paymentConsent);
+        return payment;
+    }
+
+    private void consumePaymentConsent(
+            final PaymentConsentEntity paymentConsent
+    ) {
+        paymentConsent.setStatus(StatusPaymentConsent.CONSUMED);
+        paymentConsent.setStatusUpdateTime(new Date());
+        mPaymentConsentRepository.save(paymentConsent);
+    }
+
+    private PaymentEntity createPayment(
+            final PaymentConsentEntity paymentConsent
+    ) {
         final Date now = new Date();
 
         final PaymentEntity payment = new PaymentEntity();
