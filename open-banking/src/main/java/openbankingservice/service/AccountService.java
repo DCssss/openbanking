@@ -3,6 +3,7 @@ package openbankingservice.service;
 import lombok.RequiredArgsConstructor;
 import openbankingservice.data.entity.*;
 import openbankingservice.data.repository.AccountRepository;
+import openbankingservice.data.repository.ClientRepository;
 import openbankingservice.data.repository.TransactionListRepository;
 import openbankingservice.data.repository.TransactionRepository;
 import openbankingservice.exception.OBErrorCode;
@@ -33,6 +34,7 @@ public class AccountService {
     private final TransactionRepository mTransactionRepository;
     private final AccountRepository mAccountRepository;
     private final ClientService mClientService;
+    private final ClientRepository mClientRepository;
     private final ConsentService mConsentService;
 
     @Transactional
@@ -73,7 +75,7 @@ public class AccountService {
         headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
         headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
         headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
-        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID,xAccountConsentId);
+        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID, xAccountConsentId);
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -116,7 +118,7 @@ public class AccountService {
         headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
         headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
         headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
-        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID,xAccountConsentId);
+        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID, xAccountConsentId);
 
         return new ResponseEntity<>(respData, headers, HttpStatus.OK);
     }
@@ -165,7 +167,7 @@ public class AccountService {
         headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
         headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
         headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
-        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID,xAccountConsentId);
+        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID, xAccountConsentId);
 
         return new ResponseEntity<>(respData, headers, HttpStatus.OK);
     }
@@ -216,7 +218,8 @@ public class AccountService {
         headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
         headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
         headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
-        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID,xAccountConsentId);;
+        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID, xAccountConsentId);
+        ;
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -275,7 +278,7 @@ public class AccountService {
         headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
         headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
         headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
-        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID,xAccountConsentId);
+        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID, xAccountConsentId);
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -301,7 +304,7 @@ public class AccountService {
                         .filter(statementEntity -> statementEntity.getId().equals(Long.valueOf(statementId)))
                         .findFirst();
 
-        if (optionalStatement.isEmpty()) {
+        if (!optionalStatement.isPresent()) {
             throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND, "Statement not found");
         }
 
@@ -355,7 +358,7 @@ public class AccountService {
         headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
         headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
         headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
-        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID,xAccountConsentId);
+        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID, xAccountConsentId);
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -363,24 +366,42 @@ public class AccountService {
     //проверка средств на счету. Если меньше 1000, то добавляем 100.000
     @Transactional
     public void checkFunds(String accountId, String currency) {
-
+        // TODO: 13.08.2021 Надо добавить кредитовыый банк в список наших банков, и оттуда достать всю информацию. Для демо пока заглушил. 
         final AccountEntity account = mAccountRepository.getById(Long.valueOf(accountId));
-
+        //заглушка под БАНК который будет кредитовать для автопополнения. в финальной базе надо не забыть поправить ID
         if (account.getBalanceAmount().doubleValue() < 1000) {
-            account.setBalanceAmount(account.getBalanceAmount().add(new BigDecimal(100000.00)));
+            BigDecimal amount = new BigDecimal(100000.00);
+            account.setBalanceAmount(account.getBalanceAmount().add(amount));
             mAccountRepository.save(account);
             TransactionEntity transaction = new TransactionEntity();
             Date now = new Date();
-            transaction.setAmount(account.getBalanceAmount());
-            transaction.setCreditAccIdentification("BY01NBRB81990000000000000933");
-            transaction.setCreditBankIdentification("NBRBBY2X");
-            transaction.setCreditBankName("Национальный банк");
-            transaction.setDebitAccIdentification(account.getIdentification());
-            transaction.setDebitBankIdentification("UNBSBY2X");
-            transaction.setDebitBankName("BSB BANK");
+            transaction.setAmount(amount);
+            transaction.setCreditAccIdentification(account.getIdentification());
+            transaction.setCreditBankIdentification(String.valueOf(account.getClient().getBank().getId()));
+            transaction.setCreditBankName(account.getClient().getBank().getName());
+
+            if (currency.equals("BYN")) {
+
+                transaction.setDebitAccIdentification("BY01NBRB81990000000000000933");
+            }
+            if (currency.equals("EUR")) {
+                transaction.setDebitAccIdentification("BY02NBRB81990000000000000978");
+            }
+            if (currency.equals("USD")) {
+                transaction.setDebitAccIdentification("BY03NBRB81990000000000000840");
+            }
+            transaction.setDebitBankName("Национальный Банк РБ");
+            transaction.setDebitTaxIdentification("INP800000001");
+            transaction.setDebitBankIdentification("INP800000001");
+            transaction.setDebitName("Национальный Банк РБ");
             transaction.setDetails("Пополнение счета");
             transaction.setCurrency(currency);
             transaction.setBookingTime(now);
+            transaction.setCreditDebitIndicator(OBCreditDebitCode1.CREDIT);
+            transaction.setCreditName(account.getClient().getName());
+            transaction.setCreditTaxIdentification(account.getClient().getTax());
+            transaction.setNumber(String.valueOf(900 + (int) (Math.random() * (200 + 1)) - 100));
+            transaction.setAccount(account);
             mTransactionRepository.save(transaction);
         }
     }
