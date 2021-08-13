@@ -13,6 +13,7 @@ import openbankingservice.exception.OBException;
 import openbankingservice.models.accinfo.OBCreditDebitCode1;
 import openbankingservice.models.payments.*;
 import openbankingservice.util.OBHttpHeaders;
+import org.apache.commons.validator.routines.checkdigit.IBANCheckDigit;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,7 +61,8 @@ public class PaymentService {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(domesticConsentId));
         final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.DOMESTICCONSENT);
@@ -92,8 +94,15 @@ public class PaymentService {
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.X_IDEMPOTENCY_KEY, xIdempotencyKey);
+        headers.add(OBHttpHeaders.X_JWS_SIGNATURE, xJwsSignature);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.DOMESTIC_CONSENT_ID, domesticConsentId);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_CUSTOMER_USER_AGENT, xCustomerUserAgent);
 
-        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+        return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
     }
 
     public ResponseEntity<OBTaxPayment1> createDomesticTaxPayment(
@@ -105,7 +114,8 @@ public class PaymentService {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(domesticTaxConsentId));
         final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.DOMESTICTAXCONSENT);
@@ -137,8 +147,14 @@ public class PaymentService {
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.X_IDEMPOTENCY_KEY, xIdempotencyKey);
+        headers.add(OBHttpHeaders.X_JWS_SIGNATURE, xJwsSignature);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_CUSTOMER_USER_AGENT, xCustomerUserAgent);
 
-        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+        return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
     }
 
     public ResponseEntity<OBPaymentListAccounts1> createListAccountsPayment(
@@ -150,7 +166,8 @@ public class PaymentService {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
         final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.LISTACCOUNTSCONSENT);
@@ -182,8 +199,14 @@ public class PaymentService {
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.X_IDEMPOTENCY_KEY, xIdempotencyKey);
+        headers.add(OBHttpHeaders.X_JWS_SIGNATURE, xJwsSignature);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_CUSTOMER_USER_AGENT, xCustomerUserAgent);
 
-        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+        return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
     }
 
     public ResponseEntity<OBPaymentListPassports1> createListPassportsPayment(
@@ -195,7 +218,8 @@ public class PaymentService {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
         final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.LISTPASSPORTSCONSENT);
@@ -227,8 +251,14 @@ public class PaymentService {
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.X_IDEMPOTENCY_KEY, xIdempotencyKey);
+        headers.add(OBHttpHeaders.X_JWS_SIGNATURE, xJwsSignature);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_CUSTOMER_USER_AGENT, xCustomerUserAgent);
 
-        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+        return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
     }
 
     public ResponseEntity<OBTaxPayment2> getDomesticTaxByDomesticTaxId(
@@ -238,7 +268,8 @@ public class PaymentService {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(domesticTaxConsentId));
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(domesticTaxId));
@@ -277,7 +308,8 @@ public class PaymentService {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(domesticConsentId));
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(domesticId));
@@ -305,6 +337,11 @@ public class PaymentService {
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.DOMESTIC_CONSENT_ID, domesticConsentId);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_CUSTOMER_USER_AGENT, xCustomerUserAgent);
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -316,7 +353,8 @@ public class PaymentService {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
@@ -344,6 +382,10 @@ public class PaymentService {
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_CUSTOMER_USER_AGENT, xCustomerUserAgent);
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -355,7 +397,8 @@ public class PaymentService {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
@@ -396,7 +439,8 @@ public class PaymentService {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
         final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.REQUIREMENTCONSENT);
@@ -429,7 +473,7 @@ public class PaymentService {
         final HttpHeaders headers = new HttpHeaders();
         headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
 
-        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+        return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
     }
 
     public ResponseEntity<OBPaymentReq2> getPaymentsRequirimentsByRequirementId(
@@ -439,7 +483,8 @@ public class PaymentService {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
@@ -480,7 +525,8 @@ public class PaymentService {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
         final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.TAXREQUIREMENTCONSENT);
@@ -523,7 +569,8 @@ public class PaymentService {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
@@ -564,7 +611,8 @@ public class PaymentService {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
         final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.VRPCONSENT);
@@ -607,7 +655,8 @@ public class PaymentService {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
@@ -643,7 +692,8 @@ public class PaymentService {
             @NotNull @Valid final Date fromCreationDate,
             @NotNull @Valid final Date toCreationDate,
             @Valid final String type,
-            @Valid final String status
+            @Valid final String status,
+            final String xApiKey
     ) {
         if (fromCreationDate.after(toCreationDate)) {
             throw new OBException(BY_NBRB_FIELD_INVALID_DATE, "fromCreationDate must be before toCreationDate", "fromCreationDate");
@@ -673,11 +723,14 @@ public class PaymentService {
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
         final Optional<AccountEntity> debtorAccountOptional = mAccountRepository.findByIdentification(payment.getPaymentConsent().getDebtorAccId());
         final AccountEntity creditorAccount = mAccountRepository.getByIdentification(payment.getPaymentConsent().getCreditorAccId());
+        //Проверка на корректный IBAN по дебету и кредиту
+
         //Проверка на существование дебетового счета
         if (debtorAccountOptional.isPresent()) {
 
             final AccountEntity debtorAccount = debtorAccountOptional.get();
-
+            //проверяем дебетовый счет на формат ИБАНА
+            boolean debetIbanCheck = IBANCheckDigit.IBAN_CHECK_DIGIT.isValid(debtorAccount.getIdentification());
             //автоувеличение средств на счете
             mAccountService.checkFunds(String.valueOf(debtorAccount.getId()), payment.getPaymentConsent().getCurrency());
 
@@ -685,7 +738,8 @@ public class PaymentService {
                     //Проверка на то, что счет по дебету, не равен счету по кредиту.
                     && !debtorAccount.getIdentification().equals(creditorAccount.getIdentification())
                     //Проверка на то, что совпадают валюты перевода по счетам.
-                    && !debtorAccount.getCurrency().equals(creditorAccount.getCurrency())) {
+                    && debtorAccount.getCurrency().equals(creditorAccount.getCurrency())
+                    && debetIbanCheck) {
 
                 transferAmount(debtorAccount, creditorAccount, payment);
                 createTransactions(debtorAccount, creditorAccount, payment);
@@ -827,5 +881,6 @@ public class PaymentService {
         checkPaymentConsent(paymentConsentEntity, type);
         return createAndGetPayment(paymentConsentEntity);
     }
+
 
 }

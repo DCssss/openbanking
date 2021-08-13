@@ -29,7 +29,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final ResponseEntity<OBPaymentConsentTax1> response =  mPaymentConsentService.createDomesticTaxConsents(
                 body,
@@ -39,7 +40,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
 
         final Random rand = new Random();
@@ -63,7 +65,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final ResponseEntity<OBPaymentConsent1> response =  mPaymentConsentService.createDomesticConsents(
                 body,
@@ -73,7 +76,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
 
         final Random rand = new Random();
@@ -95,7 +99,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentConsentService.deletePaymentConsentsVPRByVPRConsentId(
                 vrPConsentId,
@@ -103,7 +108,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
@@ -112,13 +118,15 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             @NotNull @Valid final Date fromCreationDate,
             @NotNull @Valid final Date toCreationDate,
             @Valid final String type,
-            @Valid final String status
+            @Valid final String status,
+            final String xApiKey
     ) {
         return mPaymentConsentService.getListOfPaymentsConsents(
                 fromCreationDate,
                 toCreationDate,
                 type,
-                status
+                status,
+                xApiKey
         );
     }
 
@@ -129,7 +137,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentConsentService.getPaymentConsentsByPaymentConsentId(
                 domesticConsentId,
@@ -137,7 +146,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
@@ -148,7 +158,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentConsentService.getDomesticTaxConsent(
                 domesticTaxConsentId,
@@ -156,7 +167,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
@@ -167,7 +179,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentConsentService.getPaymentConsentsOfListPassportsByListPassportsConsentId(
                 listPassportsConsentId,
@@ -175,7 +188,9 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent);
+                xCustomerUserAgent,
+                xApiKey
+        );
     }
 
     @Override
@@ -185,7 +200,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentConsentService.getPaymentConsentsTaxRequirementByTaxRequirementConsentId(
                 taxRequirementConsentId,
@@ -193,7 +209,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
@@ -204,7 +221,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentConsentService.getPaymentConsentsVPRByVRPConsentId(
                 vrPConsentId,
@@ -212,7 +230,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
@@ -223,7 +242,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentConsentService.getPaymentsByRequirementId(
                 requirementConsentId,
@@ -231,7 +251,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
@@ -242,7 +263,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentConsentService.getPaymentsConsentsOfListAccountsByListAccountsConsentId(
                 listAccountsConsentId,
@@ -250,7 +272,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
@@ -263,7 +286,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentConsentService.setPaymentConsentsByListPassports(
                 body,
@@ -273,11 +297,18 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
     @Override
+    public ResponseEntity<OBReqConsent1> setPaymentConsentsRequrement(@Valid OBReqConsent body, String xIdempotencyKey, String xJwsSignature, String xFapiAuthDate, String xFapiCustomerIpAddress, String xFapiInteractionId, String authorization, String xCustomerUserAgent, String xApiKey) {
+        return null;
+    }
+
+// TODO: 13.08.2021   что-то не так тут не совпадает тело запроса и метод куда пробрасываем, просто заимплементирую метод из интерфейса. потом доделаем
+   /* @Override
     public ResponseEntity<OBReqConsent1> setPaymentConsentsRequrement(
             @Valid final OBReqConsent body,
             final String xIdempotencyKey,
@@ -286,7 +317,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentConsentService.setPaymentConsentsByListPassports(
                 body,
@@ -296,9 +328,10 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
-    }
+    } */
 
     @Override
     public ResponseEntity<OBPaymentConsentTaxReq1> setPaymentConsentsTaxRequirement(
@@ -309,7 +342,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentConsentService.setPaymentConsentsTaxRequirement(
                 body,
@@ -319,7 +353,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
@@ -332,7 +367,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentConsentService.setPaymentConsentsVRP(
                 body,
@@ -342,7 +378,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
@@ -355,7 +392,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentConsentService.setPaymentsConsentsOfListAccounts(
                 body,
@@ -365,7 +403,8 @@ public class PaymentConsentsController implements PaymentConsentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 }

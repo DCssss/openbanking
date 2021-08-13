@@ -28,7 +28,8 @@ public class PaymentController implements PaymentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final ResponseEntity<OBPayment1> response = mPaymentService.createDomesticPayment(
                 body,
@@ -39,7 +40,8 @@ public class PaymentController implements PaymentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
         mPaymentService.makePayment(Objects.requireNonNull(response.getBody()).getData().getDomesticId());
         return response;
@@ -55,7 +57,8 @@ public class PaymentController implements PaymentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final ResponseEntity<OBTaxPayment1> response = mPaymentService.createDomesticTaxPayment(
                 body,
@@ -66,7 +69,8 @@ public class PaymentController implements PaymentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
         mPaymentService.makePayment(Objects.requireNonNull(response.getBody()).getData().getDomesticTaxId());
         return response;
@@ -80,7 +84,8 @@ public class PaymentController implements PaymentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentService.getDomesticByDomesticId(
                 domesticId,
@@ -89,7 +94,8 @@ public class PaymentController implements PaymentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
@@ -101,7 +107,8 @@ public class PaymentController implements PaymentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentService.getDomesticTaxByDomesticTaxId(
                 domesticTaxId,
@@ -110,7 +117,8 @@ public class PaymentController implements PaymentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
@@ -119,13 +127,15 @@ public class PaymentController implements PaymentsApi {
             @NotNull @Valid final Date fromCreationDate,
             @NotNull @Valid final Date toCreationDate,
             @Valid final String type,
-            @Valid final String status
+            @Valid final String status,
+            final String xApiKey
     ) {
         return mPaymentService.getListOfPayments(
                 fromCreationDate,
                 toCreationDate,
                 type,
-                status
+                status,
+                xApiKey
         );
     }
 
@@ -137,7 +147,8 @@ public class PaymentController implements PaymentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentService.getPaymentListPassports(
                 listPassportsId,
@@ -146,7 +157,8 @@ public class PaymentController implements PaymentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
@@ -158,7 +170,8 @@ public class PaymentController implements PaymentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentService.getPaymentsListAccountsByListAccountsId(
                 listAccountsId,
@@ -167,7 +180,8 @@ public class PaymentController implements PaymentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
@@ -179,7 +193,8 @@ public class PaymentController implements PaymentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentService.getPaymentsRequirimentsByRequirementId(
                 requirementId,
@@ -188,7 +203,8 @@ public class PaymentController implements PaymentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
@@ -200,7 +216,8 @@ public class PaymentController implements PaymentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentService.getPaymentsTaxRequirementsByTaxRequirementId(
                 taxRequirementId,
@@ -209,7 +226,8 @@ public class PaymentController implements PaymentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
@@ -221,7 +239,8 @@ public class PaymentController implements PaymentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         return mPaymentService.getPaymentsVRPbyVRPid(
                 vrPId,
@@ -230,7 +249,8 @@ public class PaymentController implements PaymentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
     }
 
@@ -244,7 +264,8 @@ public class PaymentController implements PaymentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final ResponseEntity<OBPaymentListPassports1> response = mPaymentService.createListPassportsPayment(
                 body,
@@ -255,7 +276,8 @@ public class PaymentController implements PaymentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
         mPaymentService.makePayment(Objects.requireNonNull(response.getBody()).getData().getListPassportsId());
         return response;
@@ -271,7 +293,8 @@ public class PaymentController implements PaymentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final ResponseEntity<OBPaymentListAccounts1> response = mPaymentService.createListAccountsPayment(
                 body,
@@ -282,7 +305,8 @@ public class PaymentController implements PaymentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
         mPaymentService.makePayment(Objects.requireNonNull(response.getBody()).getData().getListAccountsId());
         return response;
@@ -298,7 +322,8 @@ public class PaymentController implements PaymentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final ResponseEntity<OBPaymentReq1> response = mPaymentService.createRequirementPayment(
                 body,
@@ -309,7 +334,8 @@ public class PaymentController implements PaymentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
         mPaymentService.makePayment(Objects.requireNonNull(response.getBody()).getData().getRequirementId());
         return response;
@@ -325,7 +351,8 @@ public class PaymentController implements PaymentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final ResponseEntity<OBTaxPaymentReq1> response = mPaymentService.createTaxRequirementPayment(
                 body,
@@ -336,7 +363,8 @@ public class PaymentController implements PaymentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
         mPaymentService.makePayment(Objects.requireNonNull(response.getBody()).getData().getTaxRequirementId());
         return response;
@@ -352,7 +380,8 @@ public class PaymentController implements PaymentsApi {
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
             final String authorization,
-            final String xCustomerUserAgent
+            final String xCustomerUserAgent,
+            final String xApiKey
     ) {
         final ResponseEntity<OBVRP1> response = mPaymentService.setPaymentsVRP(
                 body,
@@ -363,7 +392,8 @@ public class PaymentController implements PaymentsApi {
                 xFapiCustomerIpAddress,
                 xFapiInteractionId,
                 authorization,
-                xCustomerUserAgent
+                xCustomerUserAgent,
+                xApiKey
         );
         mPaymentService.makePayment(Objects.requireNonNull(response.getBody()).getData().getVrPId());
         return response;
