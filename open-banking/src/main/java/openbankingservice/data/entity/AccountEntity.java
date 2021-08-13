@@ -9,6 +9,7 @@ import openbankingservice.models.accinfo.Account;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import static javax.persistence.EnumType.STRING;
@@ -69,6 +70,9 @@ public final class AccountEntity extends BaseEntity<Long> {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
     private Set<TransactionListEntity> transactionLists;
+
+    @OneToMany(fetch = LAZY, mappedBy = "account")
+    private List<TransactionEntity> transactionList;
 
     public AccountEntity() {
     }

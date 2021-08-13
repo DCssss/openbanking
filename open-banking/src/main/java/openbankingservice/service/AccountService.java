@@ -53,16 +53,23 @@ public class AccountService {
         final AccountResponseData accountResponseData = new AccountResponseData();
         accountResponseData.setAccount(Collections.singletonList(AccountConverter.toAccount(account, consent.getPermission().contains(Permission.READACCOUNTSDETAIL))));
 
-        // TODO: 13.07.2021 Надо не забыть доделать блоки Link и Meta , пока заглушки
-        final Link links = new Link()
-                .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
+       final Link links = new Link()
+                .self("https://paymentapi.st.by:8243/open-banking/v1.0/accounts");
 
-        final Date now = new Date();
+        Date maxDate;
+        Date minDate;
+        if (account.getTransactionList().isEmpty()){
+            maxDate = new Date();
+            minDate = new Date();
+        } else {
+            maxDate = account.getTransactionList().stream().map(TransactionEntity::getBookingTime).max(Date::compareTo).get();
+            minDate = account.getTransactionList().stream().map(TransactionEntity::getBookingTime).min(Date::compareTo).get();
+        }
 
         final Meta meta = new Meta()
                 .totalPages(1)
-                .firstAvailableDateTime(now)
-                .lastAvailableDateTime(now);
+                .firstAvailableDateTime(minDate)
+                .lastAvailableDateTime(maxDate);
 
         final AccountResponse response = new AccountResponse()
                 .data(accountResponseData)

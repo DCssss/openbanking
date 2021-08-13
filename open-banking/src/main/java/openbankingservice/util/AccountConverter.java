@@ -29,15 +29,15 @@ public final class AccountConverter {
         acc.setAccountDescription(obAccount.getDescription());
 
         final Servicer servicer = new Servicer();
-        servicer.setIdentification("ЗАО БСБ Банк");
-        servicer.setName("UNBSBY2X");
+        servicer.setIdentification(obAccount.getClient().getBank().getIdentifier());
+        servicer.setName(obAccount.getClient().getBank().getName());
 
         acc.setServicer(servicer);
 
         if (withDetail) {
             final AccountDetails accountDetails = new AccountDetails();
             accountDetails.setIdentification(obAccount.getIdentification());
-            accountDetails.setSubstatus("Arrested");
+            accountDetails.setSubstatus(obAccount.getStatus().toString());
             accountDetails.setName(obAccount.getName());
             accountDetails.setReason("Арестован согласно Постановления СК");
             accountDetails.setSchemeName("Схема для осуществления платежа по номеру счета");
