@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,14 +37,17 @@ public class BalancesService {
 
         final Date now = new Date();
         final List<Balance> balances = new ArrayList<>();
-
+        final List<BalanceCreditLine> creditLine = new ArrayList<>();
         for (AccountEntity account : consent.getAccounts()) {
-            final Balance balance = new Balance();
-            balance.setAccountId(String.valueOf(account.getId()));
-            balance.setDateTime(now);
-            balance.setCurrency(account.getCurrency());
-            balance.setBalanceAmount(account.getBalanceAmount().toString());
-
+            final Balance balance = new Balance()
+                    .accountId(String.valueOf(account.getId()))
+                    .creditDebitIndicator(account.getBalanceAmount().compareTo(BigDecimal.ZERO) > 0 ? OBCreditDebitCode2.CREDIT : OBCreditDebitCode2.DEBIT)
+                    .type(BalanceType.OPENINGAVAILABLE)
+                    .dateTime(now)
+                    .currency(account.getCurrency())
+                    .balanceAmount(account.getBalanceAmount().toString())
+                    .balanceEquivalentAmount(account.getBalanceAmount().toString())
+                    .creditLine(creditLine);
             balances.add(balance);
         }
 
@@ -51,7 +55,7 @@ public class BalancesService {
         balanceResponseData.setBalance(balances);
 
         final LinksBalance links = new LinksBalance()
-                .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
+                .self("https://paymentapi.st.by:8243/open-banking/v1.0/balances");
 
         final Meta meta = new Meta()
                 .totalPages(1)

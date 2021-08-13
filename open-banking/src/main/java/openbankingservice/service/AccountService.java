@@ -54,7 +54,7 @@ public class AccountService {
         accountResponseData.setAccount(Collections.singletonList(AccountConverter.toAccount(account, consent.getPermission().contains(Permission.READACCOUNTSDETAIL))));
 
        final Link links = new Link()
-                .self("https://paymentapi.st.by:8243/open-banking/v1.0/accounts");
+                .self("https://paymentapi.st.by:8243/open-banking/v1.0/accounts/"+accountId);
 
         Date maxDate;
         Date minDate;
@@ -103,11 +103,9 @@ public class AccountService {
         final AccountResponseData accountResponseData = new AccountResponseData();
         accountResponseData.setAccount(AccountConverter.toAccount(consent.getAccounts(), consent.getPermission().contains(Permission.READACCOUNTSDETAIL)));
 
-        // TODO: 13.07.2021 Надо не забыть доделать блоки Link и Meta , пока заглушки
         final Link links = new Link()
-                .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
-
-        final Date now = new Date();
+                .self("https://paymentapi.st.by:8243/open-banking/v1.0/accounts");
+        Date now = new Date();
 
         final Meta meta = new Meta()
                 .totalPages(1)
@@ -145,23 +143,36 @@ public class AccountService {
         final AccountEntity account = consent.getAccount(Long.valueOf(accountId));
 
         final Date now = new Date();
-
+        final List<BalanceCreditLine> creditLine = new ArrayList<>();
         final Balance balance = new Balance()
                 .accountId(String.valueOf(account.getId()))
+                .creditDebitIndicator(account.getBalanceAmount().compareTo(BigDecimal.ZERO) > 0 ? OBCreditDebitCode2.CREDIT : OBCreditDebitCode2.DEBIT)
+                .type(BalanceType.OPENINGAVAILABLE)
                 .dateTime(now)
                 .currency(account.getCurrency())
-                .balanceAmount(account.getBalanceAmount().toString());
+                .balanceAmount(account.getBalanceAmount().toString())
+                .balanceEquivalentAmount(account.getBalanceAmount().toString())
+                .creditLine(creditLine);
 
         final BalanceResponseData balanceResponseData = new BalanceResponseData()
                 .balance(Collections.singletonList(balance));
 
         final LinksBalance links = new LinksBalance()
-                .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/");
+                .self("https://paymentapi.st.by:8243/open-banking/v1.0/balances/"+accountId);
 
+        Date maxDate;
+        Date minDate;
+        if (account.getTransactionList().isEmpty()){
+            maxDate = new Date();
+            minDate = new Date();
+        } else {
+            maxDate = account.getTransactionList().stream().map(TransactionEntity::getBookingTime).max(Date::compareTo).get();
+            minDate = account.getTransactionList().stream().map(TransactionEntity::getBookingTime).min(Date::compareTo).get();
+        }
         final Meta meta = new Meta()
                 .totalPages(1)
-                .firstAvailableDateTime(now)
-                .lastAvailableDateTime(now);
+                .firstAvailableDateTime(minDate)
+                .lastAvailableDateTime(maxDate);
 
         final BalanceResponse respData = new BalanceResponse()
                 .data(balanceResponseData)
