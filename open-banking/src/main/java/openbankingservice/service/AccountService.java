@@ -66,13 +66,14 @@ public class AccountService {
                 .links(links)
                 .meta(meta);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
-        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
-        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
-        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
-        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID, xAccountConsentId);
+       final HttpHeaders headers = getAccInfoHeaders(
+                xFapiInteractionId,
+                authorization,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xApiKey,
+                xAccountConsentId
+        );
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -107,13 +108,14 @@ public class AccountService {
                 .links(links)
                 .meta(meta);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
-        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
-        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
-        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
-        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID, xAccountConsentId);
+        final HttpHeaders headers = getAccInfoHeaders(
+                xFapiInteractionId,
+                authorization,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xApiKey,
+                xAccountConsentId
+        );
 
         return new ResponseEntity<>(respData, headers, HttpStatus.OK);
     }
@@ -160,13 +162,14 @@ public class AccountService {
                 .links(links)
                 .meta(meta);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
-        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
-        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
-        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
-        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID, xAccountConsentId);
+        final HttpHeaders headers = getAccInfoHeaders(
+                xFapiInteractionId,
+                authorization,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xApiKey,
+                xAccountConsentId
+        );
 
         return new ResponseEntity<>(respData, headers, HttpStatus.OK);
     }
@@ -211,16 +214,16 @@ public class AccountService {
                 .links(links)
                 .meta(meta);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
-        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
-        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
-        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
-        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID, xAccountConsentId);
-        ;
+        final HttpHeaders headers = getAccInfoHeaders(
+                xFapiInteractionId,
+                authorization,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xApiKey,
+                xAccountConsentId
+        );
 
-        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+        return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
     }
 
     @Transactional(readOnly = true)
@@ -253,7 +256,7 @@ public class AccountService {
         final List<TransactionEntity> transactions = mTransactionRepository.findAllByBookingTimeBetween(transactionList.getFromBookingTime(), transactionList.getToBookingTime());
 
         final LinkGetTransaction links = new LinkGetTransaction()
-                .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/" + accountId + "/transactions");
+                .self("https://paymentapi.st.by:8243/open-banking/v1.0/accounts/" + accountId + "/transactions");
 
 
         final MetaGetTransaction meta = new MetaGetTransaction()
@@ -274,13 +277,14 @@ public class AccountService {
                 .links(links)
                 .meta(meta);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
-        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
-        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
-        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
-        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID, xAccountConsentId);
+        final HttpHeaders headers = getAccInfoHeaders(
+                xFapiInteractionId,
+                authorization,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xApiKey,
+                xAccountConsentId
+        );
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -340,27 +344,30 @@ public class AccountService {
                 .statement(Collections.singletonList(obStatement2));
 
         final LinksStatementGet links = new LinksStatementGet()
-                .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/" + accountId + "/statements/" + statementId);
+                .self("https://paymentapi.st.by:8243/open-banking/v1.0/accounts/" + accountId + "/transactions/" + statementId);
 
         final Date now = new Date();
+        List<TransactionEntity> transactions = new ArrayList<>();
+        transactions.addAll(statement.getTransactions());
 
         final Meta meta = new Meta()
                 .totalPages(1)
-                .firstAvailableDateTime(now)
-                .lastAvailableDateTime(now);
+                .firstAvailableDateTime(getFirstTransactionDate(transactions))
+                .lastAvailableDateTime(getLastTransactionDate(transactions));
 
         final OBReadStatement2 response = new OBReadStatement2()
                 .data(obReadDataStatement2)
                 .links(links)
                 .meta(meta);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
-        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
-        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
-        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
-        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID, xAccountConsentId);
+        final HttpHeaders headers = getAccInfoHeaders(
+                xFapiInteractionId,
+                authorization,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xApiKey,
+                xAccountConsentId
+        );
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -424,6 +431,26 @@ public class AccountService {
             lastDate = transactions.stream().map(TransactionEntity::getBookingTime).max(Date::compareTo).get();
         }
         return lastDate;
+    }
+
+    private HttpHeaders getAccInfoHeaders(
+        String xFapiInteractionId,
+        String authorization,
+        String xFapiAuthDate,
+        String xFapiCustomerIpAddress,
+        String xApiKey,
+        String xAccountConsentId
+    )
+    {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
+        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
+        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
+        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
+        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID, xAccountConsentId);
+
+        return headers;
     }
 }
 

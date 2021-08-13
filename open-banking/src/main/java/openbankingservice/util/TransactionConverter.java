@@ -32,7 +32,14 @@ public final class TransactionConverter {
         creditor1.setCreditorAccount(creditorAccount1);
         debtorAccount1.setIdentification(transactionEntity.getDebitAccIdentification());
         debtorAccount1.setName(transactionEntity.getDebitName());
+        debtorAccount1.setSchemeName("BY.NBRB.IBAN");
+        creditorAccount1.setSchemeName("BY.NBRB.IBAN");
         debtor1.setDebtorAccount(debtorAccount1);
+        debtor1.setTaxIdentification(transactionEntity.getDebitTaxIdentification());
+        creditor1.setTaxIdentification(transactionEntity.getCreditTaxIdentification());
+        debtor1.setName(transactionEntity.getDebitName());
+        creditor1.setName(transactionEntity.getCreditName());
+
         return new OBTransaction1()
                 .transactionId(transactionEntity.getId().toString())
                 .creditDebitIndicator(transactionEntity.getCreditDebitIndicator())
@@ -43,6 +50,9 @@ public final class TransactionConverter {
                 .currency(transactionEntity.getCurrency())
                 .debtor(debtor1)
                 .creditor(creditor1)
+                .status(OBEntryStatus1Code.BOOKED)
+                .valueDate(transactionEntity.getBookingTime())
+                .equivalentAmount(transactionEntity.getAmount().toString())
                 ;
     }
 
