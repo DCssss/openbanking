@@ -202,10 +202,11 @@ public class ConsentService {
             final ConsentEntity consent,
             final String api
     ) {
-        for (Permission permission : consent.getPermission()) {
-            if (StubData.PERMISSIONS_API.get(permission).contains(api)
-                    && consent.getStatus().toString().equals("Authorised")) {
-                return true;
+        if (consent.getStatus() == AccountConsentsStatus.AUTHORISED) {
+            for (Permission permission : consent.getPermission()) {
+                if (StubData.PERMISSIONS_API.get(permission).contains(api)) {
+                    return true;
+                }
             }
         }
 
