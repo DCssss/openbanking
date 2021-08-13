@@ -65,7 +65,6 @@ public class PaymentService {
             final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(domesticConsentId));
-        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.DOMESTICCONSENT);
 
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationDomestic initiation;
@@ -78,6 +77,8 @@ public class PaymentService {
         if (!body.getData().getInitiation().equals(initiation)) {
             throw new OBException(BY_NBRB_FIELD_INVALID, "Consent and payment initiation block does not match", "Data.Initiation");
         }
+
+        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.DOMESTICCONSENT);
 
         final OBDataPayment1 data = new OBDataPayment1()
                 .domesticId(payment.getId().toString())
@@ -118,8 +119,6 @@ public class PaymentService {
             final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(domesticTaxConsentId));
-        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.DOMESTICTAXCONSENT);
-
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationTaxDomestic initiation;
         try {
@@ -131,6 +130,8 @@ public class PaymentService {
         if (!body.getData().getInitiation().equals(initiation)) {
             throw new OBException(BY_NBRB_FIELD_INVALID, "Consent and payment initiation block does not match", "Data.Initiation");
         }
+
+        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.DOMESTICTAXCONSENT);
 
         final OBDataTaxPayment1 data = new OBDataTaxPayment1()
                 .domesticTaxId(payment.getId().toString())
@@ -170,8 +171,6 @@ public class PaymentService {
             final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
-        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.LISTACCOUNTSCONSENT);
-
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationListAccounts initiation;
         try {
@@ -183,6 +182,8 @@ public class PaymentService {
         if (!body.getData().getInitiation().equals(initiation)) {
             throw new OBException(BY_NBRB_FIELD_INVALID, "Consent and payment initiation block does not match", "Data.Initiation");
         }
+
+        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.LISTACCOUNTSCONSENT);
 
         final OBDataPaymentListAccounts1 data = new OBDataPaymentListAccounts1()
                 .listAccountsId(payment.getId().toString())
@@ -222,8 +223,6 @@ public class PaymentService {
             final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
-        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.LISTPASSPORTSCONSENT);
-
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationListPassports initiation;
         try {
@@ -236,8 +235,10 @@ public class PaymentService {
             throw new OBException(BY_NBRB_FIELD_INVALID, "Consent and payment initiation block does not match", "Data.Initiation");
         }
 
+        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.LISTPASSPORTSCONSENT);
+
         final OBDataPaymentListPassports1 data = new OBDataPaymentListPassports1()
-                .listPassportsId(payment.getId().toString())
+              .listPassportsId(payment.getId().toString())
                 .listPassportsConsentId(paymentConsentEntity.getId().toString())
                 .creationDateTime(payment.getCreateTime())
                 .initiation(initiation)
@@ -443,8 +444,6 @@ public class PaymentService {
             final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
-        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.REQUIREMENTCONSENT);
-
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationReq initiation;
         try {
@@ -456,6 +455,8 @@ public class PaymentService {
         if (!body.getData().getInitiation().equals(initiation)) {
             throw new OBException(BY_NBRB_FIELD_INVALID, "Consent and payment initiation block does not match", "Data.Initiation");
         }
+
+        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.REQUIREMENTCONSENT);
 
         final OBDataPaymentReq1 data = new OBDataPaymentReq1()
                 .requirementId(payment.getId().toString())
@@ -529,8 +530,6 @@ public class PaymentService {
             final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
-        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.TAXREQUIREMENTCONSENT);
-
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationTaxReq initiation;
         try {
@@ -542,6 +541,8 @@ public class PaymentService {
         if (!body.getData().getInitiation().equals(initiation)) {
             throw new OBException(BY_NBRB_FIELD_INVALID, "Consent and payment initiation block does not match", "Data.Initiation");
         }
+
+        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.TAXREQUIREMENTCONSENT);
 
         final OBDataTaxPaymentReq1 data = new OBDataTaxPaymentReq1()
                 .taxRequirementId(payment.getId().toString())
@@ -615,8 +616,6 @@ public class PaymentService {
             final String xApiKey
     ) {
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
-        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.VRPCONSENT);
-
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationVRP initiation;
         try {
@@ -628,6 +627,8 @@ public class PaymentService {
         if (!body.getData().getInitiation().equals(initiation)) {
             throw new OBException(BY_NBRB_FIELD_INVALID, "Consent and payment initiation block does not match", "Data.Initiation");
         }
+
+        final PaymentEntity payment = checkConsentAndGetPayment(paymentConsentEntity, TypePaymentConsent.VRPCONSENT);
 
         final OBDataVRP1 data = new OBDataVRP1()
                 .vrPId(payment.getId().toString())
