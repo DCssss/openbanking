@@ -3,8 +3,10 @@ package openbankingservice.util;
 import openbankingservice.data.entity.TransactionEntity;
 import openbankingservice.models.accinfo.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public final class TransactionConverter {
 
@@ -60,37 +62,65 @@ public final class TransactionConverter {
         OBTransactionCardInstrument1 obTransactionCardInstrument1 = new OBTransactionCardInstrument1();
         OBActiveChargeAmount obActiveChargeAmount = new OBActiveChargeAmount();
         OBReadDataTransaction6 obReadDataTransaction6 = new OBReadDataTransaction6();
-
         OBDebtor obDebtor = new OBDebtor();
-        obDebtor.setTaxIdentification(transactionEntity.getDebitTaxIdentification());
-        obDebtor.setName(transactionEntity.getDebitName());
         OBDebtorAccount obDebtorAccount = new OBDebtorAccount();
-        obDebtorAccount.setIdentification(transactionEntity.getDebitAccIdentification());
-        obDebtorAccount.setName(transactionEntity.getDebitName());
-        obDebtor.setDebtorAccount(obDebtorAccount);
         OBDebtorAgent debtorAgent = new OBDebtorAgent();
-        debtorAgent.setIdentification(transactionEntity.getDebitBankIdentification());
-        debtorAgent.setName(transactionEntity.getDebitBankName());
-        obDebtor.setDebtorAgent(debtorAgent);
         OBCreditor obCreditor = new OBCreditor();
-        obCreditor.setTaxIdentification(transactionEntity.getCreditTaxIdentification());
-        obCreditor.setName(transactionEntity.getCreditName());
         OBCreditorAccount obCreditorAccount = new OBCreditorAccount();
-        obCreditorAccount.setIdentification(transactionEntity.getCreditAccIdentification());
-        obCreditorAccount.setName(transactionEntity.getCreditName());
         OBCreditorAgent creditorAgent = new OBCreditorAgent();
-        creditorAgent.setIdentification(transactionEntity.getCreditBankIdentification());
-        creditorAgent.setName(transactionEntity.getCreditBankName());
-        obCreditor.setCreditorAgent(creditorAgent);
-        obCreditor.setCreditorAccount(obCreditorAccount);
-        obCreditorAccount.setIdentification(transactionEntity.getCreditAccIdentification());
         OBCurrencyExchange5 obCurrencyExchange5 = new OBCurrencyExchange5();
         OBMerchantDetails1 obMerchantDetails1 = new OBMerchantDetails1();
         ProprietaryBankTransactionCodeStructure1 proprietaryBankTransactionCodeStructure1 = new ProprietaryBankTransactionCodeStructure1();
 
+        obDebtor.setTaxIdentification(transactionEntity.getDebitTaxIdentification());
+        obDebtor.setName(transactionEntity.getDebitName());
+        obDebtor.setDebtorAccount(obDebtorAccount);
+        obDebtor.setDebtorAgent(debtorAgent);
+
+        obDebtorAccount.setIdentification(transactionEntity.getDebitAccIdentification());
+        obDebtorAccount.setName(transactionEntity.getDebitName());
+        obDebtorAccount.setSchemeName("BY.NBRB.IBAN");
+
+        obCreditorAccount.setIdentification(transactionEntity.getCreditAccIdentification());
+        obCreditorAccount.setName(transactionEntity.getCreditName());
+        obCreditorAccount.setSchemeName("BY.NBRB.IBAN");
+
+        debtorAgent.setIdentification(transactionEntity.getDebitBankIdentification());
+        debtorAgent.setName(transactionEntity.getDebitBankName());
+
+        obCreditor.setTaxIdentification(transactionEntity.getCreditTaxIdentification());
+        obCreditor.setName(transactionEntity.getCreditName());
+        obCreditor.setCreditorAgent(creditorAgent);
+        obCreditor.setCreditorAccount(obCreditorAccount);
+
+        creditorAgent.setIdentification(transactionEntity.getCreditBankIdentification());
+        creditorAgent.setName(transactionEntity.getCreditBankName());
+
+        obActiveChargeAmount.setAmount(String.valueOf(transactionEntity.getAmount().doubleValue() * 0.01));
+        obActiveChargeAmount.setCurrency(transactionEntity.getCurrency());
+
+        obBankTransactionCodeStructure1.setCode("ReceivedCreditTransfer");
+        obBankTransactionCodeStructure1.setSubCode("DomesticCreditTransfer");
+
+        proprietaryBankTransactionCodeStructure1.setCode("Transger");
+        proprietaryBankTransactionCodeStructure1.setIssuer("Bank");
+
+        obTransactionCashBalance.setCreditDebitIndicator(transactionEntity.getAmount().compareTo(BigDecimal.ZERO) > 0 ? OBCreditDebitCode2.CREDIT : OBCreditDebitCode2.DEBIT);
+        obTransactionCashBalance.setType(BalanceType.OPENINGAVAILABLE);
+        obTransactionCashBalance.setCurrency(transactionEntity.getCurrency());
+
+        obTransactionCardInstrument1.setAuthorisationType(OBTransactionCardInstrument1.AuthorisationTypeEnum.CONSUMERDEVICE);
+        obTransactionCardInstrument1.setSchemeName(OBTransactionCardInstrument1.SchemeNameEnum.MASTERCARD);
+
         return new OBTransaction6()
                 .transactionId(transactionEntity.getId().toString())
+                .transactionReference(UUID.randomUUID().toString())
                 .amount(transactionEntity.getAmount().toString())
+                .bookingDateTime(transactionEntity.getBookingTime())
+                .valueDate(transactionEntity.getBookingTime())
+                .transactionDetails(transactionEntity.getDetails())
+                .addressLine("Address Line ex")
+                .chargeAmount(obActiveChargeAmount)
                 .currency(transactionEntity.getCurrency())
                 .balance(obTransactionCashBalance)
                 .bankTransactionCode(obBankTransactionCodeStructure1)
@@ -102,7 +132,7 @@ public final class TransactionConverter {
                 .merchantDetails(obMerchantDetails1)
                 .proprietaryBankTransactionCode(proprietaryBankTransactionCodeStructure1)
                 .creditDebitIndicator(transactionEntity.getCreditDebitIndicator())
-                .status(OBEntryStatus1Code.PENDING);
+                .status(OBEntryStatus1Code.BOOKED);
     }
 
     public static List<OBTransaction6> toOBTransaction6(final Iterable<TransactionEntity> transactions) {

@@ -56,20 +56,10 @@ public class AccountService {
        final Link links = new Link()
                 .self("https://paymentapi.st.by:8243/open-banking/v1.0/accounts/"+accountId);
 
-        Date maxDate;
-        Date minDate;
-        if (account.getTransactionList().isEmpty()){
-            maxDate = new Date();
-            minDate = new Date();
-        } else {
-            maxDate = account.getTransactionList().stream().map(TransactionEntity::getBookingTime).max(Date::compareTo).get();
-            minDate = account.getTransactionList().stream().map(TransactionEntity::getBookingTime).min(Date::compareTo).get();
-        }
-
         final Meta meta = new Meta()
                 .totalPages(1)
-                .firstAvailableDateTime(minDate)
-                .lastAvailableDateTime(maxDate);
+                .firstAvailableDateTime(getFirstTransactionDate(account.getTransactionList()))
+                .lastAvailableDateTime(getLastTransactionDate(account.getTransactionList()));
 
         final AccountResponse response = new AccountResponse()
                 .data(accountResponseData)
@@ -160,19 +150,10 @@ public class AccountService {
         final LinksBalance links = new LinksBalance()
                 .self("https://paymentapi.st.by:8243/open-banking/v1.0/balances/"+accountId);
 
-        Date maxDate;
-        Date minDate;
-        if (account.getTransactionList().isEmpty()){
-            maxDate = new Date();
-            minDate = new Date();
-        } else {
-            maxDate = account.getTransactionList().stream().map(TransactionEntity::getBookingTime).max(Date::compareTo).get();
-            minDate = account.getTransactionList().stream().map(TransactionEntity::getBookingTime).min(Date::compareTo).get();
-        }
         final Meta meta = new Meta()
                 .totalPages(1)
-                .firstAvailableDateTime(minDate)
-                .lastAvailableDateTime(maxDate);
+                .firstAvailableDateTime(getFirstTransactionDate(account.getTransactionList()))
+                .lastAvailableDateTime(getLastTransactionDate(account.getTransactionList()));
 
         final BalanceResponse respData = new BalanceResponse()
                 .data(balanceResponseData)
@@ -274,15 +255,18 @@ public class AccountService {
         final LinkGetTransaction links = new LinkGetTransaction()
                 .self("https://api.bank.by/oapi-channel/open-banking/v1.0/accounts/" + accountId + "/transactions");
 
-        final Date now = new Date();
 
         final MetaGetTransaction meta = new MetaGetTransaction()
                 .totalPages(1)
-                .firstAvailableDateTime(now)
-                .lastAvailableDateTime(now);
+                .firstAvailableDateTime(getFirstTransactionDate(transactions))
+                .lastAvailableDateTime(getLastTransactionDate(transactions));
 
         final OBReadDataTransaction6 data = new OBReadDataTransaction6()
                 .transactionListId(transactionList.getId().toString())
+                .accountId(transactionList.getAccount().getId().toString())
+                .fromBookingDateTime(transactionList.getFromBookingTime())
+                .toBookingDateTime(transactionList.getToBookingTime())
+                .creationDateTime(transactionList.getCreateTime())
                 .transaction(TransactionConverter.toOBTransaction6(transactions));
 
         final OBReadTransaction6 response = new OBReadTransaction6()
@@ -422,6 +406,24 @@ public class AccountService {
             transaction.setAccount(account);
             mTransactionRepository.save(transaction);
         }
+    }
+
+    private Date getFirstTransactionDate(List<TransactionEntity> transactions) {
+        Date firstDate = new Date();
+
+        if (!transactions.isEmpty()){
+            firstDate = transactions.stream().map(TransactionEntity::getBookingTime).min(Date::compareTo).get();
+        }
+        return firstDate;
+    }
+
+    private Date getLastTransactionDate(List<TransactionEntity> transactions) {
+        Date lastDate = new Date();
+
+        if (!transactions.isEmpty()){
+            lastDate = transactions.stream().map(TransactionEntity::getBookingTime).max(Date::compareTo).get();
+        }
+        return lastDate;
     }
 }
 
