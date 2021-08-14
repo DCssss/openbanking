@@ -377,31 +377,34 @@ public class AccountService {
     public void checkFunds(String accountId, String currency) {
         // TODO: 13.08.2021 Надо добавить кредитовыый банк в список наших банков, и оттуда достать всю информацию. Для демо пока заглушил. 
         final AccountEntity account = mAccountRepository.getById(Long.valueOf(accountId));
-        //заглушка под БАНК который будет кредитовать для автопополнения. в финальной базе надо не забыть поправить ID
+
         if (account.getBalanceAmount().doubleValue() < 1000) {
             BigDecimal amount = new BigDecimal(100000.00);
             account.setBalanceAmount(account.getBalanceAmount().add(amount));
             mAccountRepository.save(account);
+
             TransactionEntity transaction = new TransactionEntity();
             Date now = new Date();
             transaction.setAmount(amount);
             transaction.setCreditAccIdentification(account.getIdentification());
-            transaction.setCreditBankIdentification(String.valueOf(account.getClient().getBank().getId()));
+            transaction.setCreditBankIdentification(String.valueOf(account.getClient().getBank().getIdentifier()));
             transaction.setCreditBankName(account.getClient().getBank().getName());
 
-            if (currency.equals("BYN")) {
+            switch (currency) {
+                case "BYN":
+                    transaction.setDebitAccIdentification("BY01NBRB81990000000000000933");
+                    break;
+                case "EUR":
+                    transaction.setDebitAccIdentification("BY02NBRB81990000000000000978");
+                    break;
+                case "USD":
+                    transaction.setDebitAccIdentification("BY03NBRB81990000000000000840");
+                    break;
+            }
 
-                transaction.setDebitAccIdentification("BY01NBRB81990000000000000933");
-            }
-            if (currency.equals("EUR")) {
-                transaction.setDebitAccIdentification("BY02NBRB81990000000000000978");
-            }
-            if (currency.equals("USD")) {
-                transaction.setDebitAccIdentification("BY03NBRB81990000000000000840");
-            }
             transaction.setDebitBankName("Национальный Банк РБ");
-            transaction.setDebitTaxIdentification("INP800000001");
-            transaction.setDebitBankIdentification("INP800000001");
+            transaction.setDebitTaxIdentification("NBRBBY2X");
+            transaction.setDebitBankIdentification("NBRBBY2X");
             transaction.setDebitName("Национальный Банк РБ");
             transaction.setDetails("Пополнение счета");
             transaction.setCurrency(currency);
