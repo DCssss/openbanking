@@ -7,7 +7,6 @@ import openbankingservice.models.accinfo.ConsentResponse;
 import openbankingservice.service.ConsentService;
 import openbankingservice.util.StubData;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -28,7 +27,7 @@ public class ConsentController implements AccountConsentsApi {
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
-            @RequestHeader(value = "authorization", required = true)  String authorization,
+            final String authorization,
             final String xApiKey
     ) {
         final ResponseEntity<ConsentResponse> response = mConsentService.createConsent(

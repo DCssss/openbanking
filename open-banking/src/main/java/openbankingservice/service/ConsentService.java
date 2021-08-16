@@ -11,7 +11,6 @@ import openbankingservice.models.accinfo.Consent;
 import openbankingservice.models.accinfo.ConsentResponse;
 import openbankingservice.models.accinfo.Permission;
 import openbankingservice.util.ConsentConverter;
-import openbankingservice.util.OBHttpHeaders;
 import openbankingservice.util.StubData;
 import openbankingservice.validation.ConsentBody;
 import org.apache.commons.lang3.StringUtils;
@@ -21,22 +20,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Validated
 
 public class ConsentService {
-
+    private final AccountService mAccountService;
     private final ConsentRepository mConsentRepository;
     private final FintechService mFintechService;
     private final ClientService mClientService;
@@ -47,16 +42,9 @@ public class ConsentService {
             final String xFapiAuthDate,
             final String xFapiCustomerIpAddress,
             final String xFapiInteractionId,
-            @RequestHeader(value = "authorization", required = true)  String authorization,
+            String authorization,
             final String xApiKey
     ) {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
-        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
-        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
-        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
-
         final Date now = new Date();
 
         final ConsentEntity consent = ConsentConverter.toConsentEntity(body.getData());
@@ -71,6 +59,16 @@ public class ConsentService {
         consent.setFintech(mFintechService.identifyFintech(authorization));
 
         mConsentRepository.save(consent);
+
+        final HttpHeaders headers = mAccountService.getAccInfoHeaders(
+                xFapiInteractionId,
+                authorization,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xApiKey,
+                null
+        );
+
 
         final ConsentResponse responseContent = new ConsentResponse()
                 .data(ConsentConverter.toConsentResponseData(consent));
@@ -97,9 +95,11 @@ public class ConsentService {
             }
             consent.getAccounts().addAll(
                     client.getAccounts()
+
+              /*    Для демо убрал рандомную привязк
                             .stream()
                             .filter(account -> new Random().nextBoolean())
-                            .collect(Collectors.toList())
+                            .collect(Collectors.toList()) */
             );
 
             mConsentRepository.save(consent);
@@ -148,12 +148,15 @@ public class ConsentService {
 
             mConsentRepository.save(consent);
 
-            final HttpHeaders headers = new HttpHeaders();
-            headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
-            headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
-            headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
-            headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
-            headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
+            final HttpHeaders headers = mAccountService.getAccInfoHeaders(
+                    xFapiInteractionId,
+                    authorization,
+                    xFapiAuthDate,
+                    xFapiCustomerIpAddress,
+                    xApiKey,
+                    xAccountConsentId
+            );
+
 
             return new ResponseEntity<>(headers, HttpStatus.OK);
         } else {
@@ -175,12 +178,14 @@ public class ConsentService {
         final ConsentResponse consentResponse = new ConsentResponse();
         consentResponse.data(ConsentConverter.toConsentResponseData(consent));
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
-        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
-        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
-        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
+        final HttpHeaders headers = mAccountService.getAccInfoHeaders(
+                xFapiInteractionId,
+                authorization,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xApiKey,
+                null
+        );
 
         return new ResponseEntity<>(consentResponse, headers, HttpStatus.OK);
 

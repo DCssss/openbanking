@@ -9,6 +9,9 @@ public final class OBHttpHeaders {
     public static final String X_API_KEY = "x-api-key";
     public static final String X_ACCOUNT_CONSENT_ID = "x-accountConsentId";
     public static final String DOMESTIC_CONSENT_ID = "domesticConsentId";
+    public static final String DOMESTIC_TAX_CONSENT_ID = "domesticTaxConsentId";
+    public static final String PAYMENT_CONSENT_ID = "paymentConsentId";
+    public static final String LIST_ACCOUNT_CONSENT_ID = "listAccountsConsentId";
     public static final String X_IDEMPOTENCY_KEY = "x-idempotency-key";
     public static final String X_JWS_SIGNATURE = "x-jws-signature";
     public static final String X_CUSTOMER_USER_AGENT = "x-customer-user-agent";
