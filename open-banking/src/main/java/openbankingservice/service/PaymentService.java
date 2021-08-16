@@ -3,10 +3,7 @@ package openbankingservice.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import openbankingservice.data.entity.AccountEntity;
-import openbankingservice.data.entity.PaymentConsentEntity;
-import openbankingservice.data.entity.PaymentEntity;
-import openbankingservice.data.entity.TransactionEntity;
+import openbankingservice.data.entity.*;
 import openbankingservice.data.repository.*;
 import openbankingservice.exception.OBErrorCode;
 import openbankingservice.exception.OBException;
@@ -50,6 +47,7 @@ public class PaymentService {
     private final AccountRepository mAccountRepository;
     private final TransactionRepository mTransactionRepository;
     private final AccountService mAccountService;
+    private final ClientService mClientService;
     private final BankRepository mBankRepository;
 
     public ResponseEntity<OBPayment1> createDomesticPayment(
@@ -64,7 +62,12 @@ public class PaymentService {
             final String xCustomerUserAgent,
             final String xApiKey
     ) {
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(domesticConsentId));
+
+        if (paymentConsentEntity.getClient().equals(client)){
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Invalid client");
+        }
 
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationDomestic initiation;
@@ -122,7 +125,13 @@ public class PaymentService {
             final String xCustomerUserAgent,
             final String xApiKey
     ) {
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(domesticTaxConsentId));
+
+        if (paymentConsentEntity.getClient().equals(client)){
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Invalid client");
+        }
+
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationTaxDomestic initiation;
         try {
@@ -177,7 +186,13 @@ public class PaymentService {
             final String xCustomerUserAgent,
             final String xApiKey
     ) {
+
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
+
+        if (paymentConsentEntity.getClient().equals(client)){
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Invalid client");
+        }
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationListAccounts initiation;
         try {
@@ -232,7 +247,13 @@ public class PaymentService {
             final String xCustomerUserAgent,
             final String xApiKey
     ) {
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
+
+        if (paymentConsentEntity.getClient().equals(client)){
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Invalid client");
+        }
+
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationListPassports initiation;
         try {
@@ -285,7 +306,13 @@ public class PaymentService {
             final String xCustomerUserAgent,
             final String xApiKey
     ) {
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(domesticTaxConsentId));
+
+        if (paymentConsentEntity.getClient().equals(client)){
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Invalid client");
+        }
+
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(domesticTaxId));
 
         final ObjectMapper objectMapper = new ObjectMapper();
@@ -334,7 +361,13 @@ public class PaymentService {
             final String xCustomerUserAgent,
             final String xApiKey
     ) {
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(domesticConsentId));
+
+        if (paymentConsentEntity.getClient().equals(client)){
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Invalid client");
+        }
+
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(domesticId));
 
         final ObjectMapper objectMapper = new ObjectMapper();
@@ -383,7 +416,13 @@ public class PaymentService {
             final String xCustomerUserAgent,
             final String xApiKey
     ) {
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
+
+        if (paymentConsentEntity.getClient().equals(client)){
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Invalid client");
+        }
+
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
 
         final ObjectMapper objectMapper = new ObjectMapper();
@@ -432,7 +471,13 @@ public class PaymentService {
             final String xCustomerUserAgent,
             final String xApiKey
     ) {
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
+
+        if (paymentConsentEntity.getClient().equals(client)){
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Invalid client");
+        }
+
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
 
         final ObjectMapper objectMapper = new ObjectMapper();
@@ -482,7 +527,13 @@ public class PaymentService {
             final String xCustomerUserAgent,
             final String xApiKey
     ) {
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
+
+        if (paymentConsentEntity.getClient().equals(client)){
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Invalid client");
+        }
+
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationReq initiation;
         try {
@@ -535,7 +586,13 @@ public class PaymentService {
             final String xCustomerUserAgent,
             final String xApiKey
     ) {
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
+
+        if (paymentConsentEntity.getClient().equals(client)){
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Invalid client");
+        }
+
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
 
         final ObjectMapper objectMapper = new ObjectMapper();
@@ -586,7 +643,13 @@ public class PaymentService {
             final String xCustomerUserAgent,
             final String xApiKey
     ) {
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
+
+        if (paymentConsentEntity.getClient().equals(client)){
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Invalid client");
+        }
+
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationTaxReq initiation;
         try {
@@ -639,7 +702,13 @@ public class PaymentService {
             final String xCustomerUserAgent,
             final String xApiKey
     ) {
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
+
+        if (paymentConsentEntity.getClient().equals(client)){
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Invalid client");
+        }
+
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
 
         final ObjectMapper objectMapper = new ObjectMapper();
@@ -690,7 +759,13 @@ public class PaymentService {
             final String xCustomerUserAgent,
             final String xApiKey
     ) {
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(listAccountsConsentId));
+
+        if (paymentConsentEntity.getClient().equals(client)){
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Invalid client");
+        }
+
         final ObjectMapper objectMapper = new ObjectMapper();
         OBInitiationVRP initiation;
         try {
@@ -743,7 +818,13 @@ public class PaymentService {
             final String xCustomerUserAgent,
             final String xApiKey
     ) {
+        final ClientEntity client = mClientService.identifyClient(xApiKey);
         final PaymentConsentEntity paymentConsentEntity = mPaymentConsentRepository.getById(Long.valueOf(paymentConsentId));
+
+        if (paymentConsentEntity.getClient().equals(client)){
+            throw new OBException(BY_NBRB_FIELD_INVALID, "Invalid client");
+        }
+
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
 
         final ObjectMapper objectMapper = new ObjectMapper();
