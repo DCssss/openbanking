@@ -96,7 +96,7 @@ public class PaymentService {
         final OBPayment1 response = new OBPayment1()
                 .data(data);
 
-        HttpHeaders headers = getPaymentHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
                 xIdempotencyKey,
                 xJwsSignature,
                 xFapiAuthDate,
@@ -159,7 +159,7 @@ public class PaymentService {
         final OBTaxPayment1 response = new OBTaxPayment1()
                 .data(data);
 
-        HttpHeaders headers = getPaymentHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
                 xIdempotencyKey,
                 xJwsSignature,
                 xFapiAuthDate,
@@ -220,7 +220,7 @@ public class PaymentService {
         final OBPaymentListAccounts1 response = new OBPaymentListAccounts1()
                 .data(data);
 
-        HttpHeaders headers = getPaymentHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
                 xIdempotencyKey,
                 xJwsSignature,
                 xFapiAuthDate,
@@ -281,7 +281,7 @@ public class PaymentService {
         final OBPaymentListPassports1 response = new OBPaymentListPassports1()
                 .data(data);
 
-        HttpHeaders headers = getPaymentHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
                 xIdempotencyKey,
                 xJwsSignature,
                 xFapiAuthDate,
@@ -336,7 +336,7 @@ public class PaymentService {
         final OBTaxPayment2 response = new OBTaxPayment2()
                 .data(data);
 
-        HttpHeaders headers = getPaymentHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
                 null,
                 null,
                 xFapiAuthDate,
@@ -391,7 +391,7 @@ public class PaymentService {
         final OBPayment2 response = new OBPayment2()
                 .data(data);
 
-        HttpHeaders headers = getPaymentHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
                 null,
                 null,
                 xFapiAuthDate,
@@ -446,7 +446,7 @@ public class PaymentService {
         final OBPaymentListAccounts2 response = new OBPaymentListAccounts2()
                 .data(data);
 
-        HttpHeaders headers = getPaymentHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
                 null,
                 null,
                 xFapiAuthDate,
@@ -501,7 +501,7 @@ public class PaymentService {
         final OBPaymentListPassports2 response = new OBPaymentListPassports2()
                 .data(data);
 
-        HttpHeaders headers = getPaymentHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
                 null,
                 null,
                 xFapiAuthDate,
@@ -561,7 +561,7 @@ public class PaymentService {
         final OBPaymentReq1 response = new OBPaymentReq1()
                 .data(data);
 
-        HttpHeaders headers = getPaymentHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
                 xIdempotencyKey,
                 xJwsSignature,
                 xFapiAuthDate,
@@ -616,7 +616,7 @@ public class PaymentService {
         final OBPaymentReq2 response = new OBPaymentReq2()
                 .data(data);
 
-        HttpHeaders headers = getPaymentHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
                 null,
                 null,
                 xFapiAuthDate,
@@ -677,7 +677,7 @@ public class PaymentService {
         final OBTaxPaymentReq1 response = new OBTaxPaymentReq1()
                 .data(data);
 
-        HttpHeaders headers = getPaymentHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
                 xIdempotencyKey,
                 xJwsSignature,
                 xFapiAuthDate,
@@ -732,7 +732,7 @@ public class PaymentService {
         final OBTaxPaymentReq2 response = new OBTaxPaymentReq2()
                 .data(data);
 
-        HttpHeaders headers = getPaymentHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
                 null,
                 null,
                 xFapiAuthDate,
@@ -793,7 +793,7 @@ public class PaymentService {
         final OBVRP1 response = new OBVRP1()
                 .data(data);
 
-        HttpHeaders headers = getPaymentHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
                 xIdempotencyKey,
                 xJwsSignature,
                 xFapiAuthDate,
@@ -848,7 +848,7 @@ public class PaymentService {
         final OBVRP2 response = new OBVRP2()
                 .data(data);
 
-        HttpHeaders headers = getPaymentHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
                 null,
                 null,
                 xFapiAuthDate,
@@ -1058,24 +1058,5 @@ public class PaymentService {
         return createAndGetPayment(paymentConsentEntity);
     }
 
-    private HttpHeaders getPaymentHeaders(String xIdempotencyKey,
-                                          String xJwsSignature,
-                                          String xFapiAuthDate,
-                                          String xFapiInteractionId,
-                                          String authorization,
-                                          String xFapiCustomerIpAddress,
-                                          String xCustomerUserAgent,
-                                          String xApiKey
-    ) {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
-        headers.add(OBHttpHeaders.X_IDEMPOTENCY_KEY, xIdempotencyKey);
-        headers.add(OBHttpHeaders.X_JWS_SIGNATURE, xJwsSignature);
-        headers.add(OBHttpHeaders.AUTHORIZATION, authorization);
-        headers.add(OBHttpHeaders.X_FAPI_AUTH_DATE, xFapiAuthDate);
-        headers.add(OBHttpHeaders.X_FAPI_CUSTOMER_IP_ADDRESS, xFapiCustomerIpAddress);
-        headers.add(OBHttpHeaders.X_CUSTOMER_USER_AGENT, xCustomerUserAgent);
-        headers.add(OBHttpHeaders.X_API_KEY, xApiKey);
-        return headers;
-    }
+
 }

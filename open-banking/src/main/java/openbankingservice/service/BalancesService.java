@@ -16,10 +16,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static openbankingservice.util.OBHttpHeaders.X_ACCOUNT_CONSENT_ID;
+
 @Service
 @RequiredArgsConstructor
 public class BalancesService {
-    private final AccountService mAccountService;
+
     private final ClientService mClientService;
     private final ConsentService mConsentService;
 
@@ -67,14 +69,14 @@ public class BalancesService {
                 .links(links)
                 .meta(meta);
 
-        final HttpHeaders headers = mAccountService.getAccInfoHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getAccInfoHeaders (
                 xFapiInteractionId,
                 authorization,
                 xFapiAuthDate,
                 xFapiCustomerIpAddress,
-                xApikey,
-                xAccountConsentId
+                xApikey
         );
+        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID,xAccountConsentId);
 
         return new ResponseEntity<>(respData, headers, HttpStatus.OK);
 

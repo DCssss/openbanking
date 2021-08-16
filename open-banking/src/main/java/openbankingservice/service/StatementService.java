@@ -7,6 +7,7 @@ import openbankingservice.data.entity.StatementEntity;
 import openbankingservice.data.repository.StatementRepository;
 import openbankingservice.data.repository.TransactionRepository;
 import openbankingservice.models.accinfo.*;
+import openbankingservice.util.OBHttpHeaders;
 import openbankingservice.util.StatementConverter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,15 +19,12 @@ import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.HashSet;
 
-import static openbankingservice.util.OBHttpHeaders.X_FAPI_INTERACTION_ID;
-
 @Service
 @RequiredArgsConstructor
 public class StatementService {
 
     private final StatementRepository mStatementRepository;
     private final TransactionRepository mTransactionRepository;
-    private final AccountService mAccountService;
     private final ClientService mClientService;
     private final ConsentService mConsentService;
 
@@ -70,14 +68,14 @@ public class StatementService {
                 .links(links)
                 .meta(meta);
 
-        final HttpHeaders headers = mAccountService.getAccInfoHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getAccInfoHeaders (
                 xFapiInteractionId,
                 authorization,
                 xFapiAuthDate,
                 xFapiCustomerIpAddress,
-                xApiKey,
-                xAccountConsentId
+                xApiKey
         );
+        headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID,xAccountConsentId);
 
 
         return new ResponseEntity<>(statementResponse, headers, HttpStatus.OK);

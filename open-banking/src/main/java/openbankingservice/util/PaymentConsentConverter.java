@@ -13,7 +13,7 @@ import static openbankingservice.exception.OBErrorCode.BY_NBRB_UNEXPECTED_ERROR;
 
 public final class PaymentConsentConverter {
 
-    private static final String LINK_PATTERN = "https://sdbo.bank.by/domesticTaxConsentId/%s/";
+    private static final String LINK_PATTERN = "https://paymentapi.st.by/domesticTaxConsentId/%s/";
 
     private PaymentConsentConverter() {
     }

@@ -64,8 +64,16 @@ public class PaymentConsentService {
         final OBPaymentConsentTax1 response = new OBPaymentConsentTax1()
                 .data(data);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiInteractionId,
+                authorization,
+                xFapiCustomerIpAddress,
+                xCustomerUserAgent,
+                xApiKey
+        );
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -118,8 +126,16 @@ public class PaymentConsentService {
         final OBPaymentConsent1 response = new OBPaymentConsent1()
                 .data(data);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiInteractionId,
+                authorization,
+                xFapiCustomerIpAddress,
+                xCustomerUserAgent,
+                xApiKey
+        );
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -140,8 +156,16 @@ public class PaymentConsentService {
         final OBPaymentConsent2 response = new OBPaymentConsent2()
                 .data(data);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
+                null,
+                null,
+                xFapiAuthDate,
+                xFapiInteractionId,
+                authorization,
+                xFapiCustomerIpAddress,
+                xCustomerUserAgent,
+                xApiKey
+        );
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -168,8 +192,16 @@ public class PaymentConsentService {
         final OBPaymentConsentListAccounts1 response = new OBPaymentConsentListAccounts1()
                 .data(data);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiInteractionId,
+                authorization,
+                xFapiCustomerIpAddress,
+                xCustomerUserAgent,
+                xApiKey
+        );
 
         return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
     }
@@ -190,8 +222,16 @@ public class PaymentConsentService {
         final OBPaymentConsentListAccounts2 response = new OBPaymentConsentListAccounts2()
                 .data(data);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
+                null,
+                null,
+                xFapiAuthDate,
+                xFapiInteractionId,
+                authorization,
+                xFapiCustomerIpAddress,
+                xCustomerUserAgent,
+                xApiKey
+        );
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -218,8 +258,16 @@ public class PaymentConsentService {
         final OBPaymentConsentListPassports1 response = new OBPaymentConsentListPassports1()
                 .data(data);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiInteractionId,
+                authorization,
+                xFapiCustomerIpAddress,
+                xCustomerUserAgent,
+                xApiKey
+        );
 
         return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
     }
@@ -240,8 +288,16 @@ public class PaymentConsentService {
         final OBPaymentConsentListPassports2 response = new OBPaymentConsentListPassports2()
                 .data(data);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
+                null,
+                null,
+                xFapiAuthDate,
+                xFapiInteractionId,
+                authorization,
+                xFapiCustomerIpAddress,
+                xCustomerUserAgent,
+                xApiKey
+        );
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -267,8 +323,16 @@ public class PaymentConsentService {
         final OBReqConsent1 response = new OBReqConsent1()
                 .data(data);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiInteractionId,
+                authorization,
+                xFapiCustomerIpAddress,
+                xCustomerUserAgent,
+                null
+        );
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -289,8 +353,16 @@ public class PaymentConsentService {
         final OBReqConsent2 response = new OBReqConsent2()
                 .data(data);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
+                null,
+                null,
+                xFapiAuthDate,
+                xFapiInteractionId,
+                authorization,
+                xFapiCustomerIpAddress,
+                xCustomerUserAgent,
+                xApiKey
+        );
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -311,8 +383,16 @@ public class PaymentConsentService {
         final OBVRPConsent2 response = new OBVRPConsent2()
                 .data(data);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
+                null,
+                null,
+                xFapiAuthDate,
+                xFapiInteractionId,
+                authorization,
+                xFapiCustomerIpAddress,
+                xCustomerUserAgent,
+                xApiKey
+        );
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -339,8 +419,16 @@ public class PaymentConsentService {
         final OBPaymentConsentTaxReq1 response = new OBPaymentConsentTaxReq1()
                 .data(data);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiInteractionId,
+                authorization,
+                xFapiCustomerIpAddress,
+                xCustomerUserAgent,
+                xApiKey
+        );
 
         return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
     }
@@ -366,8 +454,16 @@ public class PaymentConsentService {
         final OBVRPConsent1 response = new OBVRPConsent1()
                 .data(data);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
+                xIdempotencyKey,
+                xJwsSignature,
+                xFapiAuthDate,
+                xFapiInteractionId,
+                authorization,
+                xFapiCustomerIpAddress,
+                xCustomerUserAgent,
+                xApiKey
+        );
 
         return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
     }
@@ -388,8 +484,16 @@ public class PaymentConsentService {
         final OBPaymentConsentTaxReq2 response = new OBPaymentConsentTaxReq2()
                 .data(data);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
+                null,
+                null,
+                xFapiAuthDate,
+                xFapiInteractionId,
+                authorization,
+                xFapiCustomerIpAddress,
+                xCustomerUserAgent,
+                xApiKey
+        );
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -410,8 +514,16 @@ public class PaymentConsentService {
 
         mPaymentConsentRepository.save(paymentConsentEntity);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
+                null,
+                null,
+                xFapiAuthDate,
+                xFapiInteractionId,
+                authorization,
+                xFapiCustomerIpAddress,
+                xCustomerUserAgent,
+                xApiKey
+        );
 
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }

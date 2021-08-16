@@ -11,6 +11,7 @@ import openbankingservice.models.accinfo.Consent;
 import openbankingservice.models.accinfo.ConsentResponse;
 import openbankingservice.models.accinfo.Permission;
 import openbankingservice.util.ConsentConverter;
+import openbankingservice.util.OBHttpHeaders;
 import openbankingservice.util.StubData;
 import openbankingservice.validation.ConsentBody;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +32,6 @@ import java.util.HashSet;
 @Validated
 
 public class ConsentService {
-    private final AccountService mAccountService;
     private final ConsentRepository mConsentRepository;
     private final FintechService mFintechService;
     private final ClientService mClientService;
@@ -60,15 +60,13 @@ public class ConsentService {
 
         mConsentRepository.save(consent);
 
-        final HttpHeaders headers = mAccountService.getAccInfoHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getAccInfoHeaders (
                 xFapiInteractionId,
                 authorization,
                 xFapiAuthDate,
                 xFapiCustomerIpAddress,
-                xApiKey,
-                null
+                xApiKey
         );
-
 
         final ConsentResponse responseContent = new ConsentResponse()
                 .data(ConsentConverter.toConsentResponseData(consent));
@@ -148,14 +146,14 @@ public class ConsentService {
 
             mConsentRepository.save(consent);
 
-            final HttpHeaders headers = mAccountService.getAccInfoHeaders(
+            final HttpHeaders headers = new OBHttpHeaders().getAccInfoHeaders (
                     xFapiInteractionId,
                     authorization,
                     xFapiAuthDate,
                     xFapiCustomerIpAddress,
-                    xApiKey,
-                    xAccountConsentId
+                    xApiKey
             );
+            headers.add(OBHttpHeaders.X_ACCOUNT_CONSENT_ID,xAccountConsentId);
 
 
             return new ResponseEntity<>(headers, HttpStatus.OK);
@@ -178,13 +176,12 @@ public class ConsentService {
         final ConsentResponse consentResponse = new ConsentResponse();
         consentResponse.data(ConsentConverter.toConsentResponseData(consent));
 
-        final HttpHeaders headers = mAccountService.getAccInfoHeaders(
+        final HttpHeaders headers = new OBHttpHeaders().getAccInfoHeaders (
                 xFapiInteractionId,
                 authorization,
                 xFapiAuthDate,
                 xFapiCustomerIpAddress,
-                xApiKey,
-                null
+                xApiKey
         );
 
         return new ResponseEntity<>(consentResponse, headers, HttpStatus.OK);
