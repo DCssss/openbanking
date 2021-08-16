@@ -26,7 +26,7 @@ public class StatementService {
 
     private final StatementRepository mStatementRepository;
     private final TransactionRepository mTransactionRepository;
-
+    private final AccountService mAccountService;
     private final ClientService mClientService;
     private final ConsentService mConsentService;
 
@@ -70,8 +70,15 @@ public class StatementService {
                 .links(links)
                 .meta(meta);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        final HttpHeaders headers = mAccountService.getAccInfoHeaders(
+                xFapiInteractionId,
+                authorization,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xApiKey,
+                xAccountConsentId
+        );
+
 
         return new ResponseEntity<>(statementResponse, headers, HttpStatus.OK);
     }

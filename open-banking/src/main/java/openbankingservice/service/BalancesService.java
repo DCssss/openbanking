@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BalancesService {
-
+    private final AccountService mAccountService;
     private final ClientService mClientService;
     private final ConsentService mConsentService;
 
@@ -67,8 +67,14 @@ public class BalancesService {
                 .links(links)
                 .meta(meta);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(OBHttpHeaders.X_FAPI_INTERACTION_ID, xFapiInteractionId);
+        final HttpHeaders headers = mAccountService.getAccInfoHeaders(
+                xFapiInteractionId,
+                authorization,
+                xFapiAuthDate,
+                xFapiCustomerIpAddress,
+                xApikey,
+                xAccountConsentId
+        );
 
         return new ResponseEntity<>(respData, headers, HttpStatus.OK);
 

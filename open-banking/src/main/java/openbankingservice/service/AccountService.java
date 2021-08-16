@@ -436,7 +436,7 @@ public class AccountService {
         return lastDate;
     }
 
-    private HttpHeaders getAccInfoHeaders(
+    public HttpHeaders getAccInfoHeaders(
         String xFapiInteractionId,
         String authorization,
         String xFapiAuthDate,
