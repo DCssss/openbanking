@@ -899,33 +899,35 @@ public class PaymentService {
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
         final Optional<AccountEntity> debtorAccountOptional = mAccountRepository.findByIdentification(payment.getPaymentConsent().getDebtorAccId());
         final AccountEntity creditorAccount = mAccountRepository.getByIdentification(payment.getPaymentConsent().getCreditorAccId());
-        //Проверка на корректный IBAN по дебету и кредиту
+        final AccountEntity debtorAccount = debtorAccountOptional.get();
 
-        //Проверка на существование дебетового счета
+        //Проверка на существование счета по дебету в БД
         if (debtorAccountOptional.isPresent()) {
 
-            final AccountEntity debtorAccount = debtorAccountOptional.get();
-            //проверяем дебетовый счет на формат ИБАНА
-            boolean debetIbanCheck = IBANCheckDigit.IBAN_CHECK_DIGIT.isValid(debtorAccount.getIdentification());
-            //автоувеличение средств на счете
-            mAccountService.checkFunds(String.valueOf(debtorAccount.getId()), payment.getPaymentConsent().getCurrency());
-
-            if (debtorAccount.getBalanceAmount().compareTo(payment.getPaymentConsent().getAmount()) >= 0
-                    //Проверка на то, что счет по дебету, не равен счету по кредиту.
-                    && !debtorAccount.getIdentification().equals(creditorAccount.getIdentification())
-                    //Проверка на то, что совпадают валюты перевода по счетам.
-                    && debtorAccount.getCurrency().equals(creditorAccount.getCurrency())
-                    && debetIbanCheck) {
-
+            //Проверка валидности IBAN по контрольной сумме
+            if (!IBANCheckDigit.IBAN_CHECK_DIGIT.isValid(debtorAccount.getIdentification())) {
+                throw new OBException(OBErrorCode.BY_NBRB_UNSUPPORTED_ACCOUNT_IDENTIFIER, "Invalid IBAN");
+            }
+            //Счет по кредиту не должен соответствовать счету по дебету
+            if  (debtorAccount.getIdentification().equals(creditorAccount.getIdentification())) {
+                throw new OBException(OBErrorCode.BY_NBRB_UNEXPECTED_ERROR, "Debt Identifier should not match with Credit Identifier");
+            }
+            //Валюты перевода должны совпадать
+            if (!debtorAccount.getCurrency().equals(creditorAccount.getCurrency())) {
+                throw new OBException(OBErrorCode.BY_NBRB_UNEXPECTED_ERROR, "Debt Account currency should match with Credit Account currency");
+            }
+            //Проверка на то что сумма перевода не превышает остаток по счету + автопополнение счета если остаток по счету <1000
+            if (debtorAccount.getBalanceAmount().compareTo(payment.getPaymentConsent().getAmount()) >= 0) {
+                mAccountService.checkFunds(String.valueOf(debtorAccount.getId()), payment.getPaymentConsent().getCurrency());
                 transferAmount(debtorAccount, creditorAccount, payment);
                 createTransactions(debtorAccount, creditorAccount, payment);
-
                 payment.setStatus(ACCC);
             } else {
                 payment.setStatus(RJCT);
             }
+
         } else {
-            payment.setStatus(RJCT);
+            throw new OBException(OBErrorCode.BY_NBRB_UNSUPPORTED_ACCOUNT_IDENTIFIER, "Debt Account not found");
         }
 
         payment.setStatusUpdateTime(now);

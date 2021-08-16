@@ -127,7 +127,7 @@ public final class ConsentEntity extends BaseEntity<Long> {
                         .filter(accountEntity -> accountEntity.getId().equals(accountId))
                         .findFirst();
 
-        if (optionalAccount.isEmpty()) {
+        if (!optionalAccount.isPresent()) {
             throw new OBException(OBErrorCode.BY_NBRB_RESOURCE_NOTFOUND, "Account not found");
         }
 
