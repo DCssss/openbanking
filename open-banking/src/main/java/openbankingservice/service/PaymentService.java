@@ -1,5 +1,6 @@
 package openbankingservice.service;
 
+import ch.qos.logback.core.util.StringCollectionUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import wiremock.com.github.jknack.handlebars.internal.lang3.StringUtils;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -87,6 +89,8 @@ public class PaymentService {
                 .domesticId(payment.getId().toString())
                 .domesticConsentId(paymentConsentEntity.getId().toString())
                 .creationDateTime(payment.getCreateTime())
+                .expectedExecutionDate(getActualDate())
+                .expectedSettlementDate(getActualDate())
                 .initiation(initiation)
                 .paymentStatus(
                         new OBDataPaymentStatus()
@@ -150,6 +154,8 @@ public class PaymentService {
                 .domesticTaxId(payment.getId().toString())
                 .domesticTaxConsentId(paymentConsentEntity.getId().toString())
                 .creationDateTime(payment.getCreateTime())
+                .expectedExecutionDate(getActualDate())
+                .expectedSettlementDate(getActualDate())
                 .initiation(initiation)
                 .paymentStatus(
                         new OBDataPaymentStatus()
@@ -211,6 +217,8 @@ public class PaymentService {
                 .listAccountsId(payment.getId().toString())
                 .listAccountsConsentId(paymentConsentEntity.getId().toString())
                 .creationDateTime(payment.getCreateTime())
+                .expectedExecutionDate(getActualDate())
+                .expectedSettlementDate(getActualDate())
                 .initiation(initiation)
                 .paymentStatus(
                         new OBDataPaymentStatus()
@@ -272,6 +280,8 @@ public class PaymentService {
               .listPassportsId(payment.getId().toString())
                 .listPassportsConsentId(paymentConsentEntity.getId().toString())
                 .creationDateTime(payment.getCreateTime())
+                .expectedExecutionDate(getActualDate())
+                .expectedSettlementDate(getActualDate())
                 .initiation(initiation)
                 .paymentStatus(
                         new OBDataPaymentStatus()
@@ -327,6 +337,8 @@ public class PaymentService {
                 .domesticTaxId(payment.getId().toString())
                 .domesticTaxConsentId(paymentConsentEntity.getId().toString())
                 .creationDateTime(payment.getCreateTime())
+                .expectedExecutionDate(getActualDate())
+                .expectedSettlementDate(getActualDate())
                 .initiation(initiation)
                 .paymentStatus(
                         new OBDataPaymentStatusGet()
@@ -382,6 +394,10 @@ public class PaymentService {
                 .domesticId(payment.getId().toString())
                 .domesticConsentId(paymentConsentEntity.getId().toString())
                 .creationDateTime(payment.getCreateTime())
+                .expectedExecutionDate(getActualDate())
+                .expectedSettlementDate(getActualDate())
+                .multiauthorisation(new OBMultiAuthorisation())
+                .charge(new OBCharge())
                 .initiation(initiation)
                 .paymentStatus(
                         new OBDataPaymentStatusGet()
@@ -389,7 +405,8 @@ public class PaymentService {
                                 .paymentStatus(payment.getStatus().toString()));
 
         final OBPayment2 response = new OBPayment2()
-                .data(data);
+                .data(data)
+                .risk(new OBRisk());
 
         final HttpHeaders headers = new OBHttpHeaders().getPaymentHeaders(
                 null,
@@ -437,6 +454,8 @@ public class PaymentService {
                 .listAccountsId(payment.getId().toString())
                 .listAccountsConsentId(paymentConsentEntity.getId().toString())
                 .creationDateTime(payment.getCreateTime())
+                .expectedExecutionDate(getActualDate())
+                .expectedSettlementDate(getActualDate())
                 .initiation(initiation)
                 .paymentStatus(
                         new OBDataPaymentStatusGet()
@@ -492,6 +511,8 @@ public class PaymentService {
                 .listPassportsId(payment.getId().toString())
                 .listPassportsConsentId(paymentConsentEntity.getId().toString())
                 .creationDateTime(payment.getCreateTime())
+                .expectedExecutionDate(getActualDate())
+                .expectedSettlementDate(getActualDate())
                 .initiation(initiation)
                 .paymentStatus(
                         new OBDataPaymentStatusGet()
@@ -552,6 +573,8 @@ public class PaymentService {
                 .requirementId(payment.getId().toString())
                 .requirementConsentId(paymentConsentEntity.getId().toString())
                 .creationDateTime(payment.getCreateTime())
+                .expectedExecutionDate(getActualDate())
+                .expectedSettlementDate(getActualDate())
                 .initiation(initiation)
                 .paymentStatus(
                         new OBDataPaymentStatus()
@@ -607,6 +630,8 @@ public class PaymentService {
                 .requirementId(payment.getId().toString())
                 .requirementConsentId(paymentConsentEntity.getId().toString())
                 .creationDateTime(payment.getCreateTime())
+                .expectedExecutionDate(getActualDate())
+                .expectedSettlementDate(getActualDate())
                 .initiation(initiation)
                 .paymentStatus(
                         new OBDataPaymentStatusGet()
@@ -669,6 +694,8 @@ public class PaymentService {
                 .taxRequirementConsentId(paymentConsentEntity.getId().toString())
                 .creationDateTime(payment.getCreateTime())
                 .initiation(initiation)
+                .expectedExecutionDate(getActualDate())
+                .expectedSettlementDate(getActualDate())
                 .paymentStatus(
                         new OBDataPaymentStatus()
                                 .statusUpdateDateTime(payment.getStatusUpdateTime())
@@ -723,6 +750,8 @@ public class PaymentService {
                 .taxRequirementId(payment.getId().toString())
                 .taxRequirementConsentId(paymentConsentEntity.getId().toString())
                 .creationDateTime(payment.getCreateTime())
+                .expectedExecutionDate(getActualDate())
+                .expectedSettlementDate(getActualDate())
                 .initiation(initiation)
                 .paymentStatus(
                         new OBDataPaymentStatusGet()
@@ -784,6 +813,8 @@ public class PaymentService {
                 .vrPId(payment.getId().toString())
                 .vrPConsentId(paymentConsentEntity.getId().toString())
                 .creationDateTime(payment.getCreateTime())
+                .expectedExecutionDate(getActualDate())
+                .expectedSettlementDate(getActualDate())
                 .initiation(initiation)
                 .paymentStatus(
                         new OBDataPaymentStatus()
@@ -839,6 +870,8 @@ public class PaymentService {
                 .vrPId(payment.getId().toString())
                 .vrPConsentId(paymentConsentEntity.getId().toString())
                 .creationDateTime(payment.getCreateTime())
+                .expectedExecutionDate(getActualDate())
+                .expectedSettlementDate(getActualDate())
                 .initiation(initiation)
                 .paymentStatus(
                         new OBDataPaymentStatusGet()
@@ -898,38 +931,42 @@ public class PaymentService {
 
         final PaymentEntity payment = mPaymentRepository.getById(Long.valueOf(paymentId));
         final Optional<AccountEntity> debtorAccountOptional = mAccountRepository.findByIdentification(payment.getPaymentConsent().getDebtorAccId());
-        final AccountEntity creditorAccount = mAccountRepository.getByIdentification(payment.getPaymentConsent().getCreditorAccId());
-        final AccountEntity debtorAccount = debtorAccountOptional.get();
+        final Optional<AccountEntity> creditorAccountOptional = mAccountRepository.findByIdentification(payment.getPaymentConsent().getCreditorAccId());
 
-        //Проверка на существование счета по дебету в БД
-        if (debtorAccountOptional.isPresent()) {
+        //Проверка на существование счета по дебету и кредиту в БД
+        if (debtorAccountOptional.isPresent() && creditorAccountOptional.isPresent()) {
 
             //Проверка валидности IBAN по контрольной сумме
-            if (!IBANCheckDigit.IBAN_CHECK_DIGIT.isValid(debtorAccount.getIdentification())) {
+            if (!IBANCheckDigit.IBAN_CHECK_DIGIT.isValid(debtorAccountOptional.get().getIdentification()) || !IBANCheckDigit.IBAN_CHECK_DIGIT.isValid(creditorAccountOptional.get().getIdentification())  ) {
                 throw new OBException(OBErrorCode.BY_NBRB_UNSUPPORTED_ACCOUNT_IDENTIFIER, "Invalid IBAN");
             }
             //Счет по кредиту не должен соответствовать счету по дебету
-            if  (debtorAccount.getIdentification().equals(creditorAccount.getIdentification())) {
-                throw new OBException(OBErrorCode.BY_NBRB_UNEXPECTED_ERROR, "Debt Identifier should not match with Credit Identifier");
-            }
+                if (debtorAccountOptional.get().getIdentification().equals(creditorAccountOptional.get().getIdentification())) {
+                    throw new OBException(OBErrorCode.BY_NBRB_UNEXPECTED_ERROR, "Debt Identifier should not match with Credit Identifier");
+                }
             //Валюты перевода должны совпадать
-            if (!debtorAccount.getCurrency().equals(creditorAccount.getCurrency())) {
+            if (!debtorAccountOptional.get().getCurrency().equals(creditorAccountOptional.get().getCurrency())) {
                 throw new OBException(OBErrorCode.BY_NBRB_UNEXPECTED_ERROR, "Debt Account currency should match with Credit Account currency");
             }
             //Проверка на то что сумма перевода не превышает остаток по счету + автопополнение счета если остаток по счету <1000
-            if (debtorAccount.getBalanceAmount().compareTo(payment.getPaymentConsent().getAmount()) >= 0) {
-                mAccountService.checkFunds(String.valueOf(debtorAccount.getId()), payment.getPaymentConsent().getCurrency());
-                transferAmount(debtorAccount, creditorAccount, payment);
-                createTransactions(debtorAccount, creditorAccount, payment);
+            if (debtorAccountOptional.get().getBalanceAmount().compareTo(payment.getPaymentConsent().getAmount()) >= 0) {
+                mAccountService.checkFunds(String.valueOf(debtorAccountOptional.get().getId()), payment.getPaymentConsent().getCurrency());
+                transferAmount(debtorAccountOptional.get(), creditorAccountOptional.get(), payment);
+                createTransactions(debtorAccountOptional.get(), creditorAccountOptional.get(), payment);
                 payment.setStatus(ACCC);
+
             } else {
                 payment.setStatus(RJCT);
             }
-
+            //когда только счет по дебету существует. когда кредит счет нету в нашей БД, транзакция отправляется вникуда. проводится только DEBIT транзакция
+        } else if(debtorAccountOptional.isPresent()) {
+            IBANCheckDigit.IBAN_CHECK_DIGIT.isValid(debtorAccountOptional.get().getIdentification());
+            transferFromDebetAmount(debtorAccountOptional.get(), payment);
+            createDebtorTransaction(debtorAccountOptional.get(), payment);
+            payment.setStatus(ACCC);
         } else {
-            throw new OBException(OBErrorCode.BY_NBRB_UNSUPPORTED_ACCOUNT_IDENTIFIER, "Debt Account not found");
+            payment.setStatus(RJCT);
         }
-
         payment.setStatusUpdateTime(now);
         mPaymentRepository.save(payment);
     }
@@ -944,6 +981,15 @@ public class PaymentService {
 
         creditorAccount.setBalanceAmount(creditorAccount.getBalanceAmount().add(payment.getPaymentConsent().getAmount()));
         mAccountRepository.save(creditorAccount);
+    }
+
+    private void transferFromDebetAmount(
+            final AccountEntity debtorAccount,
+            final PaymentEntity payment
+    ) {
+        debtorAccount.setBalanceAmount(debtorAccount.getBalanceAmount().subtract(payment.getPaymentConsent().getAmount()));
+        mAccountRepository.save(debtorAccount);
+
     }
 
     private void createTransactions(
@@ -1060,5 +1106,9 @@ public class PaymentService {
         return createAndGetPayment(paymentConsentEntity);
     }
 
+    public Date getActualDate() {
+        Date now = new Date();
+        return now;
+    }
 
 }
