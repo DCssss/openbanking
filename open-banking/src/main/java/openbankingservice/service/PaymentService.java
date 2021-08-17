@@ -3,6 +3,7 @@ package openbankingservice.service;
 import ch.qos.logback.core.util.StringCollectionUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import openbankingservice.data.entity.*;
 import openbankingservice.data.repository.*;
@@ -1039,6 +1040,15 @@ public class PaymentService {
         debtorTransaction.setCreditTaxIdentification(payment.getPaymentConsent().getCreditorTaxId());
         debtorTransaction.setNumber(payment.getPaymentConsent().getId().toString());
         debtorTransaction.setBookingTime(new Date());
+
+        try {
+            debtorTransaction.setDetails(parseJsonInitiationDetails(payment));
+        } catch (JsonProcessingException e) {
+            throw new OBException(BY_NBRB_UNEXPECTED_ERROR, e.getMessage());
+        }
+
+
+
         mTransactionRepository.save(debtorTransaction);
     }
 
@@ -1111,4 +1121,19 @@ public class PaymentService {
         return now;
     }
 
+    // TODO: 17.08.2021 Возможно есть способ лучше достать нужное поле из обьект\обьекта json
+    private String parseJsonInitiationDetails(PaymentEntity payment) throws JsonProcessingException {
+
+        final String json = payment.getPaymentConsent().getInitiation();
+        final ObjectNode node = new ObjectMapper().readValue(json, ObjectNode.class);
+        String value = null;
+        if (node.has("remmitanceInformation")) { //парсим сначала обьект Initiation, достаем обьект remmitanceInformation где хранится поле unstructed
+            final String jsonRemmitance = String.valueOf(node.get("remmitanceInformation"));
+            final ObjectNode nodeDetails = new ObjectMapper().readValue(jsonRemmitance, ObjectNode.class);
+                if (nodeDetails.has("unstructured")) { //теперь достаем поле unstructured = details
+                    value = String.valueOf(nodeDetails.get("unstructured")).replace("\"",""); // убираем кавычки JSON
+                }
+        }
+        return value;
+    }
 }
